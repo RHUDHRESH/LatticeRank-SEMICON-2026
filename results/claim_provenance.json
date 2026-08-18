@@ -46,7 +46,7 @@
     {
       "claim": "A separate randomized evaluation of at least 30 pairs.",
       "status": "not_run",
-      "artifact": "results/randomized_evaluation.json",
+      "artifact": "results/evaluation_30plus.json",
       "reason": "The bounded cleanup pass did not run an expensive new evaluation; no substitute subset metric is published."
     },
     {
