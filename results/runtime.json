@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "status": "measured",
+  "metric": "End-to-end wall-clock runtime through the public inference entry point.",
+  "value": 8.167,
+  "units": "seconds_per_pair",
+  "display_value": "8.2 s/pair on the committed DRAM example",
+  "precision": "single-pair smoke",
+  "pair": "examples/dram/reference.png + examples/dram/search.png",
+  "stdout": "(644.50, 283.50)",
+  "execution": {
+    "workers": 1,
+    "network_access": false,
+    "host": "Windows, Python 3.12"
+  },
+  "provenance": {
+    "command": "python scripts/inference.py examples/dram/reference.png examples/dram/search.png",
+    "note": "This is a one-pair smoke timing of the cleaned tree, not an 80-pair mean."
+  }
+}

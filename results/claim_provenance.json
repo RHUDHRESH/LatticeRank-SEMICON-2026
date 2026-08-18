@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "curation_source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
+  "environment_observed_during_curation": {
+    "python": "3.12.10",
+    "numpy": "2.5.1",
+    "scipy": "1.18.0",
+    "scikit_learn": "1.9.0",
+    "joblib": "1.5.3",
+    "pillow": "12.3.0",
+    "matplotlib": "3.11.1"
+  },
+  "claims": [
+    {
+      "claim": "Final localization accuracy is 41.25% within 5 search pixels on 80 leak-free, scene-disjoint validation pairs.",
+      "status": "measured",
+      "protocol": "Shipped delta=0.10 candidate pool; final HGB plus residual blend; 0.05 equivalence margin.",
+      "artifact": "results/validation_metrics.json",
+      "rows": "results/validation_predictions.csv",
+      "rows_error_field": "top1_error_px",
+      "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
+      "reproduction_command": "python scripts/evaluate.py validation --output-dir results/reproduced-validation"
+    },
+    {
+      "claim": "At delta=0.15, candidate-pool recall within 5 pixels is 92.5% overall, 97.4% for DRAM, and 87.8% for FinFET.",
+      "status": "measured_diagnostic",
+      "not_a_claim_of": "end-to-end localization accuracy",
+      "artifact": "results/candidate_recall.json",
+      "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
+      "reproduction_note": "The committed curated artifact preserves the measured sweep; the release evaluator reproduces the shipped delta=0.10 path only."
+    },
+    {
+      "claim": "The shipped delta=0.10 candidate pool has 90.0% recall within 5 pixels.",
+      "status": "measured",
+      "artifact": "results/candidate_recall.json",
+      "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
+      "reproduction_command": "python scripts/evaluate.py validation --output-dir results/reproduced-validation"
+    },
+    {
+      "claim": "The final catastrophic-error rate above 25 pixels is 58.75%.",
+      "status": "measured",
+      "artifact": "results/validation_metrics.json",
+      "rows": "results/validation_predictions.csv",
+      "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b"
+    },
+    {
+      "claim": "A separate randomized evaluation of at least 30 pairs.",
+      "status": "not_run",
+      "artifact": "results/randomized_evaluation.json",
+      "reason": "The bounded cleanup pass did not run an expensive new evaluation; no substitute subset metric is published."
+    },
+    {
+      "claim": "Final end-to-end runtime.",
+      "status": "measured",
+      "artifact": "results/runtime.json",
+      "value": "8.2 s on examples/dram",
+      "qualification": "Single-pair smoke of the cleaned tree; not an 80-pair mean."
+    }
+  ],
+  "figure_command": "python scripts/make_figures.py",
+  "figure_inputs": [
+    "results/validation_metrics.json",
+    "results/validation_predictions.csv",
+    "results/candidate_recall.json",
+    "manifests/validation_benchmark.jsonl"
+  ]
+}

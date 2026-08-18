@@ -1,0 +1,15 @@
+{
+  "architecture": "finfet",
+  "coordinate_convention": "x=column, y=row, origin=top-left, units=search pixels",
+  "generated_by": "python scripts/make_figures.py",
+  "label_derivation": "Centroid of the reference-footprint mask after the exact Search geometric warp.",
+  "profile": "standard",
+  "reference": "reference.png",
+  "sample_id": "validation-000276",
+  "schema_version": 1,
+  "search": "search.png",
+  "search_supersample": 2,
+  "seed": 900276,
+  "x": 637.3158680519083,
+  "y": 852.722231679247
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "status": "measured",
+  "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
+  "benchmark": {
+    "manifest": "manifests/validation_benchmark.jsonl",
+    "slice": [200, 280],
+    "pairs": 80,
+    "dram_pairs": 39,
+    "finfet_pairs": 41
+  },
+  "metric": "Fraction of pairs with at least one harvested candidate within 5 search pixels of ground truth.",
+  "warning": "This is candidate-pool recall. It is not end-to-end localization accuracy.",
+  "shipped_pipeline": {
+    "delta": 0.1,
+    "overall_recall_le_5px": 0.9,
+    "dram_recall_le_5px": 0.9487179487179487,
+    "finfet_recall_le_5px": 0.8536585365853658,
+    "median_candidates": 119.5,
+    "p95_candidates": 6682.95,
+    "wilson_95_interval": [0.8148931119146721, 0.9484523844404911]
+  },
+  "diagnostic_wider_pool": {
+    "delta": 0.15,
+    "overall_recall_le_5px": 0.925,
+    "dram_recall_le_5px": 0.9743589743589743,
+    "finfet_recall_le_5px": 0.8780487804878049,
+    "median_candidates": 546.5,
+    "p95_candidates": 7410.2,
+    "wilson_95_interval": [0.845879839164307, 0.9651747507130539],
+    "use": "Candidate-harvesting diagnostic only; delta 0.15 is not the shipped inference setting."
+  },
+  "sweep": [
+    {"delta": 0.02, "overall_recall_le_5px": 0.6375, "median_candidates": 13.0},
+    {"delta": 0.05, "overall_recall_le_5px": 0.7875, "median_candidates": 28.0},
+    {"delta": 0.1, "overall_recall_le_5px": 0.9, "median_candidates": 119.5},
+    {"delta": 0.15, "overall_recall_le_5px": 0.925, "median_candidates": 546.5},
+    {"delta": 0.25, "overall_recall_le_5px": 0.925, "median_candidates": 4372.5}
+  ],
+  "provenance": {
+    "type": "curated_from_committed_measurement",
+    "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
+    "note": "The legacy sweep artifact was removed after its measured values were curated here."
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "status": "not_run",
+  "minimum_pairs": 30,
+  "claim_published": false,
+  "reason": "No new expensive evaluation was run during cleanup. The published 41.25% result is the fixed 80-pair validation measurement, not a randomized 30-pair substitute.",
+  "available_command": "python scripts/evaluate.py randomized --count 40 --seed 2026 --output-dir results/randomized-evaluation",
+  "generator_command": "python scripts/generate_dataset.py --architecture both --count 30 --output-dir generated/self_eval"
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "status": "measured",
+  "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
+  "final_validation": {
+    "pairs": 80,
+    "catastrophic_failures_gt_25px": 47,
+    "catastrophic_rate_gt_25px": 0.5875,
+    "median_error_px": 178.6206709033856,
+    "p95_error_px": 687.9660993416932,
+    "p99_error_px": 904.8748859605898,
+    "dram_accuracy_le_5px": 0.48717948717948717,
+    "finfet_accuracy_le_5px": 0.34146341463414637
+  },
+  "latent_alias_audit": {
+    "audited_catastrophic_cases": 30,
+    "median_latent_ncc_true_vs_selected": 0.8589398245549709,
+    "fraction_latent_ncc_ge_0_95": 0.06666666666666667,
+    "fraction_latent_ncc_le_0_90": 0.7666666666666667,
+    "interpretation": "Most selected aliases are distinguishable in the noise-free latent scene; the dominant gap is representation and ranking, not universal physical indistinguishability."
+  },
+  "representative_success": {
+    "sample_id": "validation-000240",
+    "architecture": "dram",
+    "profile": "hard",
+    "error_px": 0.05894142743214182,
+    "figure": "docs/images/07_success_example.png"
+  },
+  "representative_periodic_alias_failure": {
+    "sample_id": "validation-000256",
+    "architecture": "finfet",
+    "profile": "standard",
+    "error_px": 590.9371374208368,
+    "figure": "docs/images/08_periodic_alias_failure.png"
+  },
+  "provenance": {
+    "type": "curated_from_committed_measurements",
+    "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
+    "row_evidence": "results/validation_predictions.csv",
+    "note": "Legacy analysis files were removed after the measured findings were curated here."
+  }
+}
