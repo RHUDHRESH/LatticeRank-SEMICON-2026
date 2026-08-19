@@ -26,11 +26,12 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from driftforge.baseline import _template_from_reference
+from driftforge.baseline import _robust_contrast, _template_from_reference
 from driftforge.channels import response_maps
 from driftforge.generator import generate_sample
-from driftforge.pipeline import compute_candidate_rows
-from driftforge.residual import ResidualMatcher
+from driftforge.lattice import estimate_lattice
+from driftforge.pipeline import compute_candidate_rows, normalize_evidence
+from driftforge.residual import ResidualMatcher, periodic_residual
 
 RESULTS = ROOT / "results"
 DEFAULT_OUTPUT = ROOT / "docs" / "images"
@@ -617,6 +618,118 @@ def figure_12(output: Path) -> None:
     _save_figure(fig, output / "12_inference_walkthrough.png")
 
 
+def figure_13(output: Path) -> None:
+    """Show the actual arrays behind periodic-background cancellation."""
+    sample = _sample_from_prediction("validation-000240")
+    template = _template_from_reference(sample.reference, 1.0, 0.0)
+    search_float = _robust_contrast(sample.search)
+    lattice = estimate_lattice(sample.search)
+    v1, v2 = lattice.basis[:, 0], lattice.basis[:, 1]
+    template_residual, template_unique = periodic_residual(template, v1, v2)
+    search_residual, _ = periodic_residual(search_float, v1, v2)
+    template_periodic = template - template_residual
+    search_patch = _search_patch(
+        search_float, sample.gt_x, sample.gt_y, template.shape
+    )
+    residual_patch = _search_patch(
+        search_residual, sample.gt_x, sample.gt_y, template.shape
+    )
+
+    panels = [
+        (template, "1 · Search-scale Reference", "gray"),
+        (template_periodic, "2 · Median periodic estimate", "gray"),
+        (template_residual, "3 · Reference residual", "coolwarm"),
+        (template_unique, "4 · Uniqueness weight", "magma"),
+        (search_patch, "5 · Search at ground truth", "gray"),
+        (residual_patch, "6 · Search residual at ground truth", "coolwarm"),
+    ]
+    fig, axes = plt.subplots(2, 3, figsize=(10.8, 7.1))
+    for ax, (image, title, cmap) in zip(axes.ravel(), panels):
+        if cmap == "coolwarm":
+            limit = float(np.percentile(np.abs(image), 99)) + 1e-9
+            ax.imshow(image, cmap=cmap, vmin=-limit, vmax=limit)
+        else:
+            ax.imshow(image, cmap=cmap)
+        ax.set_title(title)
+        ax.axis("off")
+    fig.suptitle(
+        "Periodic cancellation on a measured pair · repeated carrier fades, local identity remains"
+    )
+    fig.tight_layout()
+    _save_figure(fig, output / "13_periodic_residual_explainer.png")
+
+
+def figure_14(output: Path) -> None:
+    """Measured candidate evidence and final consensus for one inference."""
+    sample_id = "validation-000240"
+    row = _prediction(sample_id)
+    sample = _sample_from_prediction(sample_id)
+    candidates = compute_candidate_rows(sample.reference, sample.search, struct=False)
+    matcher = ResidualMatcher(sample.reference, sample.search)
+    raw = normalize_evidence(np.array([item["raw"] for item in candidates]))
+    mid = normalize_evidence(np.array([item["midband"] for item in candidates]))
+    residual = normalize_evidence(
+        np.array([matcher.score(item["x"], item["y"])["res_int_m50"] for item in candidates])
+    )
+    if raw is None or mid is None or residual is None:
+        raise RuntimeError("measured candidate evidence could not be normalized")
+    consensus = residual + 0.05 * raw + 0.05 * mid
+    order = np.argsort(-consensus)
+    gt = np.array([float(row["gt_x"]), float(row["gt_y"])])
+    pred = np.array([float(row["pred_x"]), float(row["pred_y"])])
+
+    labels = []
+    for rank, index in enumerate(order, 1):
+        candidate = candidates[int(index)]
+        error = math.hypot(candidate["x"] - gt[0], candidate["y"] - gt[1])
+        labels.append(f"C{rank}\n{error:.1f}px")
+
+    fig = plt.figure(figsize=(11.2, 7.0))
+    grid = fig.add_gridspec(2, 1, height_ratios=(1.35, 1.0), hspace=0.32)
+    ax_search = fig.add_subplot(grid[0])
+    ax_search.imshow(sample.search, cmap="gray", vmin=0, vmax=255)
+    for rank, index in enumerate(order, 1):
+        candidate = candidates[int(index)]
+        ax_search.plot(candidate["x"], candidate["y"], "o", ms=7,
+                       mfc="none", mec=BLUE, mew=1.4)
+        ax_search.text(candidate["x"] + 12, candidate["y"] - 12, f"C{rank}",
+                       color=BLUE, fontsize=9, weight="bold")
+    ax_search.plot(*gt, "+", color=GREEN, ms=13, mew=2.5, label="ground truth")
+    ax_search.plot(*pred, "x", color=RED, ms=10, mew=2.2, label="reported coordinate")
+    ax_search.set_xlim(0, 999); ax_search.set_ylim(999, 0)
+    ax_search.set_xlabel("Search x (px)"); ax_search.set_ylabel("Search y (px)")
+    ax_search.legend(
+        frameon=False,
+        loc="center left",
+        bbox_to_anchor=(1.02, 0.5),
+    )
+    ax_search.set_title(
+        f"Measured candidate locations · {sample_id} · {len(candidates)} hypotheses"
+    )
+
+    ax_score = fig.add_subplot(grid[1])
+    x = np.arange(len(order)); width = 0.19
+    series = [
+        (raw[order], "raw z", GRAY),
+        (mid[order], "mid-band z", BLUE),
+        (residual[order], "residual z", GREEN),
+        (consensus[order], "final consensus", ORANGE),
+    ]
+    for offset, (values, name, color) in enumerate(series):
+        ax_score.bar(x + (offset - 1.5) * width, values, width, label=name, color=color)
+    ax_score.axhline(0, color=INK, linewidth=0.8)
+    ax_score.set_xticks(x, labels)
+    ax_score.set_ylabel("scene-normalized evidence")
+    ax_score.set_xlabel("candidate rank and Euclidean error to ground truth")
+    ax_score.grid(axis="y", alpha=0.22)
+    ax_score.legend(frameon=False, ncol=4, loc="upper right")
+    ax_score.set_title(
+        "Final score = residual z + 0.05 raw z + 0.05 mid-band z"
+    )
+    fig.suptitle("From candidate pool to one coordinate · all values are recomputed, not illustrated")
+    _save_figure(fig, output / "14_candidate_evidence.png")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate evidence-backed reviewer figures and example pairs."
@@ -653,9 +766,11 @@ def main() -> None:
     figure_10(args.output_dir)
     figure_11(args.output_dir)
     figure_12(args.output_dir)
+    figure_13(args.output_dir)
+    figure_14(args.output_dir)
     pngs = sorted(args.output_dir.glob("*.png"))
-    if len(pngs) != 12:
-        raise RuntimeError(f"expected 12 figures, found {len(pngs)}")
+    if len(pngs) != 14:
+        raise RuntimeError(f"expected 14 figures, found {len(pngs)}")
     print(f"wrote {len(pngs)} figures to {args.output_dir}")
     if not args.skip_examples:
         print(f"wrote DRAM and FinFET examples to {args.examples_dir}")

@@ -186,6 +186,16 @@ The numerical path is compact:
 
 Every panel above is regenerated from `validation-000240`; it is not a mock-up.
 
+The two figures below open the numerical black box. The first shows the actual
+periodic estimate, signed residual, and uniqueness mask. The second places all
+five measured candidates in Search and plots every term in the frozen
+consensus equation. Candidate errors appear only as post-evaluation labels;
+ground truth is never an inference feature.
+
+![Measured periodic cancellation](docs/images/13_periodic_residual_explainer.png)
+
+![Measured candidate evidence](docs/images/14_candidate_evidence.png)
+
 ## Run a real inference
 
 Python 3.12+ is required.
