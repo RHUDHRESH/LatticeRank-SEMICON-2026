@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "measured",
-  "source_revision": null,
+  "source_revision": "b920bb648792c6c358bf9090bc478ef4691ec4d3",
   "final_validation": {
     "pairs": 80,
     "catastrophic_failures_gt_25px": 41,
@@ -35,7 +35,7 @@
   },
   "provenance": {
     "type": "regenerated_metrics_plus_curated_latent_alias_audit",
-    "source_revision": null,
+    "source_revision": "b920bb648792c6c358bf9090bc478ef4691ec4d3",
     "code_aggregate_sha256": "1b2a39a75b75a7a6950874a9b0d6a86bce2a0f7cef946c07b17c9880593db78d",
     "row_evidence": "results/validation_predictions.csv",
     "note": "Headline error statistics and representative cases use regenerated production predictions; the latent-alias diagnostic remains a curated historical measurement."

@@ -59,7 +59,7 @@
       "Pass those five JSON traces in seed order to scripts/aggregate_external_benchmark.py."
     ],
     "row_evidence": "results/external_starter_predictions.csv",
-    "source_revision": null
+    "source_revision": "b920bb648792c6c358bf9090bc478ef4691ec4d3"
   },
   "schema_version": 1,
   "selection": {

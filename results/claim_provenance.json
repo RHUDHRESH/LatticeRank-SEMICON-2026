@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "status": "working_tree_measurement_pending_release_commit",
-  "source_revision": null,
-  "code_aggregate_sha256": "05c1c35b108bcbb76a5c85b66e3ca68b235aad4065d03b13bda979fed52a9d9c",
+  "status": "published_release_evidence",
+  "source_revision": "b920bb648792c6c358bf9090bc478ef4691ec4d3",
+  "code_aggregate_sha256": "1b2a39a75b75a7a6950874a9b0d6a86bce2a0f7cef946c07b17c9880593db78d",
   "environment": {
     "python": "3.12.10",
     "numpy": "2.5.1",
@@ -72,5 +72,5 @@
   ],
   "integrity_check": "python scripts/verify_evidence.py",
   "figure_command": "python scripts/make_figures.py",
-  "release_note": "Set source_revision to the release commit SHA only after these measured artifacts and their exact code are committed together."
+  "release_note": "source_revision identifies the immutable code/results commit; this provenance-only commit was created afterward to avoid a self-referential hash."
 }

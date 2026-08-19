@@ -23,7 +23,7 @@
   },
   "raw_global_maximum_within_5px_rate": 0.3875,
   "schema_version": 1,
-  "source_revision": null,
+  "source_revision": "b920bb648792c6c358bf9090bc478ef4691ec4d3",
   "status": "measured_diagnostic",
   "true_site_local_maximum_within_5px_rate": 1.0,
   "true_site_rank_at_most_10_rate": 0.575,

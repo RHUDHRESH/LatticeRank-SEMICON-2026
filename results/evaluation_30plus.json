@@ -23,6 +23,7 @@
   "dataset": {
     "count": 40,
     "kind": "deterministic_randomized_compliance",
+    "source_revision": "b920bb648792c6c358bf9090bc478ef4691ec4d3",
     "random_seed": 2026,
     "sample_seeds": [
       3532033,

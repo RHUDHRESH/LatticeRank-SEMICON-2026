@@ -23,6 +23,7 @@
   "dataset": {
     "count": 80,
     "kind": "fixed_scene_disjoint_validation",
+    "source_revision": "b920bb648792c6c358bf9090bc478ef4691ec4d3",
     "manifest": "validation_benchmark.jsonl",
     "manifest_sha256": "0fd0655f671aa70ae7a21c2a6035d07b53bc76bda57e50cb8d9a7416b5896c0c",
     "start": 200
