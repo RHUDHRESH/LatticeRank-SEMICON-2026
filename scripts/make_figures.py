@@ -182,29 +182,6 @@ def _crop(image: np.ndarray, x: float, y: float, radius: int = 65) -> np.ndarray
     return padded[cy - radius : cy + radius, cx - radius : cx + radius]
 
 
-def _ncc(a: np.ndarray, b: np.ndarray) -> float:
-    av = a.astype(np.float64).ravel()
-    bv = b.astype(np.float64).ravel()
-    av -= av.mean()
-    bv -= bv.mean()
-    den = np.linalg.norm(av) * np.linalg.norm(bv)
-    return float(av @ bv / den) if den > 1e-12 else 0.0
-
-
-def _block_ncc(template: np.ndarray, patch: np.ndarray, grid: int = 5) -> np.ndarray:
-    h, w = template.shape
-    ys = np.linspace(0, h, grid + 1, dtype=int)
-    xs = np.linspace(0, w, grid + 1, dtype=int)
-    out = np.empty((grid, grid), dtype=float)
-    for i in range(grid):
-        for j in range(grid):
-            out[i, j] = _ncc(
-                template[ys[i] : ys[i + 1], xs[j] : xs[j + 1]],
-                patch[ys[i] : ys[i + 1], xs[j] : xs[j + 1]],
-            )
-    return out
-
-
 def _search_patch(image: np.ndarray, x: float, y: float, shape: tuple[int, int]):
     h, w = shape
     pad_y, pad_x = h // 2 + 2, w // 2 + 2
@@ -318,49 +295,6 @@ def figure_03(output: Path) -> None:
     _save_figure(fig, output / "03_candidate_recall.png")
 
 
-def figure_04(output: Path) -> None:
-    with (RESULTS / "external_starter_predictions.csv").open(newline="", encoding="utf-8") as handle:
-        rows = list(csv.DictReader(handle))
-    seeds = sorted({int(row["seed"]) for row in rows})
-    values = [
-        np.mean([float(row["error_px"]) <= 5 for row in rows if int(row["seed"]) == seed])
-        for seed in seeds
-    ]
-    colors = [BLUE] * (len(seeds) - 1) + [GREEN]
-    fig, ax = plt.subplots(figsize=(7.4, 4.4))
-    bars = ax.bar([str(seed) for seed in seeds], values, color=colors, width=0.68)
-    ax.bar_label(bars, labels=[f"{value:.1%}" for value in values], padding=3)
-    ax.axhline(0.90, color=ORANGE, linestyle="--", linewidth=1.4, label="90% target")
-    ax.set_ylim(0, 1.08)
-    ax.set_xlabel("generator seed (30 pairs each)")
-    ax.set_ylabel("final localization within 5 px")
-    ax.grid(axis="y", alpha=0.25)
-    ax.legend(frameon=False, loc="lower right")
-    ax.set_title("Pinned public reference-style generator · final production equation")
-    fig.tight_layout()
-    _save_figure(fig, output / "04_ranker_topk.png")
-
-
-def figure_05(output: Path) -> None:
-    errors = np.array([float(row["error_px"]) for row in _predictions()])
-    ordered = np.sort(errors)
-    cdf = np.arange(1, len(ordered) + 1) / len(ordered)
-    fig, ax = plt.subplots(figsize=(7.4, 4.3))
-    ax.plot(ordered, cdf, color=BLUE, lw=2.4)
-    ax.axvline(5, color=GREEN, ls="--", lw=1.4, label="success threshold: 5 px")
-    ax.axvline(25, color=RED, ls=":", lw=1.4, label="catastrophic threshold: 25 px")
-    ax.set_xscale("symlog", linthresh=5)
-    ax.set_xlim(0, max(1000, ordered.max() * 1.05))
-    ax.set_ylim(0, 1.02)
-    ax.set_xlabel("final localization error (search pixels)")
-    ax.set_ylabel("fraction of validation pairs")
-    ax.grid(alpha=0.25, which="both")
-    ax.legend(frameon=False, loc="lower right")
-    ax.set_title("Final error CDF: correct lattice site or a distant periodic alias")
-    fig.tight_layout()
-    _save_figure(fig, output / "05_error_cdf.png")
-
-
 def figure_06(output: Path) -> None:
     fixed = _load_json(RESULTS / "validation_metrics.json")["localization_accuracy"]
     randomized = _load_json(RESULTS / "evaluation_30plus.json")["localization_accuracy"]
@@ -410,140 +344,6 @@ def _case_figure(sample_id: str, output: Path, title: str, filename: str) -> Non
     fig.suptitle(f"{title} · {sample_id} · {row['architecture'].upper()}")
     fig.tight_layout()
     _save_figure(fig, output / filename)
-
-
-def figure_09(output: Path) -> None:
-    sample_id = "validation-000256"
-    row = _prediction(sample_id)
-    sample = _sample_from_prediction(sample_id)
-    template = _template_from_reference(sample.reference, 1.0, 0.0)
-    gt = (float(row["gt_x"]), float(row["gt_y"]))
-    pred = (float(row["pred_x"]), float(row["pred_y"]))
-    true_patch = _search_patch(sample.search, *gt, template.shape)
-    wrong_patch = _search_patch(sample.search, *pred, template.shape)
-    true_blocks = _block_ncc(template, true_patch)
-    wrong_blocks = _block_ncc(template, wrong_patch)
-    panels = [
-        (template, "Search-scale Reference"),
-        (true_patch, f"True patch\nNCC {_ncc(template, true_patch):.3f}"),
-        (
-            wrong_patch,
-            f"Selected alias\nNCC {_ncc(template, wrong_patch):.3f}",
-        ),
-    ]
-    fig, axes = plt.subplots(1, 5, figsize=(13.4, 3.1))
-    for ax, (image, label) in zip(axes[:3], panels):
-        ax.imshow(image, cmap="gray")
-        ax.set_title(label)
-        ax.axis("off")
-    for ax, matrix, label in [
-        (axes[3], true_blocks, "Block NCC · true"),
-        (axes[4], wrong_blocks, "Block NCC · alias"),
-    ]:
-        ax.imshow(matrix, cmap="RdYlGn", vmin=-0.5, vmax=1.0)
-        ax.set_title(f"{label}\nmean {matrix.mean():.2f}")
-        ax.set_xticks([])
-        ax.set_yticks([])
-        for (i, j), value in np.ndenumerate(matrix):
-            ax.text(j, i, f"{value:.1f}", ha="center", va="center", fontsize=6)
-    fig.suptitle(
-        "Periodic copies can look globally similar while local correspondence differs",
-        y=1.08,
-    )
-    fig.tight_layout(rect=(0, 0, 1, 0.88))
-    _save_figure(fig, output / "09_structural_comparison.png")
-
-
-def figure_10(output: Path) -> None:
-    metrics = _load_json(RESULTS / "validation_metrics.json")["localization_accuracy"]
-    recall = _load_json(RESULTS / "candidate_recall.json")
-    values = np.array(
-        [
-            [
-                metrics["accuracy_at_5px_dram"],
-                recall["shipped_pipeline"]["dram_recall_le_5px"],
-                recall["diagnostic_wider_pool"]["dram_recall_le_5px"],
-            ],
-            [
-                metrics["accuracy_at_5px_finfet"],
-                recall["shipped_pipeline"]["finfet_recall_le_5px"],
-                recall["diagnostic_wider_pool"]["finfet_recall_le_5px"],
-            ],
-        ]
-    )
-    labels = [
-        "Final localization\nshipped δ=0.10",
-        "Candidate recall\nshipped δ=0.10",
-        "Candidate recall\ndiagnostic δ=0.15",
-    ]
-    colors = [BLUE, GREEN, ORANGE]
-    x = np.arange(2)
-    width = 0.24
-    fig, ax = plt.subplots(figsize=(7.2, 4.4))
-    for i in range(3):
-        bars = ax.bar(
-            x + (i - 1) * width,
-            values[:, i],
-            width,
-            color=colors[i],
-            label=labels[i],
-        )
-        ax.bar_label(
-            bars,
-            labels=[f"{v:.1%}" for v in values[:, i]],
-            padding=2,
-            fontsize=8,
-        )
-    ax.set_xticks(x, ["DRAM (n=39)", "FinFET (n=41)"])
-    ax.set_ylim(0, 1.08)
-    ax.set_ylabel("fraction within 5 px")
-    ax.grid(axis="y", alpha=0.25)
-    ax.legend(frameon=False, fontsize=8, loc="lower left")
-    ax.set_title("Candidate coverage and final localization are separate metrics")
-    fig.tight_layout()
-    _save_figure(fig, output / "10_architecture_breakdown.png")
-
-
-def figure_11(output: Path) -> None:
-    diagnostic = _load_json(RESULTS / "visibility_diagnostic.json")
-    values = [
-        diagnostic["true_site_local_maximum_within_5px_rate"],
-        diagnostic["raw_global_maximum_within_5px_rate"],
-    ]
-    fig, ax = plt.subplots(figsize=(7.2, 4.2))
-    bars = ax.bar(
-        [
-            "True site is a local\nmaximum within 5 px",
-            "Raw global maximum\nis within 5 px",
-        ],
-        values,
-        color=[GREEN, ORANGE],
-        width=0.58,
-    )
-    ax.bar_label(bars, labels=[f"{value:.1%}" for value in values], padding=4)
-    ax.axhline(0.5, color=GRAY, linewidth=1, linestyle="--", alpha=0.7)
-    ax.text(
-        0.5,
-        0.76,
-        f"median true-site rank = {diagnostic['median_true_site_rank_among_local_maxima']:g}",
-        transform=ax.transAxes,
-        ha="center",
-        va="center",
-        fontsize=11,
-        bbox={
-            "boxstyle": "round,pad=0.35",
-            "facecolor": "white",
-            "edgecolor": GRAY,
-        },
-    )
-    ax.set_ylim(0, 1.08)
-    ax.set_ylabel("fraction of validation pairs")
-    ax.grid(axis="y", alpha=0.25)
-    ax.set_title(
-        "The correct site is usually visible; the highest peak is often an alias"
-    )
-    fig.tight_layout()
-    _save_figure(fig, output / "11_visibility_diagnostic.png")
 
 
 def figure_12(output: Path) -> None:
@@ -747,8 +547,6 @@ def main() -> None:
     figure_01(args.output_dir)
     figure_02(args.output_dir)
     figure_03(args.output_dir)
-    figure_04(args.output_dir)
-    figure_05(args.output_dir)
     figure_06(args.output_dir)
     _case_figure(
         "validation-000240",
@@ -762,15 +560,12 @@ def main() -> None:
         "Representative periodic-alias failure",
         "08_periodic_alias_failure.png",
     )
-    figure_09(args.output_dir)
-    figure_10(args.output_dir)
-    figure_11(args.output_dir)
     figure_12(args.output_dir)
     figure_13(args.output_dir)
     figure_14(args.output_dir)
     pngs = sorted(args.output_dir.glob("*.png"))
-    if len(pngs) != 14:
-        raise RuntimeError(f"expected 14 figures, found {len(pngs)}")
+    if len(pngs) != 9:
+        raise RuntimeError(f"expected 9 figures, found {len(pngs)}")
     print(f"wrote {len(pngs)} figures to {args.output_dir}")
     if not args.skip_examples:
         print(f"wrote DRAM and FinFET examples to {args.examples_dir}")

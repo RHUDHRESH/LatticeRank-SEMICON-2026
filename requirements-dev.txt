@@ -1,2 +1,0 @@
-# Complete, pinned competition environment (tests, figures, and wheel build).
--r requirements.txt
