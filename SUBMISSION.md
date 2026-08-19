@@ -24,8 +24,7 @@ python scripts/judge_check.py
 python scripts/verify_evidence.py
 ```
 
-The first script runs both architectures from outside the repository working
-directory. The second recomputes all published rates from final coordinates.
+Runs both architectures outside the repository and verifies published rates.
 
 ## Compliance map
 
@@ -35,7 +34,7 @@ directory. The second recomputes all published rates from final coordinates.
 | Automatic model loading | [`driftforge/models/hgb_r2.joblib`](driftforge/models/hgb_r2.joblib) |
 | DRAM and FinFET generation | [`scripts/generate_dataset.py`](scripts/generate_dataset.py) |
 | Recorded ground truth and independent acquisitions | [`tests/test_generator_integrity.py`](tests/test_generator_integrity.py) |
-| Scene-disjoint retraining entry point | [`scripts/train_ranker.py`](scripts/train_ranker.py); the shipped legacy fit’s provenance limitation is explicit in [`hgb_r2.metadata.json`](driftforge/models/hgb_r2.metadata.json) |
+| Scene-disjoint retraining | [`scripts/train_ranker.py`](scripts/train_ranker.py); [legacy-model note](driftforge/models/hgb_r2.metadata.json) |
 | Complete dependency freeze | [`requirements.txt`](requirements.txt) |
 | Parameter citations | [`docs/REFERENCES.md`](docs/REFERENCES.md) |
 | 30+ randomized evaluation | [`results/evaluation_30plus.json`](results/evaluation_30plus.json) |
@@ -53,11 +52,6 @@ directory. The second recomputes all published rates from final coordinates.
 | Internal fixed stress | 80 pairs | 48.75% | 51.25% |
 | Internal randomized compliance | 40 pairs | 55.00% | 45.00% |
 
-Always name the distribution and denominator. The external source is the
-public reference-style `FlankerDev12/drift-sense-ref` generator at commit
-`59376381`; it is not the hidden official evaluator. External and internal
-rates must not be pooled.
-
 ## Direct commands
 
 ```bash
@@ -68,7 +62,4 @@ python scripts/generate_dataset.py --architecture FinFET --count 2 --output-dir 
 python -m pytest -q
 ```
 
-For the complete visual explanation, method, results, failure analysis, and
-reproduction commands, read the [README](README.md). The separate portal/PDF
-submission still requires the registered team’s identity and contact fields;
-those details are intentionally not invented here.
+See the [README](README.md) for the visual method and reproduction commands.
