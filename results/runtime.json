@@ -2,9 +2,9 @@
   "schema_version": 1,
   "status": "measured",
   "metric": "End-to-end wall-clock runtime through the public inference entry point.",
-  "value": 8.167,
+  "value": 3.588,
   "units": "seconds_per_pair",
-  "display_value": "8.2 s/pair on the committed DRAM example",
+  "display_value": "3.6 s/pair on the packaged DRAM example",
   "precision": "single-pair smoke",
   "pair": "examples/dram/reference.png + examples/dram/search.png",
   "stdout": "(644.50, 283.50)",
@@ -13,8 +13,18 @@
     "network_access": false,
     "host": "Windows, Python 3.12"
   },
+  "validation_pipeline_runtime": {
+    "pairs": 80,
+    "median_seconds_per_pair": 2.863575550000064,
+    "mean_seconds_per_pair": 6.14620334250001,
+    "p95_seconds_per_pair": 30.316271680000074,
+    "max_seconds_per_pair": 45.20326110000019,
+    "wallpaper_selection_runtime": "approximately 0.73–1.14 seconds across the 17 detected validation scenes",
+    "definition": "Candidate computation, packaged-model prediction, residual evidence, and final selection; synthetic generation and output writing excluded."
+  },
   "provenance": {
     "command": "python scripts/inference.py examples/dram/reference.png examples/dram/search.png",
-    "note": "This is a one-pair smoke timing of the cleaned tree, not an 80-pair mean."
+    "validation_metrics": "results/validation_metrics.json",
+    "note": "The single-pair smoke is retained separately from the regenerated 80-pair production distribution."
   }
 }

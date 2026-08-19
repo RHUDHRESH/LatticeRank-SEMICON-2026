@@ -25,6 +25,24 @@ Pitch, width, phase, line jitter, width variation, roughness, boundaries, and
 world-coordinate defects vary by seed. These are domain-randomization priors,
 not a reconstruction of undisclosed sponsor imagery.
 
+### Architecture-fidelity boundary
+
+The two families are not merely relabelled—the FinFET presets use narrower,
+denser fins and different gate/contact ranges—but they still share one
+orthogonal-line rendering primitive. Two deliberate limitations matter:
+
+- DRAM contacts occupy an alternating centred-rectangular sub-lattice rather
+  than every word-/bit-line intersection.
+- FinFET gates repeat across the scene rather than being limited to one or two
+  localized gate bars as in the simplest challenge illustration.
+
+Accordingly, DriftForge is useful for cross-scale, noise, warp, defect and
+periodic-alias stress testing, but it is not a substitute for sponsor-pattern
+coverage. A future sponsor-aligned generator revision should make full-contact
+DRAM and localized one-/two-gate FinFET layouts separate presets, then retrain
+and hold out the entire generator family during evaluation. The exact current
+parameter-to-source map is in [References](REFERENCES.md#parameter-level-traceability).
+
 ## Independent acquisitions
 
 Reference and Search are rendered from the same latent scene but captured with

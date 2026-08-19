@@ -332,7 +332,9 @@ def feature_matrix(rows: list[dict]) -> np.ndarray:
     return np.nan_to_num(values, nan=0.0, posinf=9.0, neginf=-9.0)
 
 
-def ranker_validation_metrics(model, tables: list[SceneTable]) -> dict:
+def ranker_validation_metrics(
+    model, tables: list[SceneTable], *, scene_normalize: bool = False
+) -> dict:
     predictions: list[dict] = []
     candidate_hits = 0
     for table in tables:
@@ -348,6 +350,9 @@ def ranker_validation_metrics(model, tables: list[SceneTable]) -> dict:
                 {
                     "model": model,
                     "features": list(MODEL_FEATURES),
+                    "metadata": {
+                        "scene_feature_normalization": scene_normalize,
+                    },
                 },
             )
             selected, _ = select_equivalent_candidate(
@@ -471,6 +476,11 @@ def _build_parser() -> argparse.ArgumentParser:
         default=max(1, min(6, os.cpu_count() or 1)),
     )
     parser.add_argument("--seed", type=_nonnegative_int, default=0)
+    parser.add_argument(
+        "--scene-normalize",
+        action="store_true",
+        help="normalize varying feature columns within each candidate group",
+    )
     parser.add_argument("--output", type=Path, default=MODEL_PATH)
     parser.add_argument(
         "--metrics-output",
@@ -503,6 +513,7 @@ def build_training_provenance(
             "count": len(validation_records),
         },
         "scene_disjoint": True,
+        "scene_feature_normalization": args.scene_normalize,
         "candidate_generation": {
             "candidate_delta": CANDIDATE_DELTA,
             "training_candidate_cap": args.train_max_candidates,
@@ -567,14 +578,26 @@ def run(args: argparse.Namespace) -> dict:
     )
 
     balanced_rows: list[dict] = []
+    balanced_matrices: list[np.ndarray] = []
     for index, table in enumerate(train_tables):
-        balanced_rows.extend(
-            hard_negative_sample(
-                table.rows,
-                negative_limit=args.negatives_per_scene,
-                seed=args.seed + index,
-            )
+        sampled = hard_negative_sample(
+            table.rows,
+            negative_limit=args.negatives_per_scene,
+            seed=args.seed + index,
         )
+        balanced_rows.extend(sampled)
+        if args.scene_normalize and sampled:
+            full_matrix = feature_matrix(table.rows)
+            mean = full_matrix.mean(axis=0)
+            standard_deviation = full_matrix.std(axis=0)
+            varying = standard_deviation > 1e-9
+            full_matrix[:, varying] = (
+                full_matrix[:, varying] - mean[varying]
+            ) / standard_deviation[varying]
+            indices = {id(row): position for position, row in enumerate(table.rows)}
+            balanced_matrices.append(
+                full_matrix[[indices[id(row)] for row in sampled]]
+            )
     if not balanced_rows:
         raise RuntimeError("training produced no candidate rows")
     labels = np.asarray(
@@ -596,10 +619,19 @@ def run(args: argparse.Namespace) -> dict:
     }
     model = HistGradientBoostingClassifier(**estimator_parameters)
     fit_started = time.perf_counter()
-    model.fit(feature_matrix(balanced_rows), labels)
+    training_matrix = (
+        np.vstack(balanced_matrices)
+        if args.scene_normalize
+        else feature_matrix(balanced_rows)
+    )
+    model.fit(training_matrix, labels)
     fit_seconds = time.perf_counter() - fit_started
 
-    validation_metrics = ranker_validation_metrics(model, validation_tables)
+    validation_metrics = ranker_validation_metrics(
+        model,
+        validation_tables,
+        scene_normalize=args.scene_normalize,
+    )
     metrics = {
         "training": {
             "scene_count": len(train_tables),
@@ -627,6 +659,7 @@ def run(args: argparse.Namespace) -> dict:
         "package_versions": versions,
         "training_provenance": provenance,
         "metrics": metrics,
+        "scene_feature_normalization": args.scene_normalize,
     }
     bundle = {
         "model": model,

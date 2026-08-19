@@ -1,91 +1,138 @@
 # Results
 
-## Headline measurement
+## The answer in one figure
 
-The final shipped pipeline achieves **41.25% localization accuracy within
-5 Search pixels** on 80 leak-free, scene-disjoint validation pairs:
-39 DRAM and 41 FinFET. It uses the shipped **δ=0.10** candidate setting.
+![Accuracy and catastrophic rate across named benchmarks](images/06_pipeline_ablation.png)
 
-- ≤1 px: 33.75%
-- ≤2 px: 40.00%
-- ≤5 px: **41.25%**
-- top-5 contains a ≤5 px candidate: 53.75%
-- top-10 contains a ≤5 px candidate: 60.00%
-- median error: 178.62 px
-- P95 / P99 error: 687.97 / 904.87 px
-- catastrophic error >25 px: **58.75%**
-- DRAM / FinFET ≤5 px: 48.72% / 34.15%
+LatticeRank exceeds 90% on a pinned public reference-style generator and does
+not exceed 90% on DriftForge's broader internal stress distribution. The
+repository reports the split explicitly instead of pooling unlike generators.
 
-The source is [validation_metrics.json](../results/validation_metrics.json);
-all 80 row-level records are in
-[validation_predictions.csv](../results/validation_predictions.csv).
-`top1_error_px` is the field underlying the 41.25% headline; the coordinate
-and `error_px` columns preserve the separately measured equivalence-set
-selection for auditability.
+| Benchmark | Role | Pairs | ≤5 px | >25 px | Median | Maximum |
+|---|---|---:|---:|---:|---:|---:|
+| External seeds 4200–4600 | development | 120 | **93.33%** | 6.67% | 1.44 px | 557.97 px |
+| External seed 4700 | untouched confirmation | 30 | **100.00%** | 0.00% | 1.46 px | 2.04 px |
+| Internal fixed | scene-disjoint stress | 80 | 48.75% | 51.25% | 62.57 px | 804.80 px |
+| Internal seed 2026 | randomized compliance | 40 | 55.00% | 45.00% | 4.36 px | 835.38 px |
 
-![Final error CDF](images/05_error_cdf.png)
+Every numerator is recomputed from `pred_x`, `pred_y`, `gt_x`, and `gt_y` by:
 
-The high median is not a contradiction: 41.25% of pairs are within 5 pixels,
-while most remaining pairs jump to distant lattice aliases.
+```bash
+python scripts/verify_evidence.py
+```
 
-## Candidate recall: separate diagnostic
+The command fails if a stored error or headline rate disagrees with the final
+coordinates.
 
-Candidate-pool recall asks whether **any** harvested candidate is within
-5 pixels of ground truth. It does not ask whether the ranker selects that
-candidate.
+## External confirmation: where the residual consensus works
 
-- **Shipped δ=0.10:** 90.0% overall, 94.9% DRAM, 85.4% FinFET; median
-  119.5 candidates.
-- **Diagnostic δ=0.15:** **92.5% overall, 97.4% DRAM, 87.8% FinFET**; median
-  546.5 candidates.
+The external generator is
+[`FlankerDev12/drift-sense-ref`](https://github.com/FlankerDev12/drift-sense-ref)
+pinned at commit `59376381eb284cdeb48cc727b1b75ca29c842437`. It is described as a
+public reference-style generator, not as the official hidden evaluator.
 
-The δ=0.15 numbers are a wider-pool diagnostic only. They must not be reported
-as final localization accuracy or as the shipped inference protocol. See
-[candidate_recall.json](../results/candidate_recall.json).
+The production score is fixed as:
 
-![Candidate coverage versus localization](images/10_architecture_breakdown.png)
+```text
+score = z(periodic residual) + 0.05 z(raw ZNCC) + 0.05 z(mid-band ZNCC)
+```
 
-## Measured ablation
+Candidates within 0.025 of the maximum form the evidence-equivalent set; the
+challenge centre rule breaks only that tie. Seeds 4200, 4300, 4400, and 4600
+were used while freezing this equation. Seed 4700 was then evaluated without
+further tuning and localized all 30 pairs within 5 pixels.
 
-All rows below use the same 80 validation pairs.
+![Per-seed external benchmark](images/04_ranker_topk.png)
 
-| Ranking system | ≤5 px | top-5 | top-10 | >25 px |
-|---|---:|---:|---:|---:|
-| HGB, peak-strength features | 37.50% | 46.25% | 51.25% | 62.50% |
-| HGB, peak + structural features | 40.00% | 50.00% | 57.50% | 60.00% |
-| Final, plus periodic-residual blend | **41.25%** | **53.75%** | **60.00%** | **58.75%** |
+Evidence:
 
-![Pipeline ablation](images/06_pipeline_ablation.png)
+- [summary, source hashes, and exact equation](../results/external_starter_benchmark.json)
+- [150 final coordinate rows](../results/external_starter_predictions.csv)
+- [external evaluation harness](../scripts/evaluate_external_starter.py)
+- [trace aggregator](../scripts/aggregate_external_benchmark.py)
 
-The residual score adds 1.25 percentage points over the combined ranker and
-reduces the catastrophic rate by 1.25 points. These are small measured gains,
-not a solved ambiguity problem.
+The development maximum error remains 557.97 px. A 93.33% rate is strong, but
+the remaining errors are still remote aliases, not harmless near misses.
 
-## Representative measured cases
+## Internal fixed stress: the unresolved failure mode
 
-Success — `validation-000240`, DRAM hard profile, error 0.06 px:
+The final packaged pipeline localizes **39 of 80 pairs (48.75%)** within 5
+Search pixels. Its 95% Wilson interval is **38.1%–59.5%**.
 
-![Representative success](images/07_success_example.png)
+- ≤1 px: 36.25%
+- ≤2 px: 45.00%
+- ≤5 px: 48.75%
+- catastrophic error >25 px: 51.25%
+- DRAM / FinFET ≤5 px: 51.28% / 46.34%
+- median / P95 / maximum: 62.57 / 624.78 / 804.80 px
+- runtime median / mean / P95 / maximum: 2.86 / 6.15 / 30.32 / 45.20 s
 
-Failure — `validation-000256`, FinFET standard profile, periodic-alias
-error 590.94 px:
+The candidate pool contains a correct point for **72 of 80 pairs (90.0%)**.
+That is a proposal-stage ceiling, not localization accuracy. Selection is the
+binding problem.
 
-![Representative periodic-alias failure](images/08_periodic_alias_failure.png)
+![Final internal error CDF](images/05_error_cdf.png)
 
-Both figures regenerate the real seeded pair and overlay coordinates from the
-committed prediction table.
+Evidence: [metrics](../results/validation_metrics.json),
+[80 coordinate rows](../results/validation_predictions.csv), and
+[candidate recall](../results/candidate_recall.json).
 
-## Evidence status
+## Randomized 30+ compliance run
 
-- Main validation: measured and curated.
-- Candidate-recall sweep: measured and curated.
-- 30+ pair randomized compliance evaluation:
-  **not run during cleanup**. No substitute subset metric is published.
-- Final end-to-end runtime: **8.2 s** on the committed DRAM example through
-  `scripts/inference.py`. This is a one-pair smoke, not an 80-pair mean.
-  See [runtime.json](../results/runtime.json).
+The independent seed-2026 run contains 40 newly sampled pairs and is kept
+separate from the fixed split:
 
-The claim-to-artifact map is
-[claim_provenance.json](../results/claim_provenance.json). The final
-clean-environment benchmark was intentionally not rerun during this fast
-cleanup pass.
+- final ≤5 px: **22/40 = 55.0%**;
+- 95% Wilson interval: **39.8%–69.3%**;
+- candidate recall ≤5 px: **34/40 = 85.0%**;
+- catastrophic error >25 px: **18/40 = 45.0%**;
+- median / maximum error: 4.36 / 835.38 px.
+
+Evidence: [metrics](../results/evaluation_30plus.json) and
+[40 final coordinate rows](../results/evaluation_30plus_predictions.csv).
+
+## Exact wallpaper
+
+All seven exact-wallpaper pairs in the fixed benchmark localize within 5
+pixels. When candidate multiplicity is high and both coarse context and
+long-context decay collapse, the image does not contain defensible evidence
+for one periodic copy. LatticeRank returns Search centre as required by the
+challenge convention and skips the expensive ranker.
+
+This is a subgroup result, not evidence that ordinary remote-alias selection is
+solved.
+
+## Aggressive experiments and rejection gates
+
+The 90% goal was tested rather than inferred from tuning data. These approaches
+were rejected:
+
+- a nonlinear eleven-signal fusion scored 37/40 on its tuning half and only
+  11/40 on the untouched half;
+- a random-forest fusion likewise fell from 37/40 to 14/40;
+- a tiny Siamese encoder reached 5% alone and 33.75% in ensemble;
+- line-fingerprint and local keypoint-consensus prototypes each reached 15%
+  on the same locked 20-pair diagnostic slice;
+- oracle affine alignment improved residual selection but remained far below
+  the required ceiling;
+- 256- and 1,024-candidate shortlists discarded valid true sites.
+
+Only the exact-wallpaper rule and the externally validated residual consensus
+were promoted. See the [experiment ledger](../results/optimization_experiments.json)
+and [failure analysis](FAILURE_ANALYSIS.md).
+
+## Reproduce
+
+```bash
+python scripts/evaluate.py validation --output-dir reproduced-validation
+python scripts/evaluate.py randomized --count 40 --seed 2026 --output-dir reproduced-randomized
+python scripts/make_figures.py
+python scripts/verify_evidence.py
+```
+
+External confirmation, after cloning the pinned public source:
+
+```bash
+python scripts/evaluate_external_starter.py /path/to/drift-sense-ref \
+  --count 30 --seed 4700 --output reproduced-external-4700.json
+```

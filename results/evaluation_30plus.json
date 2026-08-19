@@ -1,9 +1,130 @@
 {
-  "schema_version": 1,
-  "status": "not_run",
-  "minimum_pairs": 30,
-  "claim_published": false,
-  "reason": "No new expensive evaluation was run during cleanup. The published 41.25% result is the fixed 80-pair validation measurement, not a randomized 30-pair substitute.",
-  "available_command": "python scripts/evaluate.py randomized --count 40 --seed 2026 --output-dir results/randomized-evaluation",
-  "generator_command": "python scripts/generate_dataset.py --architecture both --count 30 --output-dir generated/self_eval"
+  "candidate_pool_diagnostic": {
+    "count": 40,
+    "description": "Fraction whose harvested candidate pool contains a point within 5 px of ground truth; this is a proposal-stage ceiling, not final localization accuracy.",
+    "hits": 34,
+    "median_best_candidate_error_px": 0.584593268867156,
+    "metric_type": "candidate_recall_not_localization_accuracy",
+    "recall": 0.85,
+    "tolerance_px": 5.0
+  },
+  "composition": {
+    "architectures": {
+      "dram": 20,
+      "finfet": 20
+    },
+    "profiles": {
+      "ambiguous": 10,
+      "boundary": 8,
+      "hard": 10,
+      "standard": 12
+    }
+  },
+  "dataset": {
+    "count": 40,
+    "kind": "deterministic_randomized_compliance",
+    "source_revision": "b920bb648792c6c358bf9090bc478ef4691ec4d3",
+    "random_seed": 2026,
+    "sample_seeds": [
+      3532033,
+      3532556,
+      3529386,
+      3527782,
+      3532513,
+      3532349,
+      3533267,
+      3527461,
+      3532414,
+      3533518,
+      3526982,
+      3526263,
+      3532439,
+      3528263,
+      3533883,
+      3527571,
+      3535652,
+      3534564,
+      3528778,
+      3528977,
+      3526795,
+      3528820,
+      3530481,
+      3529693,
+      3534252,
+      3533025,
+      3530656,
+      3529641,
+      3534286,
+      3531146,
+      3535027,
+      3533194,
+      3534485,
+      3527178,
+      3535183,
+      3529538,
+      3527769,
+      3532376,
+      3527653,
+      3530599
+    ]
+  },
+  "evaluation_code": {
+    "aggregate_sha256": "1b2a39a75b75a7a6950874a9b0d6a86bce2a0f7cef946c07b17c9880593db78d",
+    "algorithm": "sha256",
+    "files": {
+      "driftforge/baseline.py": "15f591b375c8d9804daada13af8b6539a8931b45cc52439105c606bca72dd0c8",
+      "driftforge/channels.py": "f31eb6e7451c43359ea518d0fa58a00ad7b5b275a23f9a2b7b765a314d3f1fea",
+      "driftforge/generator.py": "0088380cd1269beda5d5184713db8f6393e19d32ef9f3287026426754f9a7bb0",
+      "driftforge/lattice.py": "21227316e51d0073371e2e5de574f29b02baefca8c241498af20cf74d971bbce",
+      "driftforge/model.py": "f866178a768741d245ddc84c31e987ef3568e9e2193fe8bfc057653133c37bba",
+      "driftforge/pipeline.py": "fba205ff9226541335308adf2ed28f27be844dacf602a4cf0f65d2f921a5ad9f",
+      "driftforge/residual.py": "8415527bee7d85f8bb946f50d87378ee27b86f0eb3ea365171736d4fa7a54421",
+      "driftforge/scene.py": "5b9fdedb29d574bfcda1a9b6a48546c5dcde08426a23511a3fdc7d12816b3213",
+      "driftforge/sem.py": "2c19372b5fc0c9737122f7d24774852d4b934d53c6dabe83e9f1dac830bb6393",
+      "driftforge/structural_descriptor.py": "6548ca3b1fffa80f6160c90cbd57146cfc79f8b500b6cbf64acd95c3b2fd29da"
+    }
+  },
+  "localization_accuracy": {
+    "accuracy_at_10px": 0.55,
+    "accuracy_at_1px": 0.35,
+    "accuracy_at_2px": 0.4,
+    "accuracy_at_5px": 0.55,
+    "accuracy_at_5px_dram": 0.45,
+    "accuracy_at_5px_finfet": 0.65,
+    "catastrophic_count_over_25px": 18,
+    "catastrophic_rate_over_25px": 0.45,
+    "count": 40,
+    "count_dram": 20,
+    "count_finfet": 20,
+    "max_error_px": 835.3784127192741,
+    "median_error_px": 4.363032024497296,
+    "metric_type": "final_pipeline_localization_accuracy",
+    "p95_error_px": 709.361175139341,
+    "p99_error_px": 807.7983599649386
+  },
+  "pipeline": {
+    "candidate_delta": 0.1,
+    "model": {
+      "feature_count": 77,
+      "format_version": 1,
+      "path": "driftforge/models/hgb_r2.joblib",
+      "sha256": "3548fa98f50135579e367021f0c577ab8d927a18a0b8ed79e6a10c734cd48ded"
+    },
+    "name": "packaged_final_localizer",
+    "residual_enabled": true,
+    "search_supersample": 2
+  },
+  "runtime": {
+    "definition": "compute_candidate_rows + model prediction + residual evidence + final selection; synthetic generation and output writing excluded",
+    "evaluation_wall_seconds_including_generation": 253.99394669999992,
+    "max_seconds_per_pair": 39.03547979999985,
+    "mean_seconds_per_pair": 4.944078139999965,
+    "median_seconds_per_pair": 2.6896342500001538,
+    "metric_type": "measured_final_pipeline_runtime",
+    "min_seconds_per_pair": 1.0316775000001144,
+    "model_load_seconds": 0.5365635999996812,
+    "p95_seconds_per_pair": 13.75847438499984,
+    "sum_pair_seconds": 197.7631255999986
+  },
+  "schema_version": 1
 }

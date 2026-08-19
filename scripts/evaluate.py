@@ -7,6 +7,7 @@ import csv
 import hashlib
 import json
 import math
+import os
 import sys
 import time
 from collections import Counter
@@ -14,6 +15,10 @@ from pathlib import Path
 from typing import Sequence
 
 import numpy as np
+
+# Evaluation is deliberately sequential for deterministic, comparable timing.
+# This avoids a noisy joblib physical-core probe on minimal Windows hosts.
+os.environ.setdefault("LOKY_MAX_CPU_COUNT", "1")
 
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
@@ -40,6 +45,37 @@ DEFAULT_VALIDATION_START = 200
 DEFAULT_VALIDATION_LIMIT = 80
 DEFAULT_RANDOMIZED_COUNT = 40
 RANDOMIZED_MINIMUM = 30
+EVALUATION_CODE_FILES = (
+    "driftforge/baseline.py",
+    "driftforge/channels.py",
+    "driftforge/generator.py",
+    "driftforge/lattice.py",
+    "driftforge/model.py",
+    "driftforge/pipeline.py",
+    "driftforge/residual.py",
+    "driftforge/scene.py",
+    "driftforge/sem.py",
+    "driftforge/structural_descriptor.py",
+)
+
+
+def evaluation_code_provenance() -> dict:
+    """Content-address the exact implementation used for a result artifact."""
+    files: dict[str, str] = {}
+    aggregate = hashlib.sha256()
+    for relative in EVALUATION_CODE_FILES:
+        path = PROJECT / relative
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        files[relative] = digest
+        aggregate.update(relative.encode("utf-8"))
+        aggregate.update(b"\0")
+        aggregate.update(digest.encode("ascii"))
+        aggregate.update(b"\n")
+    return {
+        "algorithm": "sha256",
+        "aggregate_sha256": aggregate.hexdigest(),
+        "files": files,
+    }
 
 
 def _positive_int(value: str) -> int:
@@ -165,6 +201,7 @@ def evaluate_record(
         sample.reference,
         sample.search,
         delta=CANDIDATE_DELTA,
+        struct=False,
     )
     result = locate_v2(
         sample.reference,
@@ -273,6 +310,7 @@ def summarize(
     model_provenance = model_file_provenance(model_path)
     return {
         "schema_version": 1,
+        "evaluation_code": evaluation_code_provenance(),
         "dataset": provenance,
         "pipeline": {
             "name": "packaged_final_localizer",

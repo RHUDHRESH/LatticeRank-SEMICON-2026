@@ -1,69 +1,90 @@
 {
-  "schema_version": 1,
-  "status": "measured",
-  "system": "LatticeRank final pipeline",
-  "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
-  "benchmark": {
-    "name": "leak-free scene-disjoint validation",
-    "manifest": "manifests/validation_benchmark.jsonl",
-    "slice": [200, 280],
-    "pairs": 80,
-    "dram_pairs": 39,
-    "finfet_pairs": 41,
-    "private_test_used": false
+  "candidate_pool_diagnostic": {
+    "count": 80,
+    "description": "Fraction whose harvested candidate pool contains a point within 5 px of ground truth; this is a proposal-stage ceiling, not final localization accuracy.",
+    "hits": 72,
+    "median_best_candidate_error_px": 0.5488428643364547,
+    "metric_type": "candidate_recall_not_localization_accuracy",
+    "recall": 0.9,
+    "tolerance_px": 5.0
   },
-  "protocol": {
-    "candidate_delta": 0.1,
-    "candidate_rule": "union of per-channel local maxima with score >= channel maximum - delta",
-    "localization_success": "Euclidean coordinate error <= 5 search pixels",
-    "catastrophic_failure": "Euclidean coordinate error > 25 search pixels",
-    "selection": "z(HGB probability) + 1.0 * z(periodic-residual score), then a 0.05 z-score equivalence margin and nearest-search-centre tie break",
-    "distance_to_search_centre_used_as_ranker_feature": false
-  },
-  "metrics": {
-    "accuracy_le_1px": 0.3375,
-    "accuracy_le_2px": 0.4,
-    "accuracy_le_5px": 0.4125,
-    "top_5_recall_le_5px": 0.5375,
-    "top_10_recall_le_5px": 0.6,
-    "median_error_px": 178.6206709033856,
-    "p95_error_px": 687.9660993416932,
-    "p99_error_px": 904.8748859605898,
-    "catastrophic_rate_gt_25px": 0.5875,
-    "dram_accuracy_le_5px": 0.48717948717948717,
-    "finfet_accuracy_le_5px": 0.34146341463414637
-  },
-  "measured_comparisons": {
-    "peak_features_hgb": {
-      "accuracy_le_5px": 0.375,
-      "top_5_recall_le_5px": 0.4625,
-      "top_10_recall_le_5px": 0.5125,
-      "catastrophic_rate_gt_25px": 0.625
+  "composition": {
+    "architectures": {
+      "dram": 39,
+      "finfet": 41
     },
-    "peak_plus_structural_hgb": {
-      "accuracy_le_5px": 0.4,
-      "top_5_recall_le_5px": 0.5,
-      "top_10_recall_le_5px": 0.575,
-      "catastrophic_rate_gt_25px": 0.6
-    },
-    "final_residual_blend": {
-      "accuracy_le_5px": 0.4125,
-      "top_5_recall_le_5px": 0.5375,
-      "top_10_recall_le_5px": 0.6,
-      "catastrophic_rate_gt_25px": 0.5875
+    "profiles": {
+      "ambiguous": 7,
+      "boundary": 10,
+      "hard": 21,
+      "standard": 42
     }
   },
-  "candidate_context": {
-    "shipped_delta_0_10_candidate_recall_le_5px": 0.9,
-    "diagnostic_delta_0_15_candidate_recall_le_5px": 0.925,
-    "note": "Candidate recall is a pool-coverage diagnostic, not localization accuracy."
+  "dataset": {
+    "count": 80,
+    "kind": "fixed_scene_disjoint_validation",
+    "source_revision": "b920bb648792c6c358bf9090bc478ef4691ec4d3",
+    "manifest": "validation_benchmark.jsonl",
+    "manifest_sha256": "0fd0655f671aa70ae7a21c2a6035d07b53bc76bda57e50cb8d9a7416b5896c0c",
+    "start": 200
   },
-  "provenance": {
-    "type": "curated_from_committed_measurements",
-    "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
-    "row_evidence": "results/validation_predictions.csv",
-    "headline_error_field": "top1_error_px",
-    "row_note": "pred_x, pred_y, and error_px preserve the separately measured equivalence-set selection; top1_error_px is the final-score field used for headline metrics.",
-    "note": "Legacy experiment files were removed after their measured values and row-level predictions were curated here."
-  }
+  "evaluation_code": {
+    "aggregate_sha256": "1b2a39a75b75a7a6950874a9b0d6a86bce2a0f7cef946c07b17c9880593db78d",
+    "algorithm": "sha256",
+    "files": {
+      "driftforge/baseline.py": "15f591b375c8d9804daada13af8b6539a8931b45cc52439105c606bca72dd0c8",
+      "driftforge/channels.py": "f31eb6e7451c43359ea518d0fa58a00ad7b5b275a23f9a2b7b765a314d3f1fea",
+      "driftforge/generator.py": "0088380cd1269beda5d5184713db8f6393e19d32ef9f3287026426754f9a7bb0",
+      "driftforge/lattice.py": "21227316e51d0073371e2e5de574f29b02baefca8c241498af20cf74d971bbce",
+      "driftforge/model.py": "f866178a768741d245ddc84c31e987ef3568e9e2193fe8bfc057653133c37bba",
+      "driftforge/pipeline.py": "fba205ff9226541335308adf2ed28f27be844dacf602a4cf0f65d2f921a5ad9f",
+      "driftforge/residual.py": "8415527bee7d85f8bb946f50d87378ee27b86f0eb3ea365171736d4fa7a54421",
+      "driftforge/scene.py": "5b9fdedb29d574bfcda1a9b6a48546c5dcde08426a23511a3fdc7d12816b3213",
+      "driftforge/sem.py": "2c19372b5fc0c9737122f7d24774852d4b934d53c6dabe83e9f1dac830bb6393",
+      "driftforge/structural_descriptor.py": "6548ca3b1fffa80f6160c90cbd57146cfc79f8b500b6cbf64acd95c3b2fd29da"
+    }
+  },
+  "localization_accuracy": {
+    "accuracy_at_10px": 0.4875,
+    "accuracy_at_1px": 0.3625,
+    "accuracy_at_2px": 0.45,
+    "accuracy_at_5px": 0.4875,
+    "accuracy_at_5px_dram": 0.5128205128205128,
+    "accuracy_at_5px_finfet": 0.4634146341463415,
+    "catastrophic_count_over_25px": 41,
+    "catastrophic_rate_over_25px": 0.5125,
+    "count": 80,
+    "count_dram": 39,
+    "count_finfet": 41,
+    "max_error_px": 804.8013446606362,
+    "median_error_px": 62.573331034848415,
+    "metric_type": "final_pipeline_localization_accuracy",
+    "p95_error_px": 624.7842472114485,
+    "p99_error_px": 738.4730804416624
+  },
+  "pipeline": {
+    "candidate_delta": 0.1,
+    "model": {
+      "feature_count": 77,
+      "format_version": 1,
+      "path": "driftforge/models/hgb_r2.joblib",
+      "sha256": "3548fa98f50135579e367021f0c577ab8d927a18a0b8ed79e6a10c734cd48ded"
+    },
+    "name": "packaged_final_localizer",
+    "residual_enabled": true,
+    "search_supersample": 2
+  },
+  "runtime": {
+    "definition": "compute_candidate_rows + model prediction + residual evidence + final selection; synthetic generation and output writing excluded",
+    "evaluation_wall_seconds_including_generation": 611.3911179999998,
+    "max_seconds_per_pair": 45.20326110000019,
+    "mean_seconds_per_pair": 6.14620334250001,
+    "median_seconds_per_pair": 2.863575550000064,
+    "metric_type": "measured_final_pipeline_runtime",
+    "min_seconds_per_pair": 1.010008599999992,
+    "model_load_seconds": 2.735639600000013,
+    "p95_seconds_per_pair": 30.316271680000074,
+    "sum_pair_seconds": 491.6962674000008
+  },
+  "schema_version": 1
 }

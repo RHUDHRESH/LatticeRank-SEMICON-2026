@@ -1,67 +1,76 @@
 {
-  "schema_version": 1,
-  "curation_source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
-  "environment_observed_during_curation": {
+  "schema_version": 2,
+  "status": "published_release_evidence",
+  "source_revision": "b920bb648792c6c358bf9090bc478ef4691ec4d3",
+  "code_aggregate_sha256": "1b2a39a75b75a7a6950874a9b0d6a86bce2a0f7cef946c07b17c9880593db78d",
+  "environment": {
     "python": "3.12.10",
     "numpy": "2.5.1",
     "scipy": "1.18.0",
     "scikit_learn": "1.9.0",
     "joblib": "1.5.3",
-    "pillow": "12.3.0",
-    "matplotlib": "3.11.1"
+    "pillow": "12.3.0"
   },
   "claims": [
     {
-      "claim": "Final localization accuracy is 41.25% within 5 search pixels on 80 leak-free, scene-disjoint validation pairs.",
+      "claim": "Final fixed-validation localization accuracy is 48.75% within 5 Search pixels (39/80).",
       "status": "measured",
-      "protocol": "Shipped delta=0.10 candidate pool; final HGB plus residual blend; 0.05 equivalence margin.",
       "artifact": "results/validation_metrics.json",
       "rows": "results/validation_predictions.csv",
-      "rows_error_field": "top1_error_px",
-      "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
-      "reproduction_command": "python scripts/evaluate.py validation --output-dir results/reproduced-validation"
+      "rows_error_field": "error_px",
+      "coordinate_fields": ["pred_x", "pred_y", "gt_x", "gt_y"],
+      "reproduction_command": "python scripts/evaluate.py validation --output-dir reproduced-validation"
     },
     {
-      "claim": "At delta=0.15, candidate-pool recall within 5 pixels is 92.5% overall, 97.4% for DRAM, and 87.8% for FinFET.",
-      "status": "measured_diagnostic",
-      "not_a_claim_of": "end-to-end localization accuracy",
-      "artifact": "results/candidate_recall.json",
-      "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
-      "reproduction_note": "The committed curated artifact preserves the measured sweep; the release evaluator reproduces the shipped delta=0.10 path only."
+      "claim": "The fixed-validation catastrophic-error rate above 25 pixels is 51.25% (41/80).",
+      "status": "measured",
+      "artifact": "results/validation_metrics.json",
+      "rows": "results/validation_predictions.csv"
+    },
+    {
+      "claim": "All seven fixed-validation exact-wallpaper cases localize within 5 pixels after the direct Search-centre convention.",
+      "status": "measured_subgroup",
+      "artifact": "results/validation_predictions.csv",
+      "filter": "profile == ambiguous",
+      "successes": 7,
+      "count": 7
     },
     {
       "claim": "The shipped delta=0.10 candidate pool has 90.0% recall within 5 pixels.",
-      "status": "measured",
+      "status": "measured_diagnostic_not_localization_accuracy",
       "artifact": "results/candidate_recall.json",
-      "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
-      "reproduction_command": "python scripts/evaluate.py validation --output-dir results/reproduced-validation"
+      "reproduction_command": "python scripts/evaluate_candidate_recall.py --output reproduced-candidate-recall.json"
     },
     {
-      "claim": "The final catastrophic-error rate above 25 pixels is 58.75%.",
-      "status": "measured",
-      "artifact": "results/validation_metrics.json",
-      "rows": "results/validation_predictions.csv",
-      "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b"
-    },
-    {
-      "claim": "A separate randomized evaluation of at least 30 pairs.",
-      "status": "not_run",
+      "claim": "The seed-2026 randomized 40-pair evaluation reaches 55.0% within 5 pixels (22/40), 85.0% candidate recall, and 45.0% catastrophic errors.",
+      "status": "measured_separate_benchmark",
       "artifact": "results/evaluation_30plus.json",
-      "reason": "The bounded cleanup pass did not run an expensive new evaluation; no substitute subset metric is published."
+      "rows": "results/evaluation_30plus_predictions.csv",
+      "rows_error_field": "error_px",
+      "reproduction_command": "python scripts/evaluate.py randomized --count 40 --seed 2026 --output-dir reproduced-randomized"
     },
     {
-      "claim": "Final end-to-end runtime.",
+      "claim": "Fixed-validation inference runtime is 2.86 s median, 6.15 s mean, and 30.32 s P95 per pair.",
       "status": "measured",
       "artifact": "results/runtime.json",
-      "value": "8.2 s on examples/dram",
-      "qualification": "Single-pair smoke of the cleaned tree; not an 80-pair mean."
+      "qualification": "Candidate computation through final selection; synthetic generation and result writing excluded."
+    },
+    {
+      "claim": "The true site is a raw local maximum within 5 pixels in 100% of fixed-validation cases; the raw global maximum is correct in 38.75%, and median true-site rank is 4.",
+      "status": "measured_diagnostic",
+      "not_a_claim_of": "end-to-end localization accuracy",
+      "artifact": "results/visibility_diagnostic.json",
+      "reproduction_command": "python scripts/evaluate_visibility.py --output reproduced-visibility.json"
+    },
+    {
+      "claim": "The pinned external reference-style generator reaches 93.33% on 120 development pairs and 100.0% on 30 untouched confirmation pairs.",
+      "status": "measured_external_benchmark",
+      "artifact": "results/external_starter_benchmark.json",
+      "rows": "results/external_starter_predictions.csv",
+      "qualification": "Public reference-style generator pinned at commit 59376381; not claimed to be the official hidden evaluator."
     }
   ],
+  "integrity_check": "python scripts/verify_evidence.py",
   "figure_command": "python scripts/make_figures.py",
-  "figure_inputs": [
-    "results/validation_metrics.json",
-    "results/validation_predictions.csv",
-    "results/candidate_recall.json",
-    "manifests/validation_benchmark.jsonl"
-  ]
+  "release_note": "source_revision identifies the immutable code/results commit; this provenance-only commit was created afterward to avoid a self-referential hash."
 }

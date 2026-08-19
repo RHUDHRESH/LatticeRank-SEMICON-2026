@@ -1,67 +1,108 @@
 # Failure analysis
 
-The final system fails catastrophically on **47 of 80 validation pairs
-(58.75%)**, where catastrophic means a coordinate error greater than 25 Search
-pixels. The error distribution is strongly bimodal: successful predictions are
-usually within a few pixels, while failures are often hundreds of pixels away.
+The internal fixed benchmark has **41 catastrophic failures in 80 pairs
+(51.25%)**, where catastrophic means error greater than 25 Search pixels.
+Successful predictions are usually subpixel; failures jump by whole lattice
+periods and often land hundreds of pixels away.
 
-## Dominant mechanism: periodic alias selection
+![Internal error distribution](images/05_error_cdf.png)
 
-Dense DRAM- and FinFET-like layouts repeat at many Search locations. Global
-correlation can therefore produce several strong, spatially distant peaks.
-Candidate harvesting usually preserves the true site—the shipped δ=0.10 pool
-has 90.0% recall within 5 pixels—but the ranker selects it only 41.25% of the
-time.
+## Dominant mechanism: remote periodic alias selection
 
-![Periodic-alias failure](images/08_periodic_alias_failure.png)
+The shipped candidate pool contains a ≤5 px point in **72/80 = 90.0%** of
+fixed pairs, but final localization succeeds in only **39/80 = 48.75%**. This
+gap isolates selection as the bottleneck.
 
-In this real validation case, the selected FinFET site is 590.94 pixels from
-ground truth. Both local crops contain the same dominant fins and routing
-boundary, but their non-repeating details differ.
+![Measured periodic-alias failure](images/08_periodic_alias_failure.png)
 
-## Are the aliases truly indistinguishable?
+In `validation-000256`, the current production system selects a plausible
+FinFET alias 256.75 pixels from ground truth. This is not a near-miss and not a
+coordinate-convention error.
 
-A separate latent-scene audit examined 30 catastrophic cases without
-acquisition noise:
+## The aliases are often physically different
 
-- median NCC between the true and selected latent patches: 0.859;
-- only 6.7% have latent NCC ≥0.95;
-- 76.7% have latent NCC ≤0.90.
+A latent-scene audit of 30 catastrophic cases, before independent acquisition
+noise, found:
 
-Most aliases are therefore distinguishable in the generated physical scene.
-The open problem is extracting and ranking the weak non-periodic evidence
-reliably after scale change, noise, blur, and scan distortion. This does not
-prove that every case is distinguishable, and the deliberately `ambiguous`
-profile contains exact wallpaper cases.
+- median NCC between true and selected latent patches: 0.859;
+- only 6.7% with latent NCC ≥0.95;
+- 76.7% with latent NCC ≤0.90.
+
+Most aliases are distinguishable in the generated physical scene. The hard
+part is preserving their weak non-periodic differences after 10× decimation,
+blur, Poisson/read noise, gamma change, shear, jitter, and independent capture.
 
 ![Local structural correspondence](images/09_structural_comparison.png)
 
-## Architecture gap
+## Why the external benchmark is different
 
-Final ≤5 px accuracy is 48.7% for DRAM and 34.1% for FinFET. The candidate
-stage already shows the same direction: at shipped δ=0.10, recall is 94.9% for
-DRAM and 85.4% for FinFET. FinFET's denser line family occupies fewer Search
-pixels per period, leaving less distinctive context after 10× reduction.
+On the pinned public reference-style generator, the image-derived pitch gate
+selects the periodic-residual consensus. It achieves **112/120 = 93.33%** on
+development seeds and **30/30 = 100%** on the untouched confirmation seed.
+The external development set still contains eight catastrophic aliases and a
+557.97 px maximum error.
 
-The δ=0.15 values—97.4% DRAM and 87.8% FinFET—only describe the wider
-candidate pool. They do not change the final 41.25% localization result.
+The broader DriftForge distribution includes larger relative acquisition
+transform, hard low-dose noise, exact wallpaper, boundary forcing, multiple
+pitch families, and out-of-distribution ranges. Its fallback ranker/residual
+path does not generalize to 90%. These distributions are intentionally not
+pooled.
 
-## What helped, and what did not solve it
+![Named benchmark comparison](images/06_pipeline_ablation.png)
 
-- Multi-channel harvesting raises candidate coverage but increases the ranking
-  burden as δ grows.
-- Spatial structural features improve top-1 from 37.5% to 40.0% on identical
-  validation pairs.
-- Periodic-residual evidence raises final top-1 to 41.25% and lowers the
-  catastrophic rate from 60.0% to 58.75%.
-- The nearest-centre rule is restricted to a narrow measured equivalence set;
-  using Search-centre distance as a learned feature would leak the tie policy
-  into ordinary, non-equivalent decisions.
+## Architecture and proposal gaps
 
-## Scope
+Internal final ≤5 px accuracy is 51.28% for DRAM and 46.34% for FinFET. The
+proposal stage already shows the same asymmetry: 94.87% DRAM candidate recall
+and 85.37% FinFET candidate recall at `δ=0.10`.
 
-These findings are synthetic-only. No real sponsor SEM pairs were available,
-so the measured rates establish internal generator performance, not expected
-fab performance. See
-[failure_analysis.json](../results/failure_analysis.json) for the compact
-provenance record and [Results](RESULTS.md) for the benchmark protocol.
+The diagnostic `δ=0.15` pool reaches 97.44% DRAM and 87.80% FinFET recall, but
+it increases the median pool from 119.5 to 546.5 candidates and is not final
+localization accuracy.
+
+## Experiments rejected by evidence
+
+- **Nonlinear fusion:** 37/40 on the tuning half, 11/40 on the untouched half.
+- **Random-forest fusion:** 37/40 tuning, 14/40 untouched.
+- **Tiny Siamese encoder:** 5% alone, 33.75% in ensemble; global pooling erased
+  the spatial arrangement needed to identify one cell.
+- **Line-sequence fingerprint:** 15% on a locked 20-pair slice, even with oracle
+  affine rectification.
+- **Local keypoint consensus:** 15% on the same slice.
+- **Affine residual alignment:** improved an oracle diagnostic but remained far
+  below 90%.
+- **256/1,024 candidate shortlists:** reduced runtime by deleting correct sites.
+- **Higher synthetic defect density:** did not improve true-site rank and made
+  generation much slower; reverted.
+
+These negatives are important: a 92.5% tuning score existed and was not
+shipped because its untouched result collapsed. The compact ledger is
+[optimization_experiments.json](../results/optimization_experiments.json).
+
+## Runtime failure mode
+
+The internal fixed run measures 2.86 s median but 30.32 s P95 and 45.20 s
+maximum. Runtime grows with thousands of phase-equivalent candidates. Exact
+wallpaper is fast because it exits before the 77-feature descriptor; the
+external pitch-gated consensus also avoids that descriptor. Broad fallback
+geometry still needs a stronger cheap discriminator before an under-256
+shortlist is safe.
+
+## What is solved and what is not
+
+Solved:
+
+- exact output contract and packaged model loading;
+- 7/7 internal exact-wallpaper cases through the centre convention;
+- 90%+ on the pinned public reference-style distribution;
+- provenance from generator commit through final coordinate rows.
+
+Not solved:
+
+- 90% on DriftForge's broad hard-noise distribution;
+- worst-case remote aliases;
+- safe sub-256 candidate pruning;
+- real-instrument calibration without sponsor SEM pairs.
+
+See [Results](RESULTS.md), [Method](METHOD.md), and the
+[parameter traceability matrix](REFERENCES.md).

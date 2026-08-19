@@ -5,12 +5,18 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import sys
 from pathlib import Path
 from typing import Sequence
 
 import numpy as np
 from PIL import Image, UnidentifiedImageError
+
+# The public CLI is intentionally single-worker. Declaring that limit also
+# prevents joblib's Windows physical-core probe from emitting an irrelevant
+# warning on minimal or sandboxed hosts.
+os.environ.setdefault("LOKY_MAX_CPU_COUNT", "1")
 
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
@@ -78,7 +84,7 @@ def load_input_image(path: Path, label: str) -> np.ndarray:
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="DriftForge v2 navigation-error recovery.")
+    parser = argparse.ArgumentParser(description="LatticeRank navigation-error recovery.")
     parser.add_argument("reference", type=Path, help="1000x1000 high-mag Reference PNG")
     parser.add_argument("search", type=Path, help="1000x1000 low-mag Search PNG")
     parser.add_argument("--json", action="store_true", help="print full diagnostics as JSON")
@@ -115,6 +121,9 @@ def run(args: argparse.Namespace) -> None:
         payload = {
             "x": result.x,
             "y": result.y,
+            "coordinate_convention": (
+                "x=column, y=row, origin=top-left, units=Search pixels"
+            ),
             "probability": result.probability,
             "eq_set_size": result.eq_set_size,
             "n_candidates": result.n_candidates,

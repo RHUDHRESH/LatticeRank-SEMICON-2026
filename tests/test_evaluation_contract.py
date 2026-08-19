@@ -67,6 +67,10 @@ def test_candidate_recall_is_not_reported_as_localization_accuracy(
     )
     assert metrics["pipeline"]["model"]["path"] == "model.joblib"
     assert len(metrics["pipeline"]["model"]["sha256"]) == 64
+    code = metrics["evaluation_code"]
+    assert code["algorithm"] == "sha256"
+    assert len(code["aggregate_sha256"]) == 64
+    assert "driftforge/pipeline.py" in code["files"]
 
 
 def test_evaluation_manifest_rejects_invalid_profile() -> None:

@@ -97,10 +97,17 @@ class ResidualMatcher:
     #: (channel, mask) keys in the fixed evaluation order
     KEYS = [f"res_{c}_{m}" for c in ("int", "grad") for m in ("m0", "m50", "m30")]
 
-    def __init__(self, reference: np.ndarray, search: np.ndarray):
+    def __init__(
+        self,
+        reference: np.ndarray,
+        search: np.ndarray,
+        *,
+        scale: float = 1.0,
+        rotation: float = 0.0,
+    ):
         from .baseline import _robust_contrast, _template_from_reference
         sf = _robust_contrast(search)
-        t = _template_from_reference(reference, 1.0, 0.0)
+        t = _template_from_reference(reference, scale, rotation)
         lat = estimate_lattice(search)
         B = lat.basis
         v1, v2 = B[:, 0].copy(), B[:, 1].copy()
