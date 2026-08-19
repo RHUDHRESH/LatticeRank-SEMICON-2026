@@ -36,6 +36,7 @@ For a one-page compliance handoff, open the
 [five-minute judge demonstration](docs/FIVE_MINUTE_DEMO.md). For immediate
 inspection: [method](docs/METHOD.md) · [results](docs/RESULTS.md) ·
 [failure analysis](docs/FAILURE_ANALYSIS.md) ·
+[public-field review](docs/COMPETITIVE_REVIEW.md) ·
 [parameter-to-citation matrix](docs/REFERENCES.md).
 
 ## Results at a glance
@@ -331,6 +332,9 @@ shortlists also failed their holdout or recall gates. None was promoted.
 
 The complete experiment ledger is
 [`results/optimization_experiments.json`](results/optimization_experiments.json).
+A review of 208 public search results, five strong algorithmic references, and
+the six competitor-inspired experiments that did not clear LatticeRank's
+holdout gates is in the [public-field review](docs/COMPETITIVE_REVIEW.md).
 A second unseen randomized seed measured 42.5% final accuracy despite 90.0%
 candidate recall. The current canonical internal runs measure 48.75% and
 55.0%; the external generator measures 93.33% development and 100.0%

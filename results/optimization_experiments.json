@@ -81,6 +81,48 @@
       "reason": "Subpixel identity variation was not stable after 10x decimation and independent acquisition noise."
     },
     {
+      "name": "axis_separated_lattice_residual",
+      "data": "Competitor-inspired x/y periodic-difference channels; locked first 20 fixed-validation pairs",
+      "result": "40.0% alone; all tested fusions remained 50.0%, identical to the current pipeline",
+      "decision": "rejected",
+      "reason": "Separating the lattice axes added no held-out repairs and therefore did not justify another production path."
+    },
+    {
+      "name": "global_phase_only_correlation",
+      "data": "Valid-region phase-only correlation; locked first 20 fixed-validation pairs",
+      "result": "35.0% alone; best current-plus-phase fusion reached 45.0% versus 50.0% current",
+      "decision": "rejected",
+      "reason": "The phase surface repaired one scene but broke four and reduced net accuracy."
+    },
+    {
+      "name": "image_derived_transform_correction",
+      "data": "40 fixed-validation scenes; confidence-gated lattice scale/rotation estimate plus latent-geometry oracle used only as a ceiling diagnostic",
+      "result": "Nominal candidate recall 87.5%; oracle recall 85.0%; nominal and oracle equal-z top-1 both 32.5%",
+      "decision": "rejected",
+      "reason": "Even perfect latent scale/rotation did not improve the proposal or top-1 ceiling, proving transform error was not the binding failure."
+    },
+    {
+      "name": "scene_grouped_pairwise_linear_ranker",
+      "data": "120 disjoint training scenes; 40 fixed-validation scenes; 8,050 symmetric positive-versus-hard-alias differences",
+      "result": "Best pairwise logistic setting reached 30.0% ranker-only accuracy versus 37.5% for the packaged HGB on the identical capped pool",
+      "decision": "rejected",
+      "reason": "The groupwise objective was scientifically appropriate but a linear utility could not represent the alias interactions and generalized worse."
+    },
+    {
+      "name": "robust_channel_and_map_consensus_bank",
+      "data": "80 fixed-validation scenes split into locked 40/40 halves; Gaussian, gradient-magnitude, LoG, band-pass, local-contrast, and conservative map fusions",
+      "result": "Best map fusion reached 40.0% overall versus 48.75% production; sigma-2 gradient magnitude reached 36.25% alone",
+      "decision": "rejected",
+      "reason": "The new channels modestly improved raw NCC on one half but did not beat the complete ranker-plus-residual pipeline or repeat strongly across halves."
+    },
+    {
+      "name": "broader_image_only_wallpaper_gate",
+      "data": "80 fixed-validation scenes; candidate-count, coarse-context, and context-decay threshold grid ranked by the worse 40-scene half",
+      "result": "No threshold improved either half above the current 52.5% / 45.0% split",
+      "decision": "rejected",
+      "reason": "Broadening the centre fallback would add bias without detecting more genuinely non-identifiable scenes."
+    },
+    {
       "name": "external_periodic_residual_consensus",
       "data": "Pinned public reference-style generator commit 59376381; 120 development pairs plus 30 untouched confirmation pairs",
       "result": "112/120 (93.33%) development; 30/30 (100.0%) confirmation",
