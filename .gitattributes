@@ -1,0 +1,6 @@
+* text=auto eol=lf
+
+# Generated and model artifacts must never receive line-ending conversion.
+*.joblib binary
+*.png binary
+*.pdf binary

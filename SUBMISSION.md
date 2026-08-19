@@ -35,7 +35,7 @@ directory. The second recomputes all published rates from final coordinates.
 | Automatic model loading | [`driftforge/models/hgb_r2.joblib`](driftforge/models/hgb_r2.joblib) |
 | DRAM and FinFET generation | [`scripts/generate_dataset.py`](scripts/generate_dataset.py) |
 | Recorded ground truth and independent acquisitions | [`tests/test_generator_integrity.py`](tests/test_generator_integrity.py) |
-| Reproducible training | [`scripts/train_ranker.py`](scripts/train_ranker.py) and scene-disjoint manifests |
+| Scene-disjoint retraining entry point | [`scripts/train_ranker.py`](scripts/train_ranker.py); the shipped legacy fit’s provenance limitation is explicit in [`hgb_r2.metadata.json`](driftforge/models/hgb_r2.metadata.json) |
 | Complete dependency freeze | [`requirements.txt`](requirements.txt) |
 | Parameter citations | [`docs/REFERENCES.md`](docs/REFERENCES.md) |
 | 30+ randomized evaluation | [`results/evaluation_30plus.json`](results/evaluation_30plus.json) |
