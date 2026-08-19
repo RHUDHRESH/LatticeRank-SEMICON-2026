@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
   "status": "measured",
-  "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
+  "source_revision": null,
   "final_validation": {
     "pairs": 80,
-    "catastrophic_failures_gt_25px": 47,
-    "catastrophic_rate_gt_25px": 0.5875,
-    "median_error_px": 178.6206709033856,
-    "p95_error_px": 687.9660993416932,
-    "p99_error_px": 904.8748859605898,
-    "dram_accuracy_le_5px": 0.48717948717948717,
-    "finfet_accuracy_le_5px": 0.34146341463414637
+    "catastrophic_failures_gt_25px": 41,
+    "catastrophic_rate_gt_25px": 0.5125,
+    "median_error_px": 62.573331034848415,
+    "p95_error_px": 624.7842472114485,
+    "p99_error_px": 738.4730804416624,
+    "dram_accuracy_le_5px": 0.5128205128205128,
+    "finfet_accuracy_le_5px": 0.4634146341463415
   },
   "latent_alias_audit": {
     "audited_catastrophic_cases": 30,
@@ -30,13 +30,14 @@
     "sample_id": "validation-000256",
     "architecture": "finfet",
     "profile": "standard",
-    "error_px": 590.9371374208368,
+    "error_px": 256.75236312104965,
     "figure": "docs/images/08_periodic_alias_failure.png"
   },
   "provenance": {
-    "type": "curated_from_committed_measurements",
-    "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
+    "type": "regenerated_metrics_plus_curated_latent_alias_audit",
+    "source_revision": null,
+    "code_aggregate_sha256": "1b2a39a75b75a7a6950874a9b0d6a86bce2a0f7cef946c07b17c9880593db78d",
     "row_evidence": "results/validation_predictions.csv",
-    "note": "Legacy analysis files were removed after the measured findings were curated here."
+    "note": "Headline error statistics and representative cases use regenerated production predictions; the latent-alias diagnostic remains a curated historical measurement."
   }
 }

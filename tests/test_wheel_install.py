@@ -30,6 +30,7 @@ def test_built_wheel_installs_with_loadable_model(tmp_path: Path) -> None:
             "-m",
             "pip",
             "wheel",
+            "--disable-pip-version-check",
             str(staging),
             "--no-deps",
             "--no-build-isolation",
@@ -39,14 +40,17 @@ def test_built_wheel_installs_with_loadable_model(tmp_path: Path) -> None:
         check=True,
         capture_output=True,
         text=True,
+        timeout=120,
     )
     wheels = list(wheel_dir.glob("*.whl"))
     assert len(wheels) == 1
     wheel = wheels[0]
 
     member = "driftforge/models/hgb_r2.joblib"
+    metadata_member = "driftforge/models/hgb_r2.metadata.json"
     with zipfile.ZipFile(wheel) as archive:
         assert member in archive.namelist()
+        assert metadata_member in archive.namelist()
         wheel_digest = hashlib.sha256(archive.read(member)).hexdigest()
     assert wheel_digest == hashlib.sha256(MODEL_PATH.read_bytes()).hexdigest()
 
@@ -57,6 +61,7 @@ def test_built_wheel_installs_with_loadable_model(tmp_path: Path) -> None:
             "-m",
             "pip",
             "install",
+            "--disable-pip-version-check",
             str(wheel),
             "--no-deps",
             "--target",
@@ -65,6 +70,7 @@ def test_built_wheel_installs_with_loadable_model(tmp_path: Path) -> None:
         check=True,
         capture_output=True,
         text=True,
+        timeout=120,
     )
     check_code = (
         "import sys; "
@@ -79,4 +85,5 @@ def test_built_wheel_installs_with_loadable_model(tmp_path: Path) -> None:
         check=True,
         capture_output=True,
         text=True,
+        timeout=120,
     )

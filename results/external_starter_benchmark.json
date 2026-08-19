@@ -1,0 +1,76 @@
+{
+  "benchmark": {
+    "generator_pipeline_sha256": "22911a9af01320f7487d4fe39ab0f7b35847068870e1c8beae2d1d9af08aa52e",
+    "generator_presets_sha256": "66606454f15565c555b80521cf9618bafb174dbf83430d7519d9c61fd9e2f920",
+    "kind": "pinned_public_reference_style_generator",
+    "presets_exercised_by_generator_default": true,
+    "repository": "https://github.com/FlankerDev12/drift-sense-ref",
+    "revision": "59376381eb284cdeb48cc727b1b75ca29c842437",
+    "seeds": [
+      4200,
+      4300,
+      4400,
+      4600,
+      4700
+    ],
+    "stress_overrides": false
+  },
+  "confirmation": {
+    "accuracy_at_5px": 1.0,
+    "catastrophic_count_over_25px": 0,
+    "catastrophic_rate_over_25px": 0.0,
+    "maximum_error_px": 2.0396078054371096,
+    "median_error_px": 1.457106781186559,
+    "pairs": 30,
+    "successes_within_5px": 30
+  },
+  "development": {
+    "accuracy_at_5px": 0.9333333333333333,
+    "catastrophic_count_over_25px": 8,
+    "catastrophic_rate_over_25px": 0.06666666666666667,
+    "maximum_error_px": 557.9682159406574,
+    "median_error_px": 1.4422205101855827,
+    "pairs": 120,
+    "successes_within_5px": 112
+  },
+  "interpretation": "Seeds 4200/4300/4400/4600 were used while freezing the consensus. Seed 4700 is the untouched confirmation run. The pooled rate is descriptive, not a substitute for the confirmation result.",
+  "pooled_descriptive_only": {
+    "accuracy_at_5px": 0.9466666666666667,
+    "catastrophic_count_over_25px": 8,
+    "catastrophic_rate_over_25px": 0.05333333333333334,
+    "maximum_error_px": 557.9682159406574,
+    "median_error_px": 1.4422205101855827,
+    "pairs": 150,
+    "successes_within_5px": 142
+  },
+  "provenance": {
+    "model_sha256": "3548fa98f50135579e367021f0c577ab8d927a18a0b8ed79e6a10c734cd48ded",
+    "production_code_sha256": {
+      "driftforge/baseline.py": "15f591b375c8d9804daada13af8b6539a8931b45cc52439105c606bca72dd0c8",
+      "driftforge/channels.py": "f31eb6e7451c43359ea518d0fa58a00ad7b5b275a23f9a2b7b765a314d3f1fea",
+      "driftforge/lattice.py": "21227316e51d0073371e2e5de574f29b02baefca8c241498af20cf74d971bbce",
+      "driftforge/pipeline.py": "fba205ff9226541335308adf2ed28f27be844dacf602a4cf0f65d2f921a5ad9f",
+      "driftforge/residual.py": "8415527bee7d85f8bb946f50d87378ee27b86f0eb3ea365171736d4fa7a54421",
+      "scripts/aggregate_external_benchmark.py": "1c98dee6a1de29e99e1c73c46ffff55b8fdba8b9e90ffe2afdb4d1db2f149cd1",
+      "scripts/evaluate_external_starter.py": "c0b37b950eb8a9a48b28da45950cc5db4f30df51f3442e32637281eb204596f2"
+    },
+    "reproduction": [
+      "Run scripts/evaluate_external_starter.py for seeds 4200, 4300, 4400, 4600, and 4700 with count 30.",
+      "Pass those five JSON traces in seed order to scripts/aggregate_external_benchmark.py."
+    ],
+    "row_evidence": "results/external_starter_predictions.csv",
+    "source_revision": null
+  },
+  "schema_version": 1,
+  "selection": {
+    "equation": "residual_z + 0.05*raw_z + 0.05*midband_z",
+    "equivalence_margin": 0.025,
+    "tie_break": "nearest Search centre among evidence-equivalent candidates",
+    "weights": {
+      "midband_z": 0.05,
+      "raw_z": 0.05,
+      "residual_z": 1.0
+    }
+  },
+  "status": "measured"
+}

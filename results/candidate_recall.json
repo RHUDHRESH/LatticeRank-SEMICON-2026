@@ -1,45 +1,120 @@
 {
-  "schema_version": 1,
-  "status": "measured",
-  "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
   "benchmark": {
     "manifest": "manifests/validation_benchmark.jsonl",
-    "slice": [200, 280],
+    "manifest_sha256": "0fd0655f671aa70ae7a21c2a6035d07b53bc76bda57e50cb8d9a7416b5896c0c",
     "pairs": 80,
-    "dram_pairs": 39,
-    "finfet_pairs": 41
-  },
-  "metric": "Fraction of pairs with at least one harvested candidate within 5 search pixels of ground truth.",
-  "warning": "This is candidate-pool recall. It is not end-to-end localization accuracy.",
-  "shipped_pipeline": {
-    "delta": 0.1,
-    "overall_recall_le_5px": 0.9,
-    "dram_recall_le_5px": 0.9487179487179487,
-    "finfet_recall_le_5px": 0.8536585365853658,
-    "median_candidates": 119.5,
-    "p95_candidates": 6682.95,
-    "wilson_95_interval": [0.8148931119146721, 0.9484523844404911]
+    "slice": [
+      200,
+      280
+    ]
   },
   "diagnostic_wider_pool": {
     "delta": 0.15,
-    "overall_recall_le_5px": 0.925,
     "dram_recall_le_5px": 0.9743589743589743,
     "finfet_recall_le_5px": 0.8780487804878049,
+    "hits": 74,
     "median_candidates": 546.5,
+    "overall_recall_le_5px": 0.925,
     "p95_candidates": 7410.2,
-    "wilson_95_interval": [0.845879839164307, 0.9651747507130539],
-    "use": "Candidate-harvesting diagnostic only; delta 0.15 is not the shipped inference setting."
+    "wilson_95_interval": [
+      0.8458798391878072,
+      0.9651747507069949
+    ]
   },
-  "sweep": [
-    {"delta": 0.02, "overall_recall_le_5px": 0.6375, "median_candidates": 13.0},
-    {"delta": 0.05, "overall_recall_le_5px": 0.7875, "median_candidates": 28.0},
-    {"delta": 0.1, "overall_recall_le_5px": 0.9, "median_candidates": 119.5},
-    {"delta": 0.15, "overall_recall_le_5px": 0.925, "median_candidates": 546.5},
-    {"delta": 0.25, "overall_recall_le_5px": 0.925, "median_candidates": 4372.5}
-  ],
+  "metric": "Fraction of pairs with at least one harvested candidate within 5 search pixels of ground truth.",
   "provenance": {
-    "type": "curated_from_committed_measurement",
-    "source_revision": "b299b6527ed24a8fb3587ea90e00669d5089c30b",
-    "note": "The legacy sweep artifact was removed after its measured values were curated here."
-  }
+    "code_sha256": {
+      "driftforge/channels.py": "f31eb6e7451c43359ea518d0fa58a00ad7b5b275a23f9a2b7b765a314d3f1fea",
+      "driftforge/generator.py": "0088380cd1269beda5d5184713db8f6393e19d32ef9f3287026426754f9a7bb0",
+      "driftforge/model.py": "f866178a768741d245ddc84c31e987ef3568e9e2193fe8bfc057653133c37bba",
+      "scripts/evaluate_candidate_recall.py": "93527412794734df81756b9b6e25f4c4c82164e7431e5c292c215162b633b65b"
+    },
+    "note": "Record the release commit SHA after committing this measured artifact.",
+    "reproduction_command": "python scripts/evaluate_candidate_recall.py --output results/reproduced-candidate-recall.json",
+    "type": "regenerated_from_current_content_addressed_code"
+  },
+  "schema_version": 1,
+  "shipped_pipeline": {
+    "delta": 0.1,
+    "dram_recall_le_5px": 0.9487179487179487,
+    "finfet_recall_le_5px": 0.8536585365853658,
+    "hits": 72,
+    "median_candidates": 119.5,
+    "overall_recall_le_5px": 0.9,
+    "p95_candidates": 6682.95,
+    "wilson_95_interval": [
+      0.8148931119389591,
+      0.9484523844326191
+    ]
+  },
+  "source_revision": null,
+  "status": "measured",
+  "sweep": [
+    {
+      "delta": 0.02,
+      "dram_recall_le_5px": 0.6923076923076923,
+      "finfet_recall_le_5px": 0.5853658536585366,
+      "hits": 51,
+      "median_candidates": 13.0,
+      "overall_recall_le_5px": 0.6375,
+      "p95_candidates": 231.5999999999999,
+      "wilson_95_interval": [
+        0.5281079450222215,
+        0.7342920693555084
+      ]
+    },
+    {
+      "delta": 0.05,
+      "dram_recall_le_5px": 0.7948717948717948,
+      "finfet_recall_le_5px": 0.7804878048780488,
+      "hits": 63,
+      "median_candidates": 28.0,
+      "overall_recall_le_5px": 0.7875,
+      "p95_candidates": 6029.0,
+      "wilson_95_interval": [
+        0.6857784426940333,
+        0.8628761328230384
+      ]
+    },
+    {
+      "delta": 0.1,
+      "dram_recall_le_5px": 0.9487179487179487,
+      "finfet_recall_le_5px": 0.8536585365853658,
+      "hits": 72,
+      "median_candidates": 119.5,
+      "overall_recall_le_5px": 0.9,
+      "p95_candidates": 6682.95,
+      "wilson_95_interval": [
+        0.8148931119389591,
+        0.9484523844326191
+      ]
+    },
+    {
+      "delta": 0.15,
+      "dram_recall_le_5px": 0.9743589743589743,
+      "finfet_recall_le_5px": 0.8780487804878049,
+      "hits": 74,
+      "median_candidates": 546.5,
+      "overall_recall_le_5px": 0.925,
+      "p95_candidates": 7410.2,
+      "wilson_95_interval": [
+        0.8458798391878072,
+        0.9651747507069949
+      ]
+    },
+    {
+      "delta": 0.25,
+      "dram_recall_le_5px": 0.9743589743589743,
+      "finfet_recall_le_5px": 0.8780487804878049,
+      "hits": 74,
+      "median_candidates": 4372.5,
+      "overall_recall_le_5px": 0.925,
+      "p95_candidates": 8000.0,
+      "wilson_95_interval": [
+        0.8458798391878072,
+        0.9651747507069949
+      ]
+    }
+  ],
+  "warning": "Candidate-pool recall is a proposal-stage ceiling, not end-to-end localization accuracy."
 }

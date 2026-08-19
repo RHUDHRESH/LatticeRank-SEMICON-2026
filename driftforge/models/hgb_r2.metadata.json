@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "product": "LatticeRank",
+  "release": "1.0",
+  "package_subsystem": "driftforge",
+  "model_file": "hgb_r2.joblib",
+  "model_sha256": "3548fa98f50135579e367021f0c577ab8d927a18a0b8ed79e6a10c734cd48ded",
+  "algorithm": "scikit-learn HistGradientBoostingClassifier candidate ranker",
+  "feature_count": 77,
+  "runtime_contract": {
+    "python": ">=3.12",
+    "scikit_learn": "1.9.0",
+    "joblib": "1.5.3"
+  },
+  "training_provenance": {
+    "status": "incomplete_legacy_bundle",
+    "embedded_bundle_keys": [
+      "features",
+      "model"
+    ],
+    "known": {
+      "centre_distance_feature": false,
+      "feature_schema": "driftforge.model.MODEL_FEATURES"
+    },
+    "unknown": [
+      "exact training manifest hash",
+      "exact training scene slice",
+      "fit-time package versions",
+      "fit-time estimator parameters"
+    ],
+    "qualification": "The shipped legacy estimator remains usable and content-addressed, but its original fit cannot be independently reconstructed from the two-key payload. A future retrain through scripts/train_ranker.py must replace this file with embedded manifest, parameter, version and metric provenance."
+  },
+  "release_evaluation": {
+    "validation_artifact": "results/validation_metrics.json",
+    "validation_rows": "results/validation_predictions.csv",
+    "randomized_artifact": "results/evaluation_30plus.json",
+    "evaluation_code_aggregate_sha256": "05c1c35b108bcbb76a5c85b66e3ca68b235aad4065d03b13bda979fed52a9d9c"
+  }
+}
