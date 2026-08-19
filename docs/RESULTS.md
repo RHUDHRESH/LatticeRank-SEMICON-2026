@@ -117,6 +117,13 @@ were rejected:
   the required ceiling;
 - 256- and 1,024-candidate shortlists discarded valid true sites.
 
+A subsequent public-field study added axis-separated residuals, valid-region
+phase-only correlation, confidence-gated transform correction, a scene-grouped
+pairwise ranker, eighteen robust channels, map consensus, and a broader
+wallpaper gate. None beat the shipped method on the locked data. See the
+[competitive review](COMPETITIVE_REVIEW.md) for the cross-project lessons and
+claim boundaries.
+
 Only the exact-wallpaper rule and the externally validated residual consensus
 were promoted. See the [experiment ledger](../results/optimization_experiments.json)
 and [failure analysis](FAILURE_ANALYSIS.md).
