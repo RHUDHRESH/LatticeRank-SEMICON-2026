@@ -31,7 +31,8 @@ README:
 python scripts/verify_evidence.py
 ```
 
-For the narrated path, use the
+For a one-page compliance handoff, open the
+[submission sheet](SUBMISSION.md). For the narrated path, use the
 [five-minute judge demonstration](docs/FIVE_MINUTE_DEMO.md). For immediate
 inspection: [method](docs/METHOD.md) · [results](docs/RESULTS.md) ·
 [failure analysis](docs/FAILURE_ANALYSIS.md) ·
@@ -351,6 +352,7 @@ confirmation. The release never merges those distributions into one score.
 | `scripts/verify_evidence.py` | Recompute claims from final coordinates |
 | `scripts/make_figures.py` | Evidence-backed figures and compact examples |
 | `driftforge/models/hgb_r2.joblib` | Automatically loaded ranker weights |
+| `SUBMISSION.md` | Official-requirement matrix and copy/paste judge path |
 | `docs/` | Method, generator, results, failures, and references |
 | `results/` | Claim provenance, metrics, and row-level predictions |
 | `examples/` | One deterministic DRAM pair and one FinFET pair |
