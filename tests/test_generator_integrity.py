@@ -178,10 +178,12 @@ class SplitIntegrityTests(unittest.TestCase):
 
 
 class LocatorFrozenTests(unittest.TestCase):
-    def test_baseline_locator_is_byte_identical_to_the_shipped_v1(self) -> None:
-        digest = hashlib.sha256(
-            (PROJECT / "driftforge/baseline.py").read_bytes()
-        ).hexdigest()
+    def test_baseline_locator_is_content_identical_to_the_shipped_v1(self) -> None:
+        # Git may materialize CRLF on Windows and LF on POSIX.  Normalize only
+        # line endings so the frozen-source invariant survives a fresh clone;
+        # every other byte remains covered by the recorded SHA-256.
+        source = (PROJECT / "driftforge/baseline.py").read_bytes()
+        digest = hashlib.sha256(source.replace(b"\r\n", b"\n")).hexdigest()
         self.assertEqual(
             digest, BASELINE_SHA256,
             "baseline.py no longer matches the recorded baseline locator",
