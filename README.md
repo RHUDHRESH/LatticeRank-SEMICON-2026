@@ -37,10 +37,8 @@ python scripts/judge_check.py
 python scripts/verify_evidence.py
 ```
 
-`judge_check.py` launches inference from outside the repository directory,
-loads the packaged 77-feature model automatically, checks DRAM and FinFET, and
-verifies that stdout is one coordinate. `verify_evidence.py` recomputes every
-headline rate from the final emitted coordinates.
+These commands test both architectures from outside the repository and
+recompute every published rate from final coordinates.
 
 Direct inference is simply:
 
@@ -52,14 +50,9 @@ python scripts/inference.py examples/dram/reference.png examples/dram/search.png
 (644.50, 283.50)
 ```
 
-Use `--json` only when diagnostics are wanted. Normal stdout remains exactly
-one `(x, y)` line.
+Add `--json` for diagnostics.
 
 ## Measured results
-
-The strongest result is on a pinned public reference-style generator. The
-broader internal stress generator is substantially harder. They are reported
-separately because pooling them would be misleading.
 
 | Benchmark | Protocol | Within 5 px | Over 25 px | Median error |
 |---|---|---:|---:|---:|
@@ -70,13 +63,6 @@ separately because pooling them would be misleading.
 
 ![Accuracy and catastrophic errors across named benchmarks](docs/images/06_pipeline_ablation.png)
 
-The external source is
-[`FlankerDev12/drift-sense-ref`](https://github.com/FlankerDev12/drift-sense-ref)
-at commit `59376381eb284cdeb48cc727b1b75ca29c842437`. Seeds 4200–4600
-were used while freezing the selection equation. Seed 4700 was held back and
-then localized 30/30 pairs within 5 px. This is a public reference-style
-generator, not the organizer’s hidden evaluator.
-
 Evidence: [external summary](results/external_starter_benchmark.json) ·
 [150 external predictions](results/external_starter_predictions.csv) ·
 [internal metrics](results/validation_metrics.json) ·
@@ -85,13 +71,8 @@ Evidence: [external summary](results/external_starter_benchmark.json) ·
 
 ### What the numbers reveal
 
-The correct site is a raw-correlation local maximum within 5 px in **100%** of
-the fixed 80 scenes, but the raw global maximum is correct only **38.75%** of
-the time. The shipped candidate pool contains a correct site in **90.0%** of
-scenes. Final accuracy is **48.75%**.
-
-That gap is the project’s central scientific finding: candidate generation is
-usually successful; selecting the correct periodic copy remains difficult.
+The correct site is a raw local maximum in **100%** of fixed scenes and enters
+the candidate pool in **90.0%**, but final selection reaches **48.75%**.
 
 ![Candidate recall as the adaptive pool widens](docs/images/03_candidate_recall.png)
 
@@ -121,18 +102,17 @@ evidence-equivalent tie rule
 
 ### 1. Normalize the physical scale
 
-The complete Reference is anti-aliased and reduced by the known 10:1 pixel
-ratio. It is never cropped or pasted into Search.
+Anti-alias and reduce the complete Reference by the known 10:1 pixel ratio.
 
 ### 2. Preserve multiple plausible sites
 
-For channel `c`, LatticeRank evaluates zero-mean normalized cross-correlation:
+Evaluate zero-mean normalized cross-correlation for each channel:
 
 ```text
 ρc(x,y) = <Sxy − μxy, Tc − μT> / (||Sxy − μxy|| ||Tc − μT||)
 ```
 
-Instead of trusting one maximum, it forms an adaptive union:
+Preserve an adaptive union of local maxima:
 
 ```text
 C = ⋃c localmax(ρc ≥ max(ρc) − 0.10)
@@ -140,10 +120,8 @@ C = ⋃c localmax(ρc ≥ max(ρc) − 0.10)
 
 ### 3. Cancel what repeats
 
-The lattice basis is estimated from the Search image. Eight neighboring
-lattice translations estimate the periodic background; subtracting their
-median leaves missing contacts, roughness, defects, and other site-specific
-structure.
+Estimate the lattice and subtract the median of eight neighboring lattice
+translations, leaving site-specific structure.
 
 ```text
 periodic(I) = median of neighboring lattice translations
@@ -154,48 +132,37 @@ residual(I) = I − periodic(I)
 
 ### 4. Rank independent evidence
 
-Inside the validated device-pitch envelope, the frozen score is:
+Inside the validated device-pitch envelope:
 
 ```text
 score = z(periodic residual) + 0.05 z(raw ZNCC) + 0.05 z(mid-band ZNCC)
 ```
 
-Broader geometry uses the packaged HGB candidate ranker, 77 structural and
-scene-relative features, and residual evidence. Distance to Search centre is
-not a learned feature.
+Broader geometry uses the packaged 77-feature HGB ranker plus residual evidence.
 
 ![Five real candidates and every term in the frozen score](docs/images/14_candidate_evidence.png)
 
-### 5. Handle true wallpaper honestly
+### 5. Handle exact wallpaper
 
-When thousands of candidates coexist with almost no coarse context, the image
-does not identify an absolute copy. LatticeRank detects that regime from image
-statistics and uses the challenge’s centre convention directly. The seven
-fixed exact-wallpaper cases improve from 0/7 to **7/7** within 5 px.
+Low-context wallpaper uses the challenge’s centre convention. The seven fixed
+exact-wallpaper cases improve from 0/7 to **7/7** within 5 px.
 
 ![Step-by-step measured inference on validation-000240](docs/images/12_inference_walkthrough.png)
 
-Every panel above is generated from measured arrays. Ground truth appears only
-after inference as an evaluation label.
+## Measured examples
 
-## One success and one honest failure
-
-When the correct alias wins, localization is subpixel. The DRAM hard-profile
-case below has **0.06 px** error.
+Measured DRAM success: **0.06 px** error.
 
 ![Measured successful localization](docs/images/07_success_example.png)
 
-The FinFET case below is the unresolved failure mode: a plausible remote copy
-outranks the true site, producing **256.75 px** error.
+Measured FinFET alias failure: **256.75 px** error.
 
 ![Measured periodic-alias failure](docs/images/08_periodic_alias_failure.png)
 
-## Synthetic data, with explicit boundaries
+## Synthetic data
 
-DriftForge is LatticeRank’s dataset subsystem. It generates DRAM and FinFET
-pairs with separate Reference/Search acquisition streams, recorded ground
-truth, blur, dose/read noise, edge response, gain/gamma, scan distortion,
-rotation, scale, charging, defects, and structural variation.
+DriftForge generates labeled DRAM and FinFET pairs with independent
+Reference/Search acquisition effects.
 
 ![Generated DRAM and FinFET examples](docs/images/02_generated_pairs.png)
 
@@ -205,10 +172,7 @@ python scripts/generate_dataset.py --architecture FinFET --count 30 --output-dir
 python scripts/validate_dataset.py generated/dram
 ```
 
-The generator is deterministic for a fixed seed and physically motivated, but
-it is not a proprietary microscope simulator. Every implemented parameter,
-code range, rationale, and supporting literature is mapped in the
-[citation matrix](docs/REFERENCES.md).
+[Parameter ranges and citations](docs/REFERENCES.md)
 
 ## Reproduce the evidence
 
@@ -226,36 +190,20 @@ python scripts/evaluate_candidate_recall.py --output reproduced-candidate-recall
 python scripts/make_figures.py
 ```
 
-External confirmation, from a checkout of the pinned source:
-
-```bash
-python scripts/evaluate_external_starter.py /path/to/drift-sense-ref \
-  --count 30 --seed 4700 --output reproduced-external-4700.json
-```
-
-Measured full-pipeline runtime on the 80-pair internal run was **2.86 s
-median**, **6.15 s mean**, and **30.32 s P95** per pair. Repetitive scenes
-produce the long candidate-count tail. See [runtime evidence](results/runtime.json).
+Runtime: **2.86 s median**, **6.15 s mean**, **30.32 s P95**.
+[Evidence](results/runtime.json)
 
 ## Scientific integrity
 
-- Accuracy is recomputed from `pred_x`, `pred_y`, `gt_x`, and `gt_y`.
-- Training, validation, external development, and confirmation identities are
-  explicit and never pooled into one headline.
-- Ground truth, filenames, generator metadata, and centre distance are not
-  inference features.
-- Failed experiments remain in the
-  [optimization ledger](results/optimization_experiments.json).
-- A nonlinear fusion reached 92.5% on its tuning half and collapsed to 27.5%
-  on untouched scenes; it was rejected.
-- Six ideas learned from strong public submissions were tested and rejected
-  when they failed locked holdouts. See the optional
-  [public-field review](docs/COMPETITIVE_REVIEW.md).
+- Metrics are recomputed from emitted coordinates.
+- Ground truth and generator metadata are not inference features.
+- Splits remain separate.
+- [Rejected experiments](results/optimization_experiments.json) remain public.
 
 ## Limitations
 
 - All scored evidence is synthetic; no sponsor SEM test pairs were available.
-- Internal remote-alias selection remains 48.75% and is not finalist-grade.
+- Internal remote-alias selection is 48.75%.
 - Candidate coverage, robustness, and runtime are weaker for FinFET.
 - Runtime can exceed 30 seconds on highly repetitive scenes.
 - DRAM and FinFET still share one orthogonal-line rendering primitive; a more
@@ -277,5 +225,4 @@ produce the long candidate-count tail. See [runtime evidence](results/runtime.js
 | `SUBMISSION.md` | one-page compliance handoff |
 | `tests/` | 49 generator, inference, integrity, and packaging tests |
 
-LatticeRank is the product and release. `driftforge` is the Python package and
-synthetic-data subsystem. License: [MIT](LICENSE).
+License: [MIT](LICENSE).
