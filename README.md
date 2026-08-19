@@ -13,14 +13,9 @@ that remains.
 
 ![Reference-to-Search localization task](docs/images/01_localization_task.png)
 
-**Start here:** [60-second judge check](#run-it-in-60-seconds) ·
-[measured results](#measured-results) · [method](#how-it-works) ·
-[scientific traceability](docs/REFERENCES.md) · [submission checklist](SUBMISSION.md)
+## Run
 
-## Run it in 60 seconds
-
-Python 3.12+ and a CPU are sufficient. The model is bundled; no weights or
-dataset are downloaded at inference time.
+Requires Python 3.12+. The model is included.
 
 ```bash
 git clone https://github.com/RHUDHRESH/LatticeRank-SEMICON-2026.git
@@ -37,10 +32,7 @@ python scripts/judge_check.py
 python scripts/verify_evidence.py
 ```
 
-These commands test both architectures from outside the repository and
-recompute every published rate from final coordinates.
-
-Direct inference is simply:
+Inference:
 
 ```bash
 python scripts/inference.py examples/dram/reference.png examples/dram/search.png
@@ -52,7 +44,7 @@ python scripts/inference.py examples/dram/reference.png examples/dram/search.png
 
 Add `--json` for diagnostics.
 
-## Measured results
+## Results
 
 | Benchmark | Protocol | Within 5 px | Over 25 px | Median error |
 |---|---|---:|---:|---:|
@@ -68,8 +60,6 @@ Evidence: [external summary](results/external_starter_benchmark.json) ·
 [internal metrics](results/validation_metrics.json) ·
 [80 internal predictions](results/validation_predictions.csv) ·
 [claim provenance](results/claim_provenance.json)
-
-### What the numbers reveal
 
 The correct site is a raw local maximum in **100%** of fixed scenes and enters
 the candidate pool in **90.0%**, but final selection reaches **48.75%**.
@@ -149,15 +139,15 @@ exact-wallpaper cases improve from 0/7 to **7/7** within 5 px.
 
 ![Step-by-step measured inference on validation-000240](docs/images/12_inference_walkthrough.png)
 
-## Measured examples
+## Examples
 
-Measured DRAM success: **0.06 px** error.
+DRAM success: **0.06 px** error.
 
-![Measured successful localization](docs/images/07_success_example.png)
+![Successful localization](docs/images/07_success_example.png)
 
-Measured FinFET alias failure: **256.75 px** error.
+FinFET alias failure: **256.75 px** error.
 
-![Measured periodic-alias failure](docs/images/08_periodic_alias_failure.png)
+![Periodic-alias failure](docs/images/08_periodic_alias_failure.png)
 
 ## Synthetic data
 
@@ -174,7 +164,7 @@ python scripts/validate_dataset.py generated/dram
 
 [Parameter ranges and citations](docs/REFERENCES.md)
 
-## Reproduce the evidence
+## Reproduce
 
 ```bash
 # Full release gates
@@ -193,13 +183,6 @@ python scripts/make_figures.py
 Runtime: **2.86 s median**, **6.15 s mean**, **30.32 s P95**.
 [Evidence](results/runtime.json)
 
-## Scientific integrity
-
-- Metrics are recomputed from emitted coordinates.
-- Ground truth and generator metadata are not inference features.
-- Splits remain separate.
-- [Rejected experiments](results/optimization_experiments.json) remain public.
-
 ## Limitations
 
 - All scored evidence is synthetic; no sponsor SEM test pairs were available.
@@ -208,21 +191,5 @@ Runtime: **2.86 s median**, **6.15 s mean**, **30.32 s P95**.
 - Runtime can exceed 30 seconds on highly repetitive scenes.
 - DRAM and FinFET still share one orthogonal-line rendering primitive; a more
   device-specific generator needs a generator-family holdout and retraining.
-
-## Repository map
-
-| Path | Purpose |
-|---|---|
-| `scripts/inference.py` | two images in, one coordinate out |
-| `scripts/judge_check.py` | cross-platform evaluator smoke check |
-| `scripts/generate_dataset.py` | deterministic DRAM/FinFET generator |
-| `scripts/evaluate.py` | fixed and randomized evaluation |
-| `scripts/verify_evidence.py` | recompute claims from coordinates |
-| `driftforge/` | generator, matching pipeline, model, and features |
-| `examples/` | one compact DRAM pair and one FinFET pair |
-| `results/` | metrics, provenance, and row-level predictions |
-| `docs/REFERENCES.md` | parameter-to-literature traceability |
-| `SUBMISSION.md` | one-page compliance handoff |
-| `tests/` | 49 generator, inference, integrity, and packaging tests |
 
 License: [MIT](LICENSE).
