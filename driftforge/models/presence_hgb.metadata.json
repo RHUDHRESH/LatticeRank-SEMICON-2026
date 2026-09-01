@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "product": "LatticeRank",
+  "phase": 2,
+  "model_file": "presence_hgb.pkl",
+  "model_sha256": "0e7d467d8cbf45494db4b24b5b2a1609455f59ca8112083e90ee692cb6f9f572",
+  "purpose": "scene-level present/absent decision for the Phase 2 `found` column",
+  "algorithm": "scikit-learn HistGradientBoostingClassifier",
+  "feature_count": 17,
+  "features": [
+    "peak_raw",
+    "peak_midband",
+    "peak_directionality",
+    "margin_raw",
+    "margin_ratio",
+    "psr",
+    "log_n_candidates",
+    "eq_fraction",
+    "channel_agreement",
+    "score_entropy",
+    "n_strong_modes",
+    "cross_scale_agreement",
+    "cross_rotation_agreement",
+    "refinement_gain",
+    "refinement_displacement",
+    "refined_score",
+    "peak_hessian_det"
+  ],
+  "operating_threshold": 0.4799999999999999,
+  "threshold_selection": "Chosen by a flatness scan across severity strata, NOT the F1-optimal point on the calibration split (0.195). Trades 0.032 of calibration F1 for roughly half the cross-severity variance, because the organizers' severity mix is undisclosed and a threshold tuned to one mix is an unpriced bet.",
+  "training_provenance": {
+    "source": "data/dataset derived splits: data/phase2/p2_val and data/phase2/p2_stress",
+    "n_scenes": 252,
+    "present": 202,
+    "absent": 50,
+    "present_fraction": 0.802,
+    "split": {
+      "train": 151,
+      "calibration": 50,
+      "lockbox": 51
+    },
+    "scene_disjoint": true,
+    "organizer_data_used": false,
+    "p2_test_touched": false,
+    "note": "Trained only on self-generated Phase 2 validation and stress splits. No organizer-supplied pairs were used in training, in either direction. The held-out p2_test split was never read. Pose features are computed with the same estimated pose used at inference, never ground-truth pose."
+  },
+  "measured_performance": {
+    "lockbox_n": 51,
+    "lockbox_touched_once": true,
+    "f1": 0.9024,
+    "precision": 0.9024,
+    "recall": 0.9024,
+    "auc": 0.8707,
+    "confusion": {
+      "tn": 6,
+      "fp": 4,
+      "fn": 4,
+      "tp": 37
+    },
+    "f1_ci90_bootstrap_by_scene": [
+      0.8378,
+      0.9535
+    ],
+    "f1_by_severity": {
+      "0": 0.909,
+      "1": 0.875,
+      "2": 0.96,
+      "3": 0.842
+    },
+    "caveat": "The 51-scene lockbox is small: the CI lower tail (0.838) falls below the 0.85 useful floor, so the F1>=0.90 bonus gate is NOT certified. The point estimate is the best available basis for the operating threshold, and is materially better than the untested constant it replaces."
+  },
+  "inference_contract": "driftforge/presence_model.py reproduces the training feature vector exactly. A training/inference feature mismatch is silent - the model still returns a plausible probability - so any change to scene_features() must be mirrored in the training script or this model retired."
+}

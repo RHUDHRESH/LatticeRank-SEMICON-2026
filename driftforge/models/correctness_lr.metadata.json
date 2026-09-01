@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "product": "LatticeRank",
+  "phase": 2,
+  "model_file": "correctness_lr.pkl",
+  "model_sha256": "3b38f427c43db531ecd33d273fa063f73c13c6c59b15c2ca5ab0c414e7f5fd9b",
+  "purpose": "per-pair correctness probability for the Phase 2 score column (10-point AUC block)",
+  "algorithm": "scikit-learn LogisticRegression + StandardScaler",
+  "feature_count": 20,
+  "features": [
+    "top1_score_bp_sweep",
+    "refine_score",
+    "margin_top1_top2",
+    "margin_top1_median",
+    "score_entropy_norm",
+    "pool_size",
+    "mode_count",
+    "coarse_dense_dist_px",
+    "bp_raw_agree_px",
+    "refine_gain",
+    "refine_shift_px",
+    "refine_scale_delta",
+    "refine_rotation_delta",
+    "refine_converged",
+    "hess_curv_mean",
+    "hess_cond_number",
+    "hess_valid",
+    "blur_lap_var",
+    "lowfreq_energy_frac",
+    "noise_sigma_immerkaer"
+  ],
+  "imputed_at_training_mean": [
+    "pool_size",
+    "mode_count",
+    "coarse_dense_dist_px",
+    "bp_raw_agree_px"
+  ],
+  "imputation_rationale": "These derive from a decimated coarse pool costing ~1.3 s/pair. Measured, imputing all four costs 0.0098 AUC (0.8553 -> 0.8455) while both remain far above the 0.691 incumbent on the same data. Not worth 1.3 s against a 5 s median target.",
+  "training_provenance": {
+    "n_present": 250,
+    "n_absent_diagnostic": 40,
+    "splits": "p2_val + p2_stress, stratified by severity x architecture, seed 20260830",
+    "organizer_data_used": false,
+    "p2_test_touched": false,
+    "pose": "estimated at inference-time pose, never ground truth"
+  },
+  "measured_performance": {
+    "lockbox_n": 74,
+    "auc": 0.892,
+    "ci95": [
+      0.81,
+      0.954
+    ],
+    "incumbent_raw_zncc_same_lockbox": 0.76,
+    "incumbent_authoritative": 0.704,
+    "auc_by_severity": {
+      "0": 0.95,
+      "1": 0.975,
+      "2": 0.857,
+      "3": 0.83
+    },
+    "auc_by_architecture": {
+      "dram": 0.847,
+      "finfet": 0.938
+    },
+    "hgb_rejected": "overfit at this n (train 0.91-1.00 vs lockbox 0.83)"
+  },
+  "caveat": "lockbox n=74 is small; the 0.90 stretch gate lies inside the CI but not at the point estimate",
+  "source": "docs/PHASE2_FINDINGS.md"
+}

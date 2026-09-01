@@ -1,0 +1,54 @@
+{
+ "experiment": "set_a_calibration",
+ "date": "2026-08-31",
+ "question": "The addendum describes Set A as 'noise comparable to the Phase 1 sample prompt' and never mentions decoys. Our corpus plants decoys in 41.5% of present pairs and runs a four-level severity ladder past the disclosed families. Does either explain the localization gap?",
+ "arms": {
+  "A_set_a_like": "severity 0-1, zero decoys, n=180",
+  "B_decoy_control": "severity 0-1, decoys present, n=110",
+  "C_full_mix": "all severities as sampled, n=110"
+ },
+ "results": {
+  "A set-A-like (sev0-1, no decoys)": {
+   "n": 180,
+   "hit1": 54,
+   "rate1": 0.3,
+   "ci": [
+    0.23780396396426395,
+    0.37055453596175936
+   ],
+   "credit": 0.3077777777777778,
+   "pts40": 12.311111111111114,
+   "median_err": 227.2602758586042,
+   "rt_median": 3.9850830000068527
+  },
+  "B decoy control (sev0-1, decoys)": {
+   "n": 110,
+   "hit1": 35,
+   "rate1": 0.3181818181818182,
+   "ci": [
+    0.2385362624482021,
+    0.41009833158420783
+   ],
+   "credit": 0.369090909090909,
+   "pts40": 14.763636363636362,
+   "median_err": 217.55472830105558,
+   "rt_median": 4.5748384000035
+  },
+  "C full mix (all sev, as sampled)": {
+   "n": 110,
+   "hit1": 33,
+   "rate1": 0.3,
+   "ci": [
+    0.22229769508028016,
+    0.3912003583553708
+   ],
+   "credit": 0.32,
+   "pts40": 12.8,
+   "median_err": 215.4914218243884,
+   "rt_median": 4.619491700010258
+  }
+ },
+ "conclusion": "No. All three arms are statistically indistinguishable (30.0%, 31.8%, 30.0% at <=1px, overlapping 95% intervals). Neither the severity ladder nor the planted decoys measurably affect localization. The corpus is not unfairly hard along either axis, and Set A conditions should not be expected to rescue the block.",
+ "organizer_data_used": false,
+ "p2_test_touched": false
+}

@@ -20,6 +20,7 @@ acquisition model.
 | Orthogonal DRAM-like word/bit-line arrays and repeated contacts | [1], [13], [14] |
 | Parallel FinFET fins crossed by gate structures, with pitch/width variation | [1], [15], [16] |
 | Correlation, multiple periodic hypotheses, and candidate ranking | [17], [18], [19] |
+| Phase 2: unknown zoom by field of view, stage rotation, four-level severity ladder, absent pairs, same-architecture decoys, reference-side damage, and an RGB optical mode with cross-channel misregistration | [1], [2], [9], [17], [18], [20] |
 
 The SEM acquisition references support the existence of these effects, not the
 specific random distributions in `driftforge/config.py`. Those ranges are
@@ -64,9 +65,42 @@ endpoint for the sponsor's instrument, the final column says so explicitly.
 | Width variation | `2–12%`; zero for exact wallpaper | Local width variation represents non-ideal fabrication morphology | [2], [3], [16] | Synthetic morphology range |
 | Line-edge roughness magnitude | `0.4–2.0 nm`, ×1.5 in hard/OOD; zero for exact wallpaper | Multi-frequency edge displacement represents roughness without a process simulator | [2], [3], [16] | Domain-randomization hypothesis |
 | Roughness wavelength | `90–420 nm` with a second component at `0.43×` | Correlated rather than pixel-independent edge displacement | [2], [3], [16] | Procedural correlation-length hypothesis |
-| Defect density and dimensions | Density `0.4–1.4`, ×1.4 hard/OOD; about 10 draws per density unit; radii `18–85 nm` | Missing material, residue, bridges and scratches provide nonperiodic identity evidence | [2], [3], [16] | Synthetic coverage range, not a defect-yield prediction |
+| Defect density and dimensions | Density `0.4–1.4`, ×1.4 hard/OOD, ×3 in Phase 2 (window-fingerprint population); about 10 draws per density unit; radii `18–85 nm` | Missing material, residue, bridges and scratches provide nonperiodic identity evidence | [2], [3], [16] | Synthetic coverage range, not a defect-yield prediction |
 | Array-mat period / routing strip | Period `2200–3600 nm`; strip width `220–480 nm`; routing widths `24/28 nm` | Larger-scale array context prevents every normal scene from being infinite wallpaper | [1], [13], [14] | Procedural context model |
 | Exact-wallpaper profile | Zero defects, roughness, line jitter and width variation; no routing strips; phase-equivalent target nearest Search centre | Explicitly exercises the challenge's periodic tie rule | [1], [17], [18] | Test construction, not a frequency claim about real wafers |
+
+### Phase 2 extensions (unknown zoom/rotation, severity ladder, absent pairs, RGB)
+
+These rows cover the Phase 2 domain randomization in
+`driftforge/phase2.py`. The ranges widen the Phase 1 tables above; where a
+Phase 2 level duplicates a Phase 1 range, the wider one governs Phase 2
+pairs. The severity ladder is a *challenge-driven stress model*: the
+organizers disclose degradation categories but not their parameters, so each
+ladder level is a hypothesis intended to span and exceed the disclosed
+family (their public generator's `clean / low_dose / heavy_drift /
+speckle_salt_pepper / charging` variants).
+
+| Implemented parameter | Range in the generator | Physical / challenge rationale | Sources | Status of the numerical range |
+|---|---|---|---|---|
+| Unknown zoom `s` | `U(8, 12)` per pair, produced by the reference field of view (`WORLD_FOV_NM / s`), never by resizing; edge cases within 0.05 of both endpoints (≥2% each) | The disclosed task is recovering an unknown 10-ish magnification jump; widening it defeats any fixed-10x assumption | [1], [9], [10] | Challenge-driven interval; the FOV construction makes the nominal factor exact and the manifest label is refined by a ZNCC measurement of the realized pair |
+| Stage rotation | Reference stage orientation `U(-5, 5)` deg applied on top of the `±2.2` deg acquisition jitter | Independent stage/setup orientation error between acquisitions | [1], [9], [10] | Challenge-driven interval; the label convention is verified empirically by `scripts/verify_conventions.py` |
+| Per-capture magnification jitter | `0.998–1.002` per capture (Phase 2) | Residual magnification calibration error; bounded so the FOV-defined zoom label stays inside the 0.5% oracle tolerance | [10], [11] | Engineering bound, not a tool tolerance claim |
+| Target placement | Uniform over the valid interior; ≥10% of pairs forced within one template-width of an image edge | Navigation errors can leave the target near the frame border; edge-clipped templates must still localize | [1], [9] | Challenge-driven stress share |
+| Search dose ladder | Log-uniform `180–700 / 110–520 / 75–430 / 70–330` counts (L0–L3, overlapping bands centred on the §3.2 ladder) | Low-dose search captures span mild dose reduction to near-starvation; adjacent levels overlap so severity is not trivially decodable from global statistics (gate G5) | [1], [5], [6] | Relative dose model per level; not electrons-per-probe calibration |
+| Read-noise ladder | `0.004–0.020 / 0.006–0.030 / 0.010–0.042 / 0.016–0.050` | Detector/electronics noise grows with the stress level | [2], [5], [6] | Normalized-intensity hypothesis |
+| PSF ladder | σx `2–8 / 2.5–10 / 3.2–11.5 / 4–13` nm; σy = σx · anisotropy, ratio `U(0.9,1.1) … U(0.7,1.4)` | Defocus/astigmatism deepen with severity; anisotropic blur breaks circular-PSF assumptions | [2], [3], [10] | Domain-randomization interval per level |
+| Charging ladder | Amplitude `0–0.09 / 0.01–0.16 / 0.04–0.23 / 0.08–0.28`; streaks `0–1 / 1–3 / 2–6 / 3–9` | Smooth charging fields and scan-band streaks intensify | [2], [7], [8] | Phenomenological amplitude per level |
+| Scan geometry ladder | Shear `±1.4 / ±2.6 / ±4.2 / ±6` px; row jitter σ `0.02–0.16 … 0.55–2.00` px; radial k `±0.005 / ±0.010 / ±0.016 / ±0.020` | Scan drift, vibration and distortion grow with severity | [3], [9], [11] | Phenomenological endpoints per level |
+| Photometry | Vignette `0.02–0.22`, gamma `U(0.85,1.15)`, gain `U(0.85,1.12)`, offset `±0.06` — held severity-INDEPENDENT | A degraded acquisition has less dose and more noise, not a different detector response curve; severity-monotone photometry would make severity decodable from global pixel statistics (gate G5) | [2], [5], [6] | Normalized-intensity hypothesis; deliberately not laddered |
+| Hot/impixel ladder | `0–6e-5 … 0–7e-4` per pixel | Sparse detector outliers at stress rates | [2], [5], [6] | Conservative synthetic outlier rate per level |
+| LER ladder (RMS) | `0.4 / 0.9 / 1.6 / 2.6` nm centres, per-pair factor `U(0.55, 1.7)`, shared by both images of a pair | Line-edge roughness is a wafer property, so both acquisitions see the same edges | [2], [3], [16] | Domain-randomization ladder; RMS converted to the waveform amplitude used by the renderer |
+| CD / polygon bias | Half-width bands `4–9% / 7–14% / 11–18% / 15–22%` per pair, applied to the **search** rendering only (linewidths scale, pitches do not) | Etch/CD drift between two acquisitions: reference and search disagree on linewidth while agreeing on pitch | [2], [13], [16] | Domain-randomization interval; no public source validates an endpoint for the sponsor's process |
+| Reference-side local defects | Poisson count `0.2–1.2 / 0.8–3.5 / 2–8 / 4–12` per reference footprint; contamination blobs at reference scale | Fresh contamination lands on the high-magnification capture between sessions | [2], [3], [16] | Synthetic coverage range, not a yield prediction |
+| Occlusion / damage | `0–2% / 1–5% / 3–9% / 5–15%` of the reference footprint, painted as dark damage blobs | Damaged or partially obscured sites must not be silently abandoned | [2], [3], [16] | Challenge-driven stress range |
+| Absent pairs | 20% of every split; reference rendered from a different structural realization of the same architecture and preset family, matched on severity, zoom and placement | The `found = 0` decision is scored directly; absent references must be indistinguishable from present ones by anything but structure | [17], [18] | Test construction per the challenge's no-instance category; not a wafer-frequency claim |
+| Same-architecture decoys | 40% of present pairs carry `1 + severity` near-duplicate motifs elsewhere in the search field, pitch/orientation identical, widths/contact-occupancy/defect texture perturbed (≈60–90% structural similarity) | Teaches the rejection head precision so the absence threshold does not collapse on near-miss fields | [17], [18], [19] | Test construction; similarity band is a generator hypothesis |
+| Per-cell process variation | Contact dropout `1.2–5.5%` of cells and contact-size modulation `±18–38%` per cell, hashed from the scene seed and identical in both acquisitions | Missing and oversized/undersized vias give every window a per-cell signature so lattice translates cannot correlate identically with the true site | [2], [13], [16] | Synthetic coverage range, not a yield prediction |
+| RGB optical mode | Same latent scene mapped through per-layer reflectance; per-channel gain `U(0.85,1.15)`, colour cast `U(-0.08,0.08)`, cross-channel misregistration `0.3–1.2 px`; ≥15% of pairs effectively grayscale | Optical inspection modality: chromatic aberration makes naive grayscale conversion lossy; grayscale-in-RGB pairs must still route correctly | [2], [6], [20] | Phenomenological optical model; misregistration band is a camera-lens hypothesis |
 
 The checkerboard contact occupancy in `driftforge/scene.py` models a
 centred-rectangular repeated sub-lattice and is **not** presented as the only

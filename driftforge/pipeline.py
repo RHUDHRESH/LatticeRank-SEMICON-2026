@@ -166,6 +166,18 @@ def residual_consensus_applicable(diagnostic: dict[str, float]) -> bool:
     )
 
 
+def _with_budget(diagnostics: dict, deadline) -> dict:
+    """Attach budget provenance to any early-return path.
+
+    Every exit from :func:`locate_v2` carries this, so "which rung of the
+    ladder did this answer come from, and was anything shed" is answerable
+    from the result alone rather than from the run log.
+    """
+    if deadline is not None:
+        diagnostics["budget"] = deadline.report()
+    return diagnostics
+
+
 def _nearest_search_centre(
     rows: list[dict], search_shape: tuple[int, ...]
 ) -> int:
@@ -182,30 +194,100 @@ def _nearest_search_centre(
     )
 
 
+#: Candidates measured before the per-candidate cost is re-estimated. Large
+#: enough that the mean is not dominated by one outlier, small enough that the
+#: probe itself cannot overrun a budget.
+STRUCT_PROBE_CANDIDATES = 48
+
+#: Floor on how many candidates keep their structural descriptor when the
+#: budget is tight. Below this the ranker is choosing from too small a pool to
+#: beat the cheaper consensus paths, so the ladder should drop a rung instead.
+STRUCT_MIN_CANDIDATES = 64
+
+
 def _add_structural_features(
-    reference: np.ndarray, search: np.ndarray, rows: list[dict]
-) -> None:
-    """Populate the expensive descriptor only after ambiguity short-circuiting."""
+    reference: np.ndarray,
+    search: np.ndarray,
+    rows: list[dict],
+    *,
+    deadline=None,
+    template_scale: float = 1.0,
+    template_rotation: float = 0.0,
+) -> list[dict]:
+    """Populate the expensive descriptor only after ambiguity short-circuiting.
+
+    This is the dominant cost in the pipeline: measured at **7.2 ms per
+    candidate**, linear in the candidate count, and 88% of total wall clock on
+    Phase 2 validation pairs. At ``MAX_CANDIDATES`` it alone implies about 57 s
+    per pair against a 20 s hard timeout.
+
+    With ``deadline`` set, the descriptor is applied to a prefix of ``rows``
+    sized to the time actually left. ``rows`` is already sorted by peak channel
+    response (see :func:`compute_candidate_rows`), so a prefix keeps the
+    strongest candidates and discards the weakest. The per-candidate cost is
+    re-measured from a short probe on every call rather than taken from a
+    constant, because the reference machine's speed is not knowable from here.
+
+    Returns the rows that carry descriptors -- the same list when the budget
+    allows, a prefix of it otherwise. Callers must use the returned list, since
+    the scores computed downstream have to align with it.
+    """
     if not rows or "s_raw_zncc0" in rows[0]:
-        return
+        return rows
     from .structural_descriptor import build_context, describe
 
-    context = build_context(reference, search)
-    for row in rows:
+    context = build_context(reference, search, template_scale, template_rotation)
+
+    if deadline is None:
+        for row in rows:
+            row.update(describe(context, row["x"], row["y"]))
+        return rows
+
+    probe = min(STRUCT_PROBE_CANDIDATES, len(rows))
+    probe_start = deadline.clock()
+    for row in rows[:probe]:
         row.update(describe(context, row["x"], row["y"]))
+    unit_cost = (deadline.clock() - probe_start) / max(probe, 1)
+
+    affordable = deadline.cap_for(
+        unit_cost_s=unit_cost,
+        requested=len(rows),
+        minimum=min(STRUCT_MIN_CANDIDATES, len(rows)),
+    )
+    if affordable < len(rows):
+        deadline.degrade(
+            "structural_descriptor",
+            f"described {affordable} of {len(rows)} candidates "
+            f"at {unit_cost * 1e3:.1f} ms each",
+        )
+    kept = rows[:affordable]
+    for row in kept[probe:]:
+        row.update(describe(context, row["x"], row["y"]))
+    return kept
 
 
 def compute_candidate_rows(reference: np.ndarray, search: np.ndarray,
                            delta: float = DELTA, max_cand: int = MAX_CAND,
                            keep_xy: tuple[float, float] | None = None,
-                           keep_tol: float = 5.0, struct: bool = True) -> list[dict]:
+                           keep_tol: float = 5.0, struct: bool = True,
+                           template_scale: float = 1.0,
+                           template_rotation: float = 0.0) -> list[dict]:
     """Adaptive harvest + full feature table for one (reference, search) pair.
 
     `keep_xy` is a TRAIN-ONLY guard: the cost cap sorts by the very score that
     fails, so it can silently discard the true site; training-table builds pass
     the ground truth here to preserve the positive class. Inference never does.
+
+    ``template_scale`` and ``template_rotation`` are in
+    ``baseline._template_from_reference``'s convention, where the internal zoom
+    is ``0.1 * template_scale``. Phase 1 leaves them at ``(1.0, 0.0)``, which is
+    the fixed 10x it was given. Phase 2 does not know the zoom, so it passes
+    ``template_scale = 10 / s`` for its estimated down-scaling factor ``s``.
+    Everything after this point -- periodic cancellation, structural ranking,
+    the learned ranker, the equivalence tie rule -- is unchanged; only the size
+    and orientation of the template being matched differ.
     """
-    cm = response_maps(reference, search)
+    cm = response_maps(reference, search, template_scale, template_rotation)
     cands = harvest(cm, delta=delta)
     if not cands:
         return []
@@ -274,7 +356,10 @@ def compute_candidate_rows(reference: np.ndarray, search: np.ndarray,
             "noise_est": noise,
         })
     if struct and rows:
-        _add_structural_features(reference, search, rows)
+        rows = _add_structural_features(
+            reference, search, rows,
+            template_scale=template_scale, template_rotation=template_rotation,
+        )
     return rows
 
 
@@ -374,10 +459,29 @@ def locate_v2(
     model_path: str | Path = MODEL_PATH,
     model_bundle: dict | None = None,
     candidate_rows: list[dict] | None = None,
+    deadline=None,
+    template_scale: float = 1.0,
+    template_rotation: float = 0.0,
 ) -> LocateV2Result:
-    """Run the final pipeline and always return an in-bounds coordinate."""
+    """Run the final pipeline and always return an in-bounds coordinate.
+
+    ``deadline`` accepts a :class:`driftforge.budget.Deadline`, a budget in
+    seconds, or ``None``. **``None`` is the Phase 1 path exactly** -- no clock
+    is read and no stage is shortened -- which is what makes the watchdog an
+    ablatable extension rather than a change to the declared method.
+
+    With a deadline set, work is shed in a fixed order, cheapest evidence
+    first, and every reduction is recorded in ``diagnostics["budget"]`` so a
+    degraded answer is never mistaken for a confident one.
+    """
+    from .budget import resolve as _resolve_deadline
+
+    deadline = _resolve_deadline(deadline)
     rows = (
-        compute_candidate_rows(reference, search, struct=False)
+        compute_candidate_rows(
+            reference, search, struct=False,
+            template_scale=template_scale, template_rotation=template_rotation,
+        )
         if candidate_rows is None
         else candidate_rows
     )
@@ -385,7 +489,9 @@ def locate_v2(
     cx, cy = (w - 1) / 2.0, (h - 1) / 2.0
     if not rows:                                    # never abstain
         return LocateV2Result(cx, cy, 0.0, 0, 0, False,
-                              {"note": "no candidates; centre fallback"})
+                              _with_budget(
+                                  {"note": "no candidates; centre fallback"},
+                                  deadline))
 
     ambiguity = wallpaper_ambiguity_diagnostic(rows, search)
     if ambiguity["detected"]:
@@ -402,17 +508,22 @@ def locate_v2(
             eq_set_size=len(rows),
             n_candidates=len(rows),
             used_residual=False,
-            diagnostics={
-                "selection_mode": "periodic_wallpaper_centre_rule",
-                "wallpaper_ambiguity": ambiguity,
-            },
+            diagnostics=_with_budget(
+                {
+                    "selection_mode": "periodic_wallpaper_centre_rule",
+                    "wallpaper_ambiguity": ambiguity,
+                },
+                deadline,
+            ),
         )
 
     lattice_compatibility = lattice_compatibility_diagnostic(reference, search)
     if use_residual and residual_consensus_applicable(lattice_compatibility):
         from .residual import ResidualMatcher
 
-        matcher = ResidualMatcher(reference, search)
+        matcher = ResidualMatcher(
+            reference, search, scale=template_scale, rotation=template_rotation
+        )
         residual_score = normalize_evidence(
             np.asarray(
                 [
@@ -452,51 +563,69 @@ def locate_v2(
                 eq_set_size=equivalence_size,
                 n_candidates=len(rows),
                 used_residual=True,
-                diagnostics={
-                    "selection_mode": "periodic_residual_consensus",
-                    "wallpaper_ambiguity": ambiguity,
-                    "lattice_compatibility": lattice_compatibility,
-                    "score_max": float(consensus_score.max()),
-                    "weights": {
-                        "residual": 1.0,
-                        "raw": CONSENSUS_RAW_WEIGHT,
-                        "midband": CONSENSUS_MIDBAND_WEIGHT,
+                diagnostics=_with_budget(
+                    {
+                        "selection_mode": "periodic_residual_consensus",
+                        "wallpaper_ambiguity": ambiguity,
+                        "lattice_compatibility": lattice_compatibility,
+                        "score_max": float(consensus_score.max()),
+                        "weights": {
+                            "residual": 1.0,
+                            "raw": CONSENSUS_RAW_WEIGHT,
+                            "midband": CONSENSUS_MIDBAND_WEIGHT,
+                        },
                     },
-                },
+                    deadline,
+                ),
             )
 
-    _add_structural_features(reference, search, rows)
+    pool_size = len(rows)
+    rows = _add_structural_features(
+        reference, search, rows, deadline=deadline,
+        template_scale=template_scale, template_rotation=template_rotation,
+    )
 
     bundle = model_bundle if model_bundle is not None else load_ranker(model_path)
     probabilities, score = rank_candidate_rows(rows, bundle)
     used_residual = False
     if use_residual:
-        from .residual import ResidualMatcher
-        rm = ResidualMatcher(reference, search)
-        rz = normalize_evidence(
-            np.array(
-                [
-                    rm.score(row["x"], row["y"])["res_int_m50"]
-                    for row in rows
-                ]
+        # Building the matcher dominates the residual stage; scoring each
+        # candidate against it is comparatively free.
+        if deadline is not None and not deadline.affords("residual", estimate_s=2.0):
+            deadline.degrade("residual", "skipped: insufficient budget")
+        else:
+            from .residual import ResidualMatcher
+            rm = ResidualMatcher(
+                reference, search, scale=template_scale, rotation=template_rotation
             )
-        )
-        if rz is not None:
-            score = score + RESIDUAL_WEIGHT * rz
-            used_residual = True
+            rz = normalize_evidence(
+                np.array(
+                    [
+                        rm.score(row["x"], row["y"])["res_int_m50"]
+                        for row in rows
+                    ]
+                )
+            )
+            if rz is not None:
+                score = score + RESIDUAL_WEIGHT * rz
+                used_residual = True
 
     smax = float(score.max())
     best, equivalence_size = select_equivalent_candidate(
         rows, score, search.shape
     )
+    diagnostics = {
+        "selection_mode": "ranked_evidence",
+        "wallpaper_ambiguity": ambiguity,
+        "lattice_compatibility": lattice_compatibility,
+        "score_max": smax,
+        "prob_max": float(probabilities.max()),
+        "candidate_pool_size": pool_size,
+    }
+    if deadline is not None:
+        diagnostics["budget"] = deadline.report()
     return LocateV2Result(
         x=float(rows[best]["x"]), y=float(rows[best]["y"]),
         probability=float(probabilities[best]), eq_set_size=equivalence_size,
         n_candidates=len(rows), used_residual=used_residual,
-        diagnostics={
-            "selection_mode": "ranked_evidence",
-            "wallpaper_ambiguity": ambiguity,
-            "lattice_compatibility": lattice_compatibility,
-            "score_max": smax,
-            "prob_max": float(probabilities.max()),
-        })
+        diagnostics=diagnostics)

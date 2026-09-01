@@ -1,0 +1,765 @@
+{
+ "experiment": "distinct_site_rank_of_truth",
+ "date": "2026-08-31",
+ "question": "E1 reported a median of 22 surface PIXELS outscoring the true site, which was read as hopeless. That reading conflates '22 rival sites' with 'a few rival sites each several pixels wide' -- 22 of ~810,000 positions is the top 0.003%. Non-max-suppress at the lattice pitch and ask where the truth actually ranks among DISTINCT sites.",
+ "design": "n=80 present pairs from p2_val. Band-passed ZNCC surface, NMS radius 0.6x the estimated lattice pitch, top 400 distinct sites. Measured at the ground-truth pose (the ceiling) and at the pose the shipped sweep selects (reality).",
+ "results": {
+  "rank_gt": {
+   "n": 80,
+   "rank1": 37.5,
+   "top3": 42.5,
+   "top5": 47.5,
+   "top10": 57.5,
+   "top25": 66.25,
+   "not_in_pool": 15.0,
+   "median_rank": 3.5
+  },
+  "rank_est": {
+   "n": 80,
+   "rank1": 32.5,
+   "top3": 42.5,
+   "top5": 46.25,
+   "top10": 50.0,
+   "top25": 57.5,
+   "not_in_pool": 22.5,
+   "median_rank": 2.5
+  }
+ },
+ "conclusion": "The reframe is half right: the median rank of the truth is 4, not 22, so the problem is 'pick 1 of a handful', not 'pick 1 of 810,000'. But the ladder is shallow. At the ground-truth pose the truth is rank-1 in 37.5%, top-5 in 47.5%, top-25 in 66.2% and top-400 in 85.0%; in 15.0% of pairs it is not a competitive local maximum at all. Therefore a machine with BOTH perfect pose AND a perfect oracle re-ranker over 400 candidates scores 85% = 34/40. 40/40 is arithmetically unreachable. The buildable increment is rank-1 -> top-5, worth at most +10 pp, and it requires flawless discrimination among near-identical lattice translates using features measured at AUC 0.38-0.62 -- which is precisely what ten prior families failed to achieve.",
+ "ceiling_ladder": {
+  "ship_today_pts40": 13,
+  "perfect_top5_reranker_pts40": 19,
+  "perfect_top25_reranker_pts40": 26.5,
+  "perfect_400_reranker_gt_pose_pts40": 34,
+  "required_for_full_marks_pts40": 40
+ },
+ "caveats": [
+  "n=80. 'Absent' means not among the top 400 NMS'd peaks, which folds together a weak local maximum and the 400 cap; it is a bound on re-ranking, not a claim that the site is undetectable at any radius.",
+  "NMS radius is tied to estimate_lattice, so a bad pitch estimate can merge or split sites.",
+  "p2_val only; no organizer data used."
+ ],
+ "organizer_data_used": false,
+ "p2_test_touched": false,
+ "rows": [
+  {
+   "id": "p2_val-000000",
+   "severity": 3,
+   "nms_r": 6.95999999999998,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000001",
+   "severity": 3,
+   "nms_r": 4.9199999999999875,
+   "rank_gt": 2,
+   "rank_est": 2,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000002",
+   "severity": 3,
+   "nms_r": 3.779999999999992,
+   "rank_gt": 278,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000004",
+   "severity": 0,
+   "nms_r": 3.0,
+   "rank_gt": 124,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000005",
+   "severity": 0,
+   "nms_r": 3.149999999999994,
+   "rank_gt": 1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000006",
+   "severity": 2,
+   "nms_r": 3.659999999999992,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000007",
+   "severity": 1,
+   "nms_r": 4.379999999999989,
+   "rank_gt": 1,
+   "rank_est": 3,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000009",
+   "severity": 2,
+   "nms_r": 3.0599999999999943,
+   "rank_gt": 2,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000010",
+   "severity": 1,
+   "nms_r": 3.5399999999999925,
+   "rank_gt": 153,
+   "rank_est": 146,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000011",
+   "severity": 3,
+   "nms_r": 4.859999999999988,
+   "rank_gt": 141,
+   "rank_est": 143,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000012",
+   "severity": 1,
+   "nms_r": 3.0599999999999943,
+   "rank_gt": -1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000014",
+   "severity": 2,
+   "nms_r": 4.34999999999999,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000015",
+   "severity": 3,
+   "nms_r": 5.399999999999986,
+   "rank_gt": 1,
+   "rank_est": 8,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000016",
+   "severity": 0,
+   "nms_r": 3.5999999999999925,
+   "rank_gt": 7,
+   "rank_est": 8,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000018",
+   "severity": 0,
+   "nms_r": 6.179999999999983,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000020",
+   "severity": 1,
+   "nms_r": 4.19999999999999,
+   "rank_gt": -1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000021",
+   "severity": 2,
+   "nms_r": 4.589999999999989,
+   "rank_gt": 7,
+   "rank_est": 14,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000023",
+   "severity": 1,
+   "nms_r": 3.659999999999992,
+   "rank_gt": 298,
+   "rank_est": 300,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000024",
+   "severity": 1,
+   "nms_r": 6.389999999999982,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000025",
+   "severity": 0,
+   "nms_r": 3.749999999999992,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000026",
+   "severity": 2,
+   "nms_r": 4.34999999999999,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000028",
+   "severity": 1,
+   "nms_r": 4.19999999999999,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000030",
+   "severity": 2,
+   "nms_r": 5.189999999999986,
+   "rank_gt": 10,
+   "rank_est": 277,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000032",
+   "severity": 0,
+   "nms_r": 6.599999999999982,
+   "rank_gt": 4,
+   "rank_est": 3,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000033",
+   "severity": 1,
+   "nms_r": 3.5999999999999925,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000035",
+   "severity": 3,
+   "nms_r": 4.979999999999987,
+   "rank_gt": 16,
+   "rank_est": 19,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000036",
+   "severity": 0,
+   "nms_r": 5.1299999999999875,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000037",
+   "severity": 0,
+   "nms_r": 3.2399999999999936,
+   "rank_gt": 1,
+   "rank_est": 3,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000038",
+   "severity": 1,
+   "nms_r": 3.5099999999999927,
+   "rank_gt": 1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000039",
+   "severity": 1,
+   "nms_r": 3.0,
+   "rank_gt": -1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000040",
+   "severity": 2,
+   "nms_r": 3.0,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000042",
+   "severity": 2,
+   "nms_r": 3.0,
+   "rank_gt": 3,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000043",
+   "severity": 2,
+   "nms_r": 4.139999999999991,
+   "rank_gt": -1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000044",
+   "severity": 3,
+   "nms_r": 6.299999999999983,
+   "rank_gt": 4,
+   "rank_est": 4,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000045",
+   "severity": 0,
+   "nms_r": 6.809999999999982,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000046",
+   "severity": 1,
+   "nms_r": 4.619999999999989,
+   "rank_gt": 15,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000047",
+   "severity": 1,
+   "nms_r": 6.899999999999981,
+   "rank_gt": 6,
+   "rank_est": 28,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000049",
+   "severity": 2,
+   "nms_r": 3.389999999999993,
+   "rank_gt": 11,
+   "rank_est": 13,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000050",
+   "severity": 1,
+   "nms_r": 3.5399999999999925,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000052",
+   "severity": 0,
+   "nms_r": 3.5399999999999925,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000053",
+   "severity": 3,
+   "nms_r": 4.829999999999988,
+   "rank_gt": 182,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000054",
+   "severity": 2,
+   "nms_r": 3.689999999999992,
+   "rank_gt": -1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000056",
+   "severity": 1,
+   "nms_r": 4.379999999999989,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000057",
+   "severity": 0,
+   "nms_r": 5.369999999999987,
+   "rank_gt": 57,
+   "rank_est": 199,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000059",
+   "severity": 3,
+   "nms_r": 3.8399999999999914,
+   "rank_gt": 78,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000060",
+   "severity": 0,
+   "nms_r": 3.8099999999999916,
+   "rank_gt": 23,
+   "rank_est": 26,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000061",
+   "severity": 0,
+   "nms_r": 3.5999999999999925,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000062",
+   "severity": 1,
+   "nms_r": 3.5099999999999927,
+   "rank_gt": 1,
+   "rank_est": 5,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000063",
+   "severity": 1,
+   "nms_r": 6.809999999999982,
+   "rank_gt": 262,
+   "rank_est": 349,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000064",
+   "severity": 1,
+   "nms_r": 4.769999999999988,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000065",
+   "severity": 1,
+   "nms_r": 4.4099999999999895,
+   "rank_gt": 3,
+   "rank_est": 2,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000066",
+   "severity": 1,
+   "nms_r": 3.0599999999999943,
+   "rank_gt": 8,
+   "rank_est": 12,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000067",
+   "severity": 0,
+   "nms_r": 4.4099999999999895,
+   "rank_gt": -1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000068",
+   "severity": 0,
+   "nms_r": 5.879999999999984,
+   "rank_gt": 21,
+   "rank_est": 29,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000069",
+   "severity": 1,
+   "nms_r": 5.039999999999988,
+   "rank_gt": 142,
+   "rank_est": 221,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000070",
+   "severity": 3,
+   "nms_r": 3.749999999999992,
+   "rank_gt": 114,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000072",
+   "severity": 1,
+   "nms_r": 3.0299999999999945,
+   "rank_gt": 39,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000073",
+   "severity": 0,
+   "nms_r": 5.219999999999986,
+   "rank_gt": -1,
+   "rank_est": 198,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000074",
+   "severity": 0,
+   "nms_r": 3.0,
+   "rank_gt": 7,
+   "rank_est": 4,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000075",
+   "severity": 3,
+   "nms_r": 3.8999999999999915,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000076",
+   "severity": 2,
+   "nms_r": 3.959999999999991,
+   "rank_gt": -1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000078",
+   "severity": 2,
+   "nms_r": 3.659999999999992,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000079",
+   "severity": 3,
+   "nms_r": 3.7199999999999918,
+   "rank_gt": 1,
+   "rank_est": 2,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000080",
+   "severity": 1,
+   "nms_r": 3.2099999999999937,
+   "rank_gt": 9,
+   "rank_est": 102,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000081",
+   "severity": 0,
+   "nms_r": 3.359999999999993,
+   "rank_gt": 5,
+   "rank_est": 2,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000082",
+   "severity": 2,
+   "nms_r": 3.389999999999993,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000083",
+   "severity": 1,
+   "nms_r": 6.809999999999982,
+   "rank_gt": -1,
+   "rank_est": 245,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000084",
+   "severity": 0,
+   "nms_r": 3.269999999999994,
+   "rank_gt": 5,
+   "rank_est": 139,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000085",
+   "severity": 1,
+   "nms_r": 3.5999999999999925,
+   "rank_gt": -1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000086",
+   "severity": 2,
+   "nms_r": 3.5099999999999927,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000087",
+   "severity": 2,
+   "nms_r": 5.999999999999984,
+   "rank_gt": 20,
+   "rank_est": 71,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000088",
+   "severity": 2,
+   "nms_r": 3.269999999999994,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000089",
+   "severity": 0,
+   "nms_r": 6.7499999999999805,
+   "rank_gt": 7,
+   "rank_est": 2,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000090",
+   "severity": 0,
+   "nms_r": 3.779999999999992,
+   "rank_gt": -1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000091",
+   "severity": 1,
+   "nms_r": 3.659999999999992,
+   "rank_gt": 143,
+   "rank_est": 24,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000092",
+   "severity": 0,
+   "nms_r": 3.8999999999999915,
+   "rank_gt": 1,
+   "rank_est": 1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000095",
+   "severity": 2,
+   "nms_r": 4.649999999999989,
+   "rank_gt": -1,
+   "rank_est": -1,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000096",
+   "severity": 1,
+   "nms_r": 6.7499999999999805,
+   "rank_gt": 16,
+   "rank_est": 12,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000097",
+   "severity": 0,
+   "nms_r": 3.0,
+   "rank_gt": 105,
+   "rank_est": 371,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  },
+  {
+   "id": "p2_val-000098",
+   "severity": 0,
+   "nms_r": 3.5699999999999927,
+   "rank_gt": 160,
+   "rank_est": 8,
+   "n_sites_gt": 400,
+   "n_sites_est": 400
+  }
+ ]
+}

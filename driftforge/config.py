@@ -84,5 +84,14 @@ PROFILE_MIX = {
     # Extended leak-free validation set. It mirrors the validation mix but is
     # a separate, scene-disjoint split rather than a re-slice.
     "validation_benchmark": [("standard", 0.50), ("hard", 0.25), ("boundary", 0.15), ("ambiguous", 0.10)],
+    # Phase 2 scene-structure mixes (driftforge.phase2.PROFILE_MIX_P2); the
+    # severity ladder, not the profile, owns acquisition difficulty there.
+    "p2_train": [("standard", 0.62), ("hard", 0.18), ("boundary", 0.10), ("ambiguous", 0.10)],
+    "p2_val": [("standard", 0.62), ("hard", 0.18), ("boundary", 0.10), ("ambiguous", 0.10)],
+    "p2_test": [("standard", 0.62), ("hard", 0.18), ("boundary", 0.10), ("ambiguous", 0.10)],
+    "p2_holdout_fam": [("standard", 0.62), ("hard", 0.18), ("boundary", 0.10), ("ambiguous", 0.10)],
+    "p2_stress": [("standard", 0.62), ("hard", 0.18), ("boundary", 0.10), ("ambiguous", 0.10)],
+    "p2_val_rgb": [("standard", 0.62), ("hard", 0.18), ("boundary", 0.10), ("ambiguous", 0.10)],
+    "p2_bulk": [("standard", 0.62), ("hard", 0.18), ("boundary", 0.10), ("ambiguous", 0.10)],
 }
 

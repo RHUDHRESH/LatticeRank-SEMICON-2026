@@ -19,6 +19,24 @@ SPLIT_SEED_BASE = {
     "validation_benchmark": 900_000,
 }
 
+# Phase 2 bases. Disjoint from every Phase 1 base and from each other; the
+# gap between bases exceeds the largest per-split count by two orders of
+# magnitude, and assert_disjoint additionally checks derived realizations.
+SPLIT_SEED_BASE.update(
+    {
+        "p2_train": 1_100_000,
+        "p2_val": 1_300_000,
+        "p2_test": 1_500_000,
+        "p2_holdout_fam": 1_700_000,
+        "p2_stress": 1_900_000,
+        # RGB optical-mode (Set D analogue) validation split, mirroring the
+        # p2_val mix on a disjoint seed base.
+        "p2_val_rgb": 2_100_000,
+        # Bulk production corpus (10M+ base; far from every other range).
+        "p2_bulk": 10_000_000,
+    }
+)
+
 
 def _weighted_profiles(split: str, count: int, rng: np.random.Generator) -> list[str]:
     names, weights = zip(*PROFILE_MIX[split])
@@ -78,11 +96,48 @@ def summarize(records: list[dict]) -> dict:
 
 
 def assert_disjoint(groups: dict[str, list[dict]]) -> None:
-    seen: set[str] = set()
+    """Reject seed collisions across splits, including derived realizations.
+
+    Besides the raw seeds themselves, every split consumes seeds derived from
+    them - the latent scene is drawn from ``seed * 17 + 3`` (Phase 1) or the
+    scene seed directly (Phase 2), absent-pair references from
+    ``scene_seed ^ 0x5EED``, and acquisitions from the Phase 2 multipliers -
+    so a collision in any of those derived spaces would correlate two
+    splits' imagery just as effectively. The check mirrors
+    ``train_ranker.assert_scene_disjoint``.
+    """
+    seen: dict[str, set] = {"scene_id": set(), "seed": set(), "derived": set()}
     for split, records in groups.items():
-        current = {row["scene_id"] for row in records}
-        overlap = seen & current
+        current_ids = {row["scene_id"] for row in records}
+        overlap = seen["scene_id"] & current_ids
         if overlap:
             raise AssertionError(f"scene leakage into {split}: {sorted(overlap)[:3]}")
-        seen |= current
+
+        seeds = {int(row["seed"]) for row in records}
+        derived = set()
+        for seed in seeds:
+            for value in _derived_realizations(seed):
+                derived.add(value)
+        # Raw seeds and derived realizations are checked against the union of
+        # both spaces from earlier splits: a seed equal to another split's
+        # derived realization correlates the two scenes just as effectively.
+        for label, current in (("seed", seeds), ("derived", derived)):
+            overlap = (seen["seed"] | seen["derived"]) & current
+            if overlap:
+                raise AssertionError(
+                    f"{label} leakage into {split}: {sorted(overlap)[:3]}"
+                )
+        seen["scene_id"] |= current_ids
+        seen["seed"] |= seeds
+        seen["derived"] |= derived
+
+
+def _derived_realizations(seed: int) -> set[int]:
+    """Seed values derived from ``seed`` by the generators (G9)."""
+    return {
+        seed * 17 + 3,            # Phase 1 latent scene
+        seed * 7_919 + 101,       # Phase 2 reference acquisition stream
+        seed * 1_000_003 + 313,   # Phase 2 search acquisition stream
+        seed ^ 0x5EED,            # Phase 2 absent-pair reference scene
+    }
 

@@ -1,0 +1,50 @@
+{
+  "experiment": "f06_bias_gain_compensation",
+  "measured": "2026-08-31",
+  "hypothesis": "Fitting S ~= a*T + b per block separates photometric change from geometric mismatch; a true site under charging should show coherent compensated structure while a wrong lattice sibling cannot be repaired by any (a, b).",
+  "stage1_auc_overall": 0.579,
+  "stage1_auc_by_severity": {
+    "0": 0.741,
+    "1": 0.517,
+    "2": 0.5,
+    "3": 0.429
+  },
+  "gate_stage1_auc": 0.7,
+  "runtime_us_per_candidate": 14197,
+  "gate_us_per_candidate": 250,
+  "stage2_run": false,
+  "verdict": "KILL",
+  "why": "Individual features clear the 0.70 gate comfortably, but every one shows negative or zero paired increment over the raw ZNCC baseline computed in the same harness. The family measures something real about photometric mismatch; it adds nothing the correlation does not already carry.",
+  "source": "docs/PHASE2_FINDINGS.md",
+  "status": "SUPERSEDED by a corrected re-measurement on the scene-precompute harness",
+  "original_session_log_numbers": {
+    "stage1_auc_overall": 0.579,
+    "stage1_auc_by_severity": {
+      "0": 0.741,
+      "1": 0.517,
+      "2": 0.5,
+      "3": 0.429
+    },
+    "runtime_us_per_candidate": 14197,
+    "provenance_warning": "These came from a session log only. The agent that produced them never wrote its knowledge file, so they cannot be traced to an artifact and should not be cited. Retained here solely to document what was originally reported."
+  },
+  "corrected_measurement": {
+    "n_scenes": 64,
+    "splits": "p2_val + p2_stress",
+    "channel": "raw (verified)",
+    "harness": "scratchpad/scene_harness/scene_context.py",
+    "best_features_individual_auc": {
+      "bg_compensated_ncc": 0.97,
+      "bg_gain_median": 0.947
+    },
+    "anti_correlated_subfeatures_auc": {
+      "bias_median_etc": "0.13-0.28"
+    },
+    "paired_increment_vs_in_harness_raw_zncc": "negative or ~zero for all 10 features",
+    "in_harness_raw_zncc_baseline_auc": 0.972,
+    "runtime_us_per_candidate": 97.1,
+    "gate_us_per_candidate": 250,
+    "stage2_run": false
+  },
+  "important_caveat_on_the_baseline": "The in-harness raw_zncc control scores 0.972 because it is computed at GROUND-TRUTH pose with a single template. The pipeline's realistic estimated-pose figure is ~0.775. Against a near-perfect oracle baseline almost nothing can show increment, so this increment test is conservative and may understate a family's value under real inference conditions. See f06-f11-remeasured.md sec 4."
+}

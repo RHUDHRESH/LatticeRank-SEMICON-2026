@@ -1,0 +1,54 @@
+{
+  "experiment": "exp18_correctness_calibrator",
+  "measured": "2026-08-30",
+  "purpose": "AUC of the score column against per-pair correctness (10-point block)",
+  "n_train_pairs": 250,
+  "n_absent_diagnostic": 40,
+  "splits": "p2_val + p2_stress, stratified by severity x architecture, seed 20260830",
+  "lockbox_n": 74,
+  "models": {
+    "logistic_regression": {
+      "auc": 0.892,
+      "ci95": [
+        0.81,
+        0.954
+      ],
+      "features": 20,
+      "selected": true
+    },
+    "raw_zncc_incumbent_same_lockbox": {
+      "auc": 0.76,
+      "ci95": [
+        0.639,
+        0.86
+      ]
+    },
+    "raw_zncc_authoritative": {
+      "auc": 0.704,
+      "n": 280
+    },
+    "isotonic_on_scalar": {
+      "auc": 0.754,
+      "note": "AUC-neutral, as expected for a monotone map"
+    },
+    "hgb": {
+      "note": "overfit at this n; train AUC 0.91-1.00 vs lockbox 0.83; lost to LR"
+    }
+  },
+  "auc_by_severity": {
+    "0": 0.95,
+    "1": 0.975,
+    "2": 0.857,
+    "3": 0.83
+  },
+  "auc_by_architecture": {
+    "dram": 0.847,
+    "finfet": 0.938
+  },
+  "recommended_score_expression": "score = float(np.clip(p_correct, 1e-6, 1.0 - 1e-6))",
+  "score_on_rejected_pairs": "p_correct is computed identically whether found is 0 or 1 and is never hard-coded. Measured on absent pairs the model already pushes these low on its own (mean p_correct 0.103 vs 0.260 on present). Only pairs with zero valid candidates fall back to the 1e-6 floor.",
+  "bootstrap": "by pair, never by candidate row",
+  "verdict": "GO -- clears the 0.80 useful and 0.85 target gates at the point estimate",
+  "caveat": "0.90 stretch lies inside the CI but not at the point estimate; lockbox n=74",
+  "source": "docs/PHASE2_FINDINGS.md"
+}

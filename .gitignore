@@ -23,6 +23,16 @@ experiments/
 reproduced-*/
 *.tmp
 
+# Run artifacts. The evidence JSONs in results/ are tracked deliberately --
+# every measured claim in the README cites one -- but scratch run logs and
+# rendered debug dumps are regenerable and would bloat the repository.
+results/*.log
+results/*.npz
+results/*.joblib
+results/phase2_failures/
+results/phase2_report/
+results/sponsor_baseline/
+
 # Local editor state
 .idea/
 .vscode/

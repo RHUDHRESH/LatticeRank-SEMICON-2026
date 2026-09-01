@@ -1,0 +1,122 @@
+{
+  "all_pass": false,
+  "data_root": "data\\phase2_bulk",
+  "g9_cross_split_disjointness": {
+    "collisions": [],
+    "pass": true,
+    "splits": [
+      "shard_00000"
+    ]
+  },
+  "splits": {
+    "shard_00000": {
+      "g10_absent_present_parity": {
+        "architecture": {
+          "ks": 0.0047,
+          "p": 1.0
+        },
+        "gt_scale": {
+          "ks": 0.0255,
+          "p": 1.0
+        },
+        "n_absent": 948,
+        "n_present": 4052,
+        "pass": true,
+        "preset_family": {
+          "ks": 0.0159,
+          "p": 1.0
+        },
+        "severity": {
+          "ks": 0.0061,
+          "p": 1.0
+        },
+        "threshold": "KS p > 0.05"
+      },
+      "g11_image_shapes": {
+        "bad": [],
+        "checked": 10000,
+        "pass": true
+      },
+      "g12_regeneration_byte_identical": {
+        "checked": 3,
+        "mismatches": [],
+        "pass": true
+      },
+      "g1_g2_zoom_rotation_oracles": {
+        "pairs": 30,
+        "pass": true,
+        "scale_err_max_pct": 0.2809,
+        "scale_within_tol": 30,
+        "theta_err_max_deg": 0.0984,
+        "theta_within_tol": 30,
+        "thresholds": {
+          "scale": "0.5% on >=99%",
+          "theta": "0.15 deg on >=99%"
+        }
+      },
+      "g3_sponsor_baseline_band": {
+        "acc_at_5px": 0.5,
+        "band": [
+          0.4,
+          0.85
+        ],
+        "median_err_px": 147.772,
+        "method": "sponsor zncc_match port; scale grid [8,12] step 0.5 + 0.1 refinement; rotation grid +/-7.5 step 1.5 + 0.5 refinement",
+        "pairs": 12,
+        "pass": true
+      },
+      "g4_g5_pixel_histogram": {
+        "g4": {
+          "auc": 0.5202,
+          "pass": true,
+          "threshold": 0.55
+        },
+        "g5": {
+          "auc": 0.7476,
+          "pass": false,
+          "threshold": 0.7
+        }
+      },
+      "g6_no_crop_paste": {
+        "bit_identical_matches": 0,
+        "pairs": 12,
+        "pass": true,
+        "patches_per_pair": 16
+      },
+      "g7_marginals": {
+        "gt_scale": {
+          "claimed": "U(8, 12)",
+          "ks": 0.0256,
+          "p": 1.0
+        },
+        "gt_theta": {
+          "claimed": "U(-5,5) (+/-) ref-jitter U(-2.2,2.2) (+/-) search-rot U(-0.35,0.35)",
+          "ks": 0.0141,
+          "p": 1.0
+        },
+        "pass": true
+      },
+      "g8_index_correlation": {
+        "architecture": {
+          "pass": true,
+          "r": 0.0244
+        },
+        "gt_scale": {
+          "pass": true,
+          "r": -0.0231
+        },
+        "gt_theta": {
+          "pass": true,
+          "r": 0.0111
+        },
+        "pass": true,
+        "permutations": 4000,
+        "severity": {
+          "pass": true,
+          "r": 0.0344
+        },
+        "threshold": 0.1
+      }
+    }
+  }
+}

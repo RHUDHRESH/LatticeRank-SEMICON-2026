@@ -1,0 +1,254 @@
+{
+  "summary": {
+    "split": "p2_val",
+    "pairs": 8,
+    "recall": {
+      "detect": {
+        "le1.0px": 1.0,
+        "le1.5px": 1.0,
+        "le2.0px": 1.0,
+        "le3.0px": 1.0,
+        "le5.0px": 1.0
+      },
+      "harvest": {
+        "le1.0px": 0.875,
+        "le1.5px": 0.875,
+        "le2.0px": 0.875,
+        "le3.0px": 0.875,
+        "le5.0px": 0.875
+      },
+      "pool": {
+        "le1.0px": 0.875,
+        "le1.5px": 0.875,
+        "le2.0px": 0.875,
+        "le3.0px": 0.875,
+        "le5.0px": 0.875
+      }
+    },
+    "selection": {
+      "le1.0px": 0.5,
+      "le1.5px": 0.5,
+      "le2.0px": 0.5,
+      "le3.0px": 0.625,
+      "le5.0px": 0.625
+    },
+    "selection_given_pool_1p5": {
+      "n": 7,
+      "le1.0px": 0.5714,
+      "le1.5px": 0.5714,
+      "le2.0px": 0.5714,
+      "le3.0px": 0.7143,
+      "le5.0px": 0.7143
+    },
+    "runtime_s": {
+      "median_total": 6.244,
+      "p95_total": 22.805,
+      "max_total": 24.215,
+      "over_20s": 2
+    },
+    "by_cell": {
+      "dram_sev0": {
+        "n": 1,
+        "pool_le1.5px": 1.0,
+        "select_le1px": 0.0,
+        "select_le5px": 1.0
+      },
+      "dram_sev1": {
+        "n": 1,
+        "pool_le1.5px": 1.0,
+        "select_le1px": 0.0,
+        "select_le5px": 0.0
+      },
+      "dram_sev2": {
+        "n": 1,
+        "pool_le1.5px": 1.0,
+        "select_le1px": 1.0,
+        "select_le5px": 1.0
+      },
+      "dram_sev3": {
+        "n": 1,
+        "pool_le1.5px": 1.0,
+        "select_le1px": 1.0,
+        "select_le5px": 1.0
+      },
+      "finfet_sev0": {
+        "n": 1,
+        "pool_le1.5px": 0.0,
+        "select_le1px": 0.0,
+        "select_le5px": 0.0
+      },
+      "finfet_sev1": {
+        "n": 1,
+        "pool_le1.5px": 1.0,
+        "select_le1px": 1.0,
+        "select_le5px": 1.0
+      },
+      "finfet_sev2": {
+        "n": 1,
+        "pool_le1.5px": 1.0,
+        "select_le1px": 1.0,
+        "select_le5px": 1.0
+      },
+      "finfet_sev3": {
+        "n": 1,
+        "pool_le1.5px": 1.0,
+        "select_le1px": 0.0,
+        "select_le5px": 0.0
+      }
+    }
+  },
+  "rows": [
+    {
+      "id": "p2_val-000005",
+      "architecture": "dram",
+      "severity": 0,
+      "preset_family": "dram_dense",
+      "gt_scale": 10.3488,
+      "gt_theta": -0.9512,
+      "n_harvested": 1907,
+      "n_pool": 1907,
+      "d_detect": 0.6828148943894,
+      "d_harvest": 0.6828148943894,
+      "d_pool": 0.6828148943894,
+      "d_select": 2.681237807431488,
+      "eq_set_size": 1,
+      "selection_mode": "ranked_evidence",
+      "t_harvest": 0.448255600000266,
+      "t_pool": 17.707496300005005,
+      "t_select": 2.480342599999858
+    },
+    {
+      "id": "p2_val-000010",
+      "architecture": "dram",
+      "severity": 1,
+      "preset_family": "dram_dense",
+      "gt_scale": 11.4612,
+      "gt_theta": 3.3173,
+      "n_harvested": 2539,
+      "n_pool": 2539,
+      "d_detect": 0.4613130173754268,
+      "d_harvest": 0.4613130173754268,
+      "d_pool": 0.4613130173754268,
+      "d_select": 108.99051798069408,
+      "eq_set_size": 1,
+      "selection_mode": "periodic_residual_consensus",
+      "t_harvest": 0.4589620000042487,
+      "t_pool": 15.082749599998351,
+      "t_select": 1.980308199999854
+    },
+    {
+      "id": "p2_val-000006",
+      "architecture": "dram",
+      "severity": 2,
+      "preset_family": "dram_dense",
+      "gt_scale": 8.0408,
+      "gt_theta": -3.4595,
+      "n_harvested": 12,
+      "n_pool": 12,
+      "d_detect": 0.538160988924336,
+      "d_harvest": 0.538160988924336,
+      "d_pool": 0.538160988924336,
+      "d_select": 0.538160988924336,
+      "eq_set_size": 1,
+      "selection_mode": "ranked_evidence",
+      "t_harvest": 0.41592519999539945,
+      "t_pool": 0.8387997999961954,
+      "t_select": 2.0277983999985736
+    },
+    {
+      "id": "p2_val-000000",
+      "architecture": "dram",
+      "severity": 3,
+      "preset_family": "dram_open",
+      "gt_scale": 10.638,
+      "gt_theta": 1.4146,
+      "n_harvested": 96,
+      "n_pool": 96,
+      "d_detect": 0.7838880659889674,
+      "d_harvest": 0.7838880659889674,
+      "d_pool": 0.7838880659889674,
+      "d_select": 0.7838880659889674,
+      "eq_set_size": 1,
+      "selection_mode": "ranked_evidence",
+      "t_harvest": 0.41866800001298543,
+      "t_pool": 1.3385844000004,
+      "t_select": 1.952199200008181
+    },
+    {
+      "id": "p2_val-000004",
+      "architecture": "finfet",
+      "severity": 0,
+      "preset_family": "finfet_dense",
+      "gt_scale": 11.9417,
+      "gt_theta": 3.1563,
+      "n_harvested": 4209,
+      "n_pool": 4209,
+      "d_detect": 0.6536912191547571,
+      "d_harvest": 7.058095508704854,
+      "d_pool": 7.058095508704854,
+      "d_select": 309.23831022725824,
+      "eq_set_size": 1,
+      "selection_mode": "periodic_residual_consensus",
+      "t_harvest": 0.44299909999244846,
+      "t_pool": 22.226601500005927,
+      "t_select": 1.9881699000106892
+    },
+    {
+      "id": "p2_val-000007",
+      "architecture": "finfet",
+      "severity": 1,
+      "preset_family": "finfet_dense",
+      "gt_scale": 10.389,
+      "gt_theta": 6.6747,
+      "n_harvested": 23,
+      "n_pool": 23,
+      "d_detect": 0.5043851008901592,
+      "d_harvest": 0.7076752998374115,
+      "d_pool": 0.7076752998374115,
+      "d_select": 0.7076752998374115,
+      "eq_set_size": 1,
+      "selection_mode": "ranked_evidence",
+      "t_harvest": 0.42175889998907223,
+      "t_pool": 0.82126190001145,
+      "t_select": 1.9412967000098433
+    },
+    {
+      "id": "p2_val-000014",
+      "architecture": "finfet",
+      "severity": 2,
+      "preset_family": "finfet_dense",
+      "gt_scale": 8.498,
+      "gt_theta": 1.3074,
+      "n_harvested": 32,
+      "n_pool": 32,
+      "d_detect": 0.695896493740237,
+      "d_harvest": 0.695896493740237,
+      "d_pool": 0.695896493740237,
+      "d_select": 0.695896493740237,
+      "eq_set_size": 1,
+      "selection_mode": "ranked_evidence",
+      "t_harvest": 0.4131000000052154,
+      "t_pool": 1.1162622999981977,
+      "t_select": 1.9498274000070523
+    },
+    {
+      "id": "p2_val-000011",
+      "architecture": "finfet",
+      "severity": 3,
+      "preset_family": "finfet_open",
+      "gt_scale": 11.4136,
+      "gt_theta": -2.6318,
+      "n_harvested": 1259,
+      "n_pool": 1259,
+      "d_detect": 0.318846373666058,
+      "d_harvest": 0.318846373666058,
+      "d_pool": 0.318846373666058,
+      "d_select": 383.7882132934908,
+      "eq_set_size": 1,
+      "selection_mode": "ranked_evidence",
+      "t_harvest": 0.42397150000033434,
+      "t_pool": 7.241115199998603,
+      "t_select": 1.9560977000073763
+    }
+  ]
+}

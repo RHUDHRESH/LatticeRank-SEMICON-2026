@@ -1,0 +1,587 @@
+{
+ "experiment": "dense_residual_ceiling",
+ "date": "2026-08-31",
+ "question": "E1 bounded every rule built on band-passed ZNCC at 31.2%. It did not bound a different similarity INPUT. driftforge/residual.py implements periodic cancellation and dense weighted ZNCC, but its own docstring records that it has only ever been used as a pool re-ranker -- 'the residual never relocates a candidate'. Does it discriminate when run densely as the PRIMARY matcher?",
+ "design": "n=60 present pairs from p2_val, both arms evaluated at the GROUND-TRUTH pose on identical pairs, so they differ only in the similarity being maximised. Arm A reproduces E1's oracle as a control. No driftforge code modified.",
+ "results": {
+  "err_bp": {
+   "rate": 0.35,
+   "n": 60,
+   "ci": [
+    24.167774403812263,
+    47.63738116124669
+   ],
+   "pts40": 15.600000000000001
+  },
+  "err_res": {
+   "rate": 0.36666666666666664,
+   "n": 60,
+   "ci": [
+    25.620916684954253,
+    49.31699937287591
+   ],
+   "pts40": 15.733333333333334
+  },
+  "mcnemar": {
+   "b01": 5,
+   "b10": 4,
+   "p": 1.0
+  }
+ },
+ "detail": {
+  "A_median_pixels_outscoring_truth": 10,
+  "A_truth_is_global_max": "14/60",
+  "B_median_pixels_outscoring_truth": 21,
+  "B_truth_is_global_max": "14/60"
+ },
+ "conclusion": "No difference. 36.7% vs 35.0%, paired McNemar 5 v 4, p=1.00. The true site is the global maximum in 14/60 under BOTH similarities. Periodic cancellation -- the mechanism at the heart of the Phase 1 method -- does not separate the true site from its lattice aliases when the reference and search are independent acquisitions, because the residual it recovers is dominated by uncorrelated acquisition noise rather than by shared aperiodic structure. Taken with E1, two independent similarity measures both handed the exact pose plateau at 31-37%, which closes the localization block on evidence.",
+ "caveats": [
+  "n=60; intervals are wide, but the conclusion needs only the upper bound to sit far below the ~100% that 40/40 requires.",
+  "Arm B depends on estimate_lattice; low-confidence lattices were not excluded, so this is a fair end-to-end figure rather than a best-case one.",
+  "p2_val only; no organizer data used."
+ ],
+ "organizer_data_used": false,
+ "p2_test_touched": false,
+ "rows": [
+  {
+   "id": "p2_val-000000",
+   "severity": 3,
+   "err_bp": 0.7838880659889674,
+   "err_res": 0.7838880659889674,
+   "rank_bp": 1,
+   "rank_res": 1,
+   "lattice_conf": 8.343232794915963
+  },
+  {
+   "id": "p2_val-000001",
+   "severity": 3,
+   "err_bp": 319.9955976588584,
+   "err_res": 579.1619772749675,
+   "rank_bp": 5,
+   "rank_res": 2045,
+   "lattice_conf": 4.254973939226375
+  },
+  {
+   "id": "p2_val-000002",
+   "severity": 3,
+   "err_bp": 40.61348254767132,
+   "err_res": 655.1664997270923,
+   "rank_bp": 694,
+   "rank_res": 8758,
+   "lattice_conf": 6.208652183697675
+  },
+  {
+   "id": "p2_val-000004",
+   "severity": 0,
+   "err_bp": 980.2176570089981,
+   "err_res": 560.2960213246298,
+   "rank_bp": 3394,
+   "rank_res": 155,
+   "lattice_conf": 8.601844073290808
+  },
+  {
+   "id": "p2_val-000005",
+   "severity": 0,
+   "err_bp": 0.6828148943894,
+   "err_res": 0.6828148943894,
+   "rank_bp": 27,
+   "rank_res": 26,
+   "lattice_conf": 15.591984408618014
+  },
+  {
+   "id": "p2_val-000006",
+   "severity": 2,
+   "err_bp": 0.538160988924336,
+   "err_res": 0.538160988924336,
+   "rank_bp": 0,
+   "rank_res": 0,
+   "lattice_conf": 19.157394140944493
+  },
+  {
+   "id": "p2_val-000007",
+   "severity": 1,
+   "err_bp": 0.5043851008901592,
+   "err_res": 0.5043851008901592,
+   "rank_bp": 0,
+   "rank_res": 0,
+   "lattice_conf": 8.953695458474895
+  },
+  {
+   "id": "p2_val-000009",
+   "severity": 2,
+   "err_bp": 332.1928927670338,
+   "err_res": 1.2024162881465168,
+   "rank_bp": 2,
+   "rank_res": 3,
+   "lattice_conf": 6.50895449393121
+  },
+  {
+   "id": "p2_val-000010",
+   "severity": 1,
+   "err_bp": 221.67275477536705,
+   "err_res": 497.82207344562374,
+   "rank_bp": 163,
+   "rank_res": 9,
+   "lattice_conf": 49.82687281719842
+  },
+  {
+   "id": "p2_val-000011",
+   "severity": 3,
+   "err_bp": 400.3037430039969,
+   "err_res": 82.1658862485521,
+   "rank_bp": 365,
+   "rank_res": 19275,
+   "lattice_conf": 13.525796520510326
+  },
+  {
+   "id": "p2_val-000012",
+   "severity": 1,
+   "err_bp": 287.2428049484617,
+   "err_res": 342.46751144402003,
+   "rank_bp": 11070,
+   "rank_res": 1850,
+   "lattice_conf": 188.48090672999226
+  },
+  {
+   "id": "p2_val-000014",
+   "severity": 2,
+   "err_bp": 0.695896493740237,
+   "err_res": 0.695896493740237,
+   "rank_bp": 1,
+   "rank_res": 1,
+   "lattice_conf": 8.298715085733443
+  },
+  {
+   "id": "p2_val-000015",
+   "severity": 3,
+   "err_bp": 0.22852789764046322,
+   "err_res": 375.0611526471383,
+   "rank_bp": 0,
+   "rank_res": 3122,
+   "lattice_conf": 47.71348474693086
+  },
+  {
+   "id": "p2_val-000016",
+   "severity": 0,
+   "err_bp": 442.79977877655955,
+   "err_res": 220.2062280785218,
+   "rank_bp": 44,
+   "rank_res": 257,
+   "lattice_conf": 63.32117607668291
+  },
+  {
+   "id": "p2_val-000018",
+   "severity": 0,
+   "err_bp": 0.1194135670684446,
+   "err_res": 0.1194135670684446,
+   "rank_bp": 0,
+   "rank_res": 0,
+   "lattice_conf": 115.00012710023749
+  },
+  {
+   "id": "p2_val-000020",
+   "severity": 1,
+   "err_bp": 503.4542465161457,
+   "err_res": 430.0205422246011,
+   "rank_bp": 31841,
+   "rank_res": 19725,
+   "lattice_conf": 12.557886855501106
+  },
+  {
+   "id": "p2_val-000021",
+   "severity": 2,
+   "err_bp": 74.43150232401604,
+   "err_res": 295.568500585245,
+   "rank_bp": 6,
+   "rank_res": 41,
+   "lattice_conf": 64.89939734271792
+  },
+  {
+   "id": "p2_val-000023",
+   "severity": 1,
+   "err_bp": 353.3250149726877,
+   "err_res": 300.82483641722473,
+   "rank_bp": 299,
+   "rank_res": 29,
+   "lattice_conf": 123.86060845489209
+  },
+  {
+   "id": "p2_val-000024",
+   "severity": 1,
+   "err_bp": 0.13520066567882086,
+   "err_res": 0.13520066567882086,
+   "rank_bp": 0,
+   "rank_res": 0,
+   "lattice_conf": 46.0777197911525
+  },
+  {
+   "id": "p2_val-000025",
+   "severity": 0,
+   "err_bp": 0.6232722839979883,
+   "err_res": 0.4097173904046115,
+   "rank_bp": 2,
+   "rank_res": 0,
+   "lattice_conf": 51.355926004219675
+  },
+  {
+   "id": "p2_val-000026",
+   "severity": 2,
+   "err_bp": 0.43679010977812915,
+   "err_res": 707.2543680922727,
+   "rank_bp": 0,
+   "rank_res": 12,
+   "lattice_conf": 26.452345023928423
+  },
+  {
+   "id": "p2_val-000028",
+   "severity": 1,
+   "err_bp": 0.38851842942133974,
+   "err_res": 0.38851842942133974,
+   "rank_bp": 0,
+   "rank_res": 0,
+   "lattice_conf": 8.512068551030266
+  },
+  {
+   "id": "p2_val-000030",
+   "severity": 2,
+   "err_bp": 666.2955241044322,
+   "err_res": 487.31291696568024,
+   "rank_bp": 10,
+   "rank_res": 7988,
+   "lattice_conf": 38.41516549566177
+  },
+  {
+   "id": "p2_val-000032",
+   "severity": 0,
+   "err_bp": 184.37937438450103,
+   "err_res": 554.3847466321743,
+   "rank_bp": 4,
+   "rank_res": 2,
+   "lattice_conf": 54.13815617966675
+  },
+  {
+   "id": "p2_val-000033",
+   "severity": 1,
+   "err_bp": 0.2904001549586316,
+   "err_res": 0.7773880948406706,
+   "rank_bp": 0,
+   "rank_res": 5,
+   "lattice_conf": 9.037169674059752
+  },
+  {
+   "id": "p2_val-000035",
+   "severity": 3,
+   "err_bp": 370.6362550265826,
+   "err_res": 369.63628763979597,
+   "rank_bp": 129,
+   "rank_res": 307,
+   "lattice_conf": 26.320876241079493
+  },
+  {
+   "id": "p2_val-000036",
+   "severity": 0,
+   "err_bp": 0.552726378961557,
+   "err_res": 1.147303991974216,
+   "rank_bp": 37,
+   "rank_res": 96,
+   "lattice_conf": 29.039913742455457
+  },
+  {
+   "id": "p2_val-000037",
+   "severity": 0,
+   "err_bp": 1.0452704578241958,
+   "err_res": 216.0924709246715,
+   "rank_bp": 10,
+   "rank_res": 13,
+   "lattice_conf": 8.317372833132445
+  },
+  {
+   "id": "p2_val-000038",
+   "severity": 1,
+   "err_bp": 0.8187285386500421,
+   "err_res": 621.3373562859551,
+   "rank_bp": 27,
+   "rank_res": 16,
+   "lattice_conf": 23.132497949752707
+  },
+  {
+   "id": "p2_val-000039",
+   "severity": 1,
+   "err_bp": 124.79306765954591,
+   "err_res": 471.4037990257185,
+   "rank_bp": 26794,
+   "rank_res": 52270,
+   "lattice_conf": 46.65691440945572
+  },
+  {
+   "id": "p2_val-000040",
+   "severity": 2,
+   "err_bp": 0.4362200018339557,
+   "err_res": 0.4362200018339557,
+   "rank_bp": 0,
+   "rank_res": 0,
+   "lattice_conf": 10.84105262336788
+  },
+  {
+   "id": "p2_val-000042",
+   "severity": 2,
+   "err_bp": 378.02806877522994,
+   "err_res": 491.60226441904234,
+   "rank_bp": 4,
+   "rank_res": 436,
+   "lattice_conf": 13.358787924790205
+  },
+  {
+   "id": "p2_val-000043",
+   "severity": 2,
+   "err_bp": 505.9304273726576,
+   "err_res": 567.9962068020172,
+   "rank_bp": 6852,
+   "rank_res": 32234,
+   "lattice_conf": 13.314178365121364
+  },
+  {
+   "id": "p2_val-000044",
+   "severity": 3,
+   "err_bp": 490.5006787979197,
+   "err_res": 710.144925984281,
+   "rank_bp": 3,
+   "rank_res": 257,
+   "lattice_conf": 13.633119693334315
+  },
+  {
+   "id": "p2_val-000045",
+   "severity": 0,
+   "err_bp": 0.0920938651593946,
+   "err_res": 0.9914036917421967,
+   "rank_bp": 0,
+   "rank_res": 1,
+   "lattice_conf": 46.33781989726244
+  },
+  {
+   "id": "p2_val-000046",
+   "severity": 1,
+   "err_bp": 820.8260974032502,
+   "err_res": 315.8628619800847,
+   "rank_bp": 14,
+   "rank_res": 164,
+   "lattice_conf": 23.51183613613058
+  },
+  {
+   "id": "p2_val-000047",
+   "severity": 1,
+   "err_bp": 137.80750824958707,
+   "err_res": 0.4522498866777285,
+   "rank_bp": 5,
+   "rank_res": 0,
+   "lattice_conf": 57.8476348022158
+  },
+  {
+   "id": "p2_val-000049",
+   "severity": 2,
+   "err_bp": 381.05912066601945,
+   "err_res": 264.986972968031,
+   "rank_bp": 16,
+   "rank_res": 2,
+   "lattice_conf": 17.290760716788824
+  },
+  {
+   "id": "p2_val-000050",
+   "severity": 1,
+   "err_bp": 0.43540138952467017,
+   "err_res": 0.5646010715540509,
+   "rank_bp": 0,
+   "rank_res": 1,
+   "lattice_conf": 8.780220144301564
+  },
+  {
+   "id": "p2_val-000052",
+   "severity": 0,
+   "err_bp": 0.45419469393648454,
+   "err_res": 0.45419469393648454,
+   "rank_bp": 0,
+   "rank_res": 0,
+   "lattice_conf": 16.980146727579154
+  },
+  {
+   "id": "p2_val-000053",
+   "severity": 3,
+   "err_bp": 665.1149798986112,
+   "err_res": 0.4598755592548731,
+   "rank_bp": 2258,
+   "rank_res": 0,
+   "lattice_conf": 22.21411388941979
+  },
+  {
+   "id": "p2_val-000054",
+   "severity": 2,
+   "err_bp": 724.6400420507413,
+   "err_res": 722.8591822362777,
+   "rank_bp": 46119,
+   "rank_res": 108231,
+   "lattice_conf": 9.439409566970815
+  },
+  {
+   "id": "p2_val-000056",
+   "severity": 1,
+   "err_bp": 0.6155509564609686,
+   "err_res": 0.6513854312156402,
+   "rank_bp": 0,
+   "rank_res": 1,
+   "lattice_conf": 12.38566727051464
+  },
+  {
+   "id": "p2_val-000057",
+   "severity": 0,
+   "err_bp": 802.6006839216435,
+   "err_res": 767.5515311895939,
+   "rank_bp": 8290,
+   "rank_res": 14230,
+   "lattice_conf": 22.253710803464806
+  },
+  {
+   "id": "p2_val-000059",
+   "severity": 3,
+   "err_bp": 354.51781557739804,
+   "err_res": 567.5279129362449,
+   "rank_bp": 354,
+   "rank_res": 583957,
+   "lattice_conf": 5.1009921231471145
+  },
+  {
+   "id": "p2_val-000060",
+   "severity": 0,
+   "err_bp": 750.8097429441495,
+   "err_res": 0.5050741133734593,
+   "rank_bp": 22,
+   "rank_res": 0,
+   "lattice_conf": 31.44277834695527
+  },
+  {
+   "id": "p2_val-000061",
+   "severity": 0,
+   "err_bp": 0.2566208487243369,
+   "err_res": 0.2566208487243369,
+   "rank_bp": 0,
+   "rank_res": 0,
+   "lattice_conf": 32.13501813541752
+  },
+  {
+   "id": "p2_val-000062",
+   "severity": 1,
+   "err_bp": 1.0292424252818229,
+   "err_res": 0.33187342466667913,
+   "rank_bp": 1,
+   "rank_res": 0,
+   "lattice_conf": 12.936070074190898
+  },
+  {
+   "id": "p2_val-000063",
+   "severity": 1,
+   "err_bp": 130.63948581516237,
+   "err_res": 249.06274762406764,
+   "rank_bp": 1284,
+   "rank_res": 887,
+   "lattice_conf": 47.89401484160585
+  },
+  {
+   "id": "p2_val-000064",
+   "severity": 1,
+   "err_bp": 0.5510019691434694,
+   "err_res": 0.5510019691434694,
+   "rank_bp": 1,
+   "rank_res": 1,
+   "lattice_conf": 72.0989485123685
+  },
+  {
+   "id": "p2_val-000065",
+   "severity": 1,
+   "err_bp": 685.6031102479773,
+   "err_res": 204.6947360869351,
+   "rank_bp": 6,
+   "rank_res": 11463,
+   "lattice_conf": 7.827770142313969
+  },
+  {
+   "id": "p2_val-000066",
+   "severity": 1,
+   "err_bp": 409.53230166726775,
+   "err_res": 0.5550755714314948,
+   "rank_bp": 24,
+   "rank_res": 0,
+   "lattice_conf": 9.741511330527103
+  },
+  {
+   "id": "p2_val-000067",
+   "severity": 0,
+   "err_bp": 515.8883979906119,
+   "err_res": 287.9946665848519,
+   "rank_bp": 2773,
+   "rank_res": 2453,
+   "lattice_conf": 49.35019394292469
+  },
+  {
+   "id": "p2_val-000068",
+   "severity": 0,
+   "err_bp": 948.4861136435948,
+   "err_res": 850.1305357265613,
+   "rank_bp": 782,
+   "rank_res": 7532,
+   "lattice_conf": 21.385061129277425
+  },
+  {
+   "id": "p2_val-000069",
+   "severity": 1,
+   "err_bp": 330.564775742017,
+   "err_res": 145.96098506577025,
+   "rank_bp": 7243,
+   "rank_res": 25328,
+   "lattice_conf": 64.0167543983529
+  },
+  {
+   "id": "p2_val-000070",
+   "severity": 3,
+   "err_bp": 423.64445997492993,
+   "err_res": 455.3425313623251,
+   "rank_bp": 1821,
+   "rank_res": 2212,
+   "lattice_conf": 2.769193531797474
+  },
+  {
+   "id": "p2_val-000072",
+   "severity": 1,
+   "err_bp": 720.9626847080782,
+   "err_res": 740.1622837874677,
+   "rank_bp": 51,
+   "rank_res": 716,
+   "lattice_conf": 10.206217270381899
+  },
+  {
+   "id": "p2_val-000073",
+   "severity": 0,
+   "err_bp": 459.95680375628746,
+   "err_res": 536.2265559646407,
+   "rank_bp": 686,
+   "rank_res": 749,
+   "lattice_conf": 56.56775408690718
+  },
+  {
+   "id": "p2_val-000074",
+   "severity": 0,
+   "err_bp": 645.5344832808314,
+   "err_res": 538.4180785455203,
+   "rank_bp": 7,
+   "rank_res": 3,
+   "lattice_conf": 18.612324095390726
+  },
+  {
+   "id": "p2_val-000075",
+   "severity": 3,
+   "err_bp": 1.0755261131186205,
+   "err_res": 217.92992671136284,
+   "rank_bp": 1,
+   "rank_res": 1,
+   "lattice_conf": 15.18151230315878
+  }
+ ]
+}

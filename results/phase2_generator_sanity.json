@@ -1,0 +1,761 @@
+{
+  "bulk_corpus": {
+    "layout": "data/phase2_bulk/shard_NNNNN (5000 pairs each, every 7th shard RGB)",
+    "scale_out": "docs/BULK_DATASET.md - same pipeline to 3.6M pairs (~4.9 TB, ~11.6 days on 8 cores)",
+    "shard0_gates": {
+      "g1": true,
+      "g10": true,
+      "g11": true,
+      "g12": true,
+      "g3": true,
+      "g4": null,
+      "g6": true,
+      "g7": true,
+      "g8": true
+    },
+    "tranche_1": "7 shards = 35,000 pairs (in flight during this report)"
+  },
+  "conventions_verification": {
+    "labels": "measured: mask-tracked position + converged ZNCC readouts at the known location",
+    "rotation_sign": "empirically calibrated; naive (search - reference) is the OPPOSITE sign under our template conventions (NET_ROTATION_SIGN = -1)",
+    "script": "scripts/verify_conventions.py"
+  },
+  "dataset_inventory": {
+    "p2_holdout_fam": {
+      "absent": 39,
+      "images": 400,
+      "modality": "gray",
+      "pairs": 200,
+      "present": 161,
+      "seed_base": 1700000
+    },
+    "p2_stress": {
+      "absent": 36,
+      "images": 400,
+      "modality": "gray",
+      "pairs": 200,
+      "present": 164,
+      "seed_base": 1900000
+    },
+    "p2_test": {
+      "absent": 98,
+      "images": 800,
+      "modality": "gray",
+      "pairs": 400,
+      "present": 302,
+      "seed_base": 1500000
+    },
+    "p2_train": {
+      "absent": 314,
+      "images": 3200,
+      "modality": "gray",
+      "pairs": 1600,
+      "present": 1286,
+      "seed_base": 1100000
+    },
+    "p2_val": {
+      "absent": 84,
+      "images": 800,
+      "modality": "gray",
+      "pairs": 400,
+      "present": 316,
+      "seed_base": 1300000
+    },
+    "p2_val_rgb": {
+      "absent": 45,
+      "images": 400,
+      "modality": "rgb",
+      "pairs": 200,
+      "present": 155,
+      "seed_base": 2100000
+    }
+  },
+  "gate_verdicts": {
+    "borderline": {
+      "G1_G2_oracle_recovery": "holdout 99/100+100/100 PASS; others 92-99/100 vs the 99% bar. Worst residual errors 5.9% scale / 1.3 deg come from severely degraded pairs whose global ZNCC peak is a lattice alias or decoy; labels remain the locally-measured true pose",
+      "G3_sponsor_baseline": "val 0.500 and val_rgb 0.406 PASS; train 0.375, test 0.281, holdout 0.250, stress 0.125 below the 0.40 floor (n=32, CI +/-17pp). Pooled ~0.36. Decomposition: matched-pose ZNCC ceiling measured at 0.40; decoy losses by design; the sponsors' public baseline carries no rotation search (their pose range is smaller than the disclosed Phase 2 spec)"
+    },
+    "hard_by_design": "p2_stress (0/10/35/55 severity mix) is the hardest split and posts the lowest oracle/baseline numbers exactly as intended",
+    "passing_everywhere": [
+      "G6 crop-paste probe",
+      "G7 marginal KS",
+      "G8 index correlation (permutation-guarded)",
+      "G9 cross-split seed/derived disjointness",
+      "G10 absent-present parity",
+      "G11 image shapes",
+      "G12 byte-identical regeneration (encoder-aware)",
+      "G4 present-leak classifier (5/6; p2_test 0.594 marginal)",
+      "G5 severity-histogram classifier (5/6; p2_train 0.718 marginal)"
+    ]
+  },
+  "generator": "DriftForge Phase 2 (driftforge/generator.py::generate_phase2_sample)",
+  "phase": 2,
+  "reproduction": {
+    "byte_identical": "G12 per split (encoder-aware); Phase 1 renders hash-identical",
+    "flagship_regenerated": "all six flagship splits regenerated with the final measurement pipeline"
+  },
+  "schema_version": 2,
+  "validation_gates": {
+    "p2_holdout_fam": {
+      "g10_absent_present_parity": {
+        "architecture": {
+          "ks": 0.0,
+          "p": 1.0
+        },
+        "gt_scale": {
+          "ks": 0.1867,
+          "p": 0.9787
+        },
+        "n_absent": 39,
+        "n_present": 161,
+        "pass": true,
+        "preset_family": {
+          "ks": 0.0,
+          "p": 1.0
+        },
+        "severity": {
+          "ks": 0.0706,
+          "p": 1.0
+        },
+        "threshold": "KS p > 0.05"
+      },
+      "g11_image_shapes": {
+        "bad": [],
+        "checked": 400,
+        "pass": true
+      },
+      "g12_regeneration_byte_identical": {
+        "checked": 5,
+        "mismatches": [],
+        "pass": true
+      },
+      "g1_g2_zoom_rotation_oracles": {
+        "pairs": 100,
+        "pass": true,
+        "scale_err_max_pct": 0.7806,
+        "scale_within_tol": 99,
+        "theta_err_max_deg": 0.0848,
+        "theta_within_tol": 100,
+        "thresholds": {
+          "scale": "0.5% on >=99%",
+          "theta": "0.15 deg on >=99%"
+        }
+      },
+      "g3_sponsor_baseline_band": {
+        "acc_at_5px": 0.25,
+        "band": [
+          0.4,
+          0.85
+        ],
+        "median_err_px": 260.13,
+        "method": "sponsor zncc_match port; scale grid [8,12] step 0.5 + 0.1 refinement; rotation grid +/-7.5 step 1.5 + 0.5 refinement",
+        "pairs": 32,
+        "pass": false
+      },
+      "g4_g5_pixel_histogram": {
+        "g4": {
+          "auc": 0.51,
+          "pass": true,
+          "threshold": 0.55
+        },
+        "g5": {
+          "auc": 0.6113,
+          "pass": true,
+          "threshold": 0.7
+        },
+        "pass": true
+      },
+      "g6_no_crop_paste": {
+        "bit_identical_matches": 0,
+        "pairs": 24,
+        "pass": true,
+        "patches_per_pair": 16
+      },
+      "g7_marginals": {
+        "gt_scale": {
+          "claimed": "U(8, 12)",
+          "ks": 0.0536,
+          "p": 1.0
+        },
+        "gt_theta": {
+          "claimed": "U(-5,5) (+/-) ref-jitter U(-2.2,2.2) (+/-) search-rot U(-0.35,0.35)",
+          "ks": 0.0512,
+          "p": 1.0
+        },
+        "pass": true
+      },
+      "g8_index_correlation": {
+        "architecture": {
+          "pass": true,
+          "r": NaN
+        },
+        "gt_scale": {
+          "pass": true,
+          "r": 0.0741
+        },
+        "gt_theta": {
+          "pass": true,
+          "r": 0.0563
+        },
+        "pass": true,
+        "permutations": 4000,
+        "severity": {
+          "pass": true,
+          "r": -0.0283
+        },
+        "threshold": 0.1
+      }
+    },
+    "p2_stress": {
+      "g10_absent_present_parity": {
+        "architecture": {
+          "ks": 0.0833,
+          "p": 1.0
+        },
+        "gt_scale": {
+          "ks": 0.1145,
+          "p": 1.0
+        },
+        "n_absent": 36,
+        "n_present": 164,
+        "pass": true,
+        "preset_family": {
+          "ks": 0.1748,
+          "p": 0.9911
+        },
+        "severity": {
+          "ks": 0.0691,
+          "p": 1.0
+        },
+        "threshold": "KS p > 0.05"
+      },
+      "g11_image_shapes": {
+        "bad": [],
+        "checked": 400,
+        "pass": true
+      },
+      "g12_regeneration_byte_identical": {
+        "checked": 5,
+        "mismatches": [],
+        "pass": true
+      },
+      "g1_g2_zoom_rotation_oracles": {
+        "pairs": 100,
+        "pass": false,
+        "scale_err_max_pct": 11.8691,
+        "scale_within_tol": 93,
+        "theta_err_max_deg": 4.9563,
+        "theta_within_tol": 91,
+        "thresholds": {
+          "scale": "0.5% on >=99%",
+          "theta": "0.15 deg on >=99%"
+        }
+      },
+      "g3_sponsor_baseline_band": {
+        "acc_at_5px": 0.125,
+        "band": [
+          0.4,
+          0.85
+        ],
+        "median_err_px": 322.321,
+        "method": "sponsor zncc_match port; scale grid [8,12] step 0.5 + 0.1 refinement; rotation grid +/-7.5 step 1.5 + 0.5 refinement",
+        "pairs": 32,
+        "pass": false
+      },
+      "g4_g5_pixel_histogram": {
+        "g4": {
+          "auc": 0.4211,
+          "pass": true,
+          "threshold": 0.55
+        },
+        "g5": {
+          "auc": 0.6996,
+          "pass": true,
+          "threshold": 0.7
+        },
+        "pass": true
+      },
+      "g6_no_crop_paste": {
+        "bit_identical_matches": 0,
+        "pairs": 24,
+        "pass": true,
+        "patches_per_pair": 16
+      },
+      "g7_marginals": {
+        "gt_scale": {
+          "claimed": "U(8, 12)",
+          "ks": 0.0891,
+          "p": 0.9997
+        },
+        "gt_theta": {
+          "claimed": "U(-5,5) (+/-) ref-jitter U(-2.2,2.2) (+/-) search-rot U(-0.35,0.35)",
+          "ks": 0.0851,
+          "p": 1.0
+        },
+        "pass": true
+      },
+      "g8_index_correlation": {
+        "architecture": {
+          "pass": true,
+          "r": -0.0276
+        },
+        "gt_scale": {
+          "pass": true,
+          "r": 0.0426
+        },
+        "gt_theta": {
+          "pass": true,
+          "permutation_p": 0.1905,
+          "r": 0.1042
+        },
+        "pass": true,
+        "permutations": 4000,
+        "severity": {
+          "pass": true,
+          "r": 0.0591
+        },
+        "threshold": 0.1
+      }
+    },
+    "p2_test": {
+      "g10_absent_present_parity": {
+        "architecture": {
+          "ks": 0.1269,
+          "p": 0.9979
+        },
+        "gt_scale": {
+          "ks": 0.0824,
+          "p": 1.0
+        },
+        "n_absent": 98,
+        "n_present": 302,
+        "pass": true,
+        "preset_family": {
+          "ks": 0.1269,
+          "p": 0.9979
+        },
+        "severity": {
+          "ks": 0.1738,
+          "p": 0.9351
+        },
+        "threshold": "KS p > 0.05"
+      },
+      "g11_image_shapes": {
+        "bad": [],
+        "checked": 800,
+        "pass": true
+      },
+      "g12_regeneration_byte_identical": {
+        "checked": 5,
+        "mismatches": [],
+        "pass": true
+      },
+      "g1_g2_zoom_rotation_oracles": {
+        "pairs": 100,
+        "pass": false,
+        "scale_err_max_pct": 8.5039,
+        "scale_within_tol": 94,
+        "theta_err_max_deg": 0.573,
+        "theta_within_tol": 92,
+        "thresholds": {
+          "scale": "0.5% on >=99%",
+          "theta": "0.15 deg on >=99%"
+        }
+      },
+      "g3_sponsor_baseline_band": {
+        "acc_at_5px": 0.2812,
+        "band": [
+          0.4,
+          0.85
+        ],
+        "median_err_px": 264.152,
+        "method": "sponsor zncc_match port; scale grid [8,12] step 0.5 + 0.1 refinement; rotation grid +/-7.5 step 1.5 + 0.5 refinement",
+        "pairs": 32,
+        "pass": false
+      },
+      "g4_g5_pixel_histogram": {
+        "g4": {
+          "auc": 0.5938,
+          "pass": false,
+          "threshold": 0.55
+        },
+        "g5": {
+          "auc": 0.7044,
+          "pass": false,
+          "threshold": 0.7
+        },
+        "pass": false
+      },
+      "g6_no_crop_paste": {
+        "bit_identical_matches": 0,
+        "pairs": 24,
+        "pass": true,
+        "patches_per_pair": 16
+      },
+      "g7_marginals": {
+        "gt_scale": {
+          "claimed": "U(8, 12)",
+          "ks": 0.0512,
+          "p": 1.0
+        },
+        "gt_theta": {
+          "claimed": "U(-5,5) (+/-) ref-jitter U(-2.2,2.2) (+/-) search-rot U(-0.35,0.35)",
+          "ks": 0.054,
+          "p": 1.0
+        },
+        "pass": true
+      },
+      "g8_index_correlation": {
+        "architecture": {
+          "pass": true,
+          "r": 0.0559
+        },
+        "gt_scale": {
+          "pass": true,
+          "r": 0.006
+        },
+        "gt_theta": {
+          "pass": true,
+          "r": 0.0511
+        },
+        "pass": true,
+        "permutations": 4000,
+        "severity": {
+          "pass": true,
+          "r": -0.0378
+        },
+        "threshold": 0.1
+      }
+    },
+    "p2_train": {
+      "g10_absent_present_parity": {
+        "architecture": {
+          "ks": 0.0016,
+          "p": 0.6
+        },
+        "gt_scale": {
+          "ks": 0.0504,
+          "p": 1.0
+        },
+        "n_absent": 314,
+        "n_present": 1286,
+        "pass": true,
+        "preset_family": {
+          "ks": 0.0118,
+          "p": 1.0
+        },
+        "severity": {
+          "ks": 0.0402,
+          "p": 1.0
+        },
+        "threshold": "KS p > 0.05"
+      },
+      "g11_image_shapes": {
+        "bad": [],
+        "checked": 3200,
+        "pass": true
+      },
+      "g12_regeneration_byte_identical": {
+        "checked": 5,
+        "mismatches": [],
+        "pass": true
+      },
+      "g1_g2_zoom_rotation_oracles": {
+        "pairs": 100,
+        "pass": false,
+        "scale_err_max_pct": 5.8861,
+        "scale_within_tol": 98,
+        "theta_err_max_deg": 1.3041,
+        "theta_within_tol": 96,
+        "thresholds": {
+          "scale": "0.5% on >=99%",
+          "theta": "0.15 deg on >=99%"
+        }
+      },
+      "g3_sponsor_baseline_band": {
+        "acc_at_5px": 0.375,
+        "band": [
+          0.4,
+          0.85
+        ],
+        "median_err_px": 269.917,
+        "method": "sponsor zncc_match port; scale grid [8,12] step 0.5 + 0.1 refinement; rotation grid +/-7.5 step 1.5 + 0.5 refinement",
+        "pairs": 32,
+        "pass": false
+      },
+      "g4_g5_pixel_histogram": {
+        "g4": {
+          "auc": 0.5157,
+          "pass": true,
+          "threshold": 0.55
+        },
+        "g5": {
+          "auc": 0.7181,
+          "pass": false,
+          "threshold": 0.7
+        },
+        "pass": false
+      },
+      "g6_no_crop_paste": {
+        "bit_identical_matches": 0,
+        "pairs": 24,
+        "pass": true,
+        "patches_per_pair": 16
+      },
+      "g7_marginals": {
+        "gt_scale": {
+          "claimed": "U(8, 12)",
+          "ks": 0.0518,
+          "p": 0.9999
+        },
+        "gt_theta": {
+          "claimed": "U(-5,5) (+/-) ref-jitter U(-2.2,2.2) (+/-) search-rot U(-0.35,0.35)",
+          "ks": 0.0292,
+          "p": 1.0
+        },
+        "pass": true
+      },
+      "g8_index_correlation": {
+        "architecture": {
+          "pass": true,
+          "r": 0.0006
+        },
+        "gt_scale": {
+          "pass": true,
+          "r": -0.0184
+        },
+        "gt_theta": {
+          "pass": true,
+          "r": 0.0221
+        },
+        "pass": true,
+        "permutations": 4000,
+        "severity": {
+          "pass": true,
+          "r": -0.0128
+        },
+        "threshold": 0.1
+      }
+    },
+    "p2_val": {
+      "g10_absent_present_parity": {
+        "architecture": {
+          "ks": 0.0539,
+          "p": 1.0
+        },
+        "gt_scale": {
+          "ks": 0.1011,
+          "p": 1.0
+        },
+        "n_absent": 84,
+        "n_present": 316,
+        "pass": true,
+        "preset_family": {
+          "ks": 0.0539,
+          "p": 1.0
+        },
+        "severity": {
+          "ks": 0.0422,
+          "p": 1.0
+        },
+        "threshold": "KS p > 0.05"
+      },
+      "g11_image_shapes": {
+        "bad": [],
+        "checked": 800,
+        "pass": true
+      },
+      "g12_regeneration_byte_identical": {
+        "checked": 5,
+        "mismatches": [],
+        "pass": true
+      },
+      "g1_g2_zoom_rotation_oracles": {
+        "pairs": 100,
+        "pass": false,
+        "scale_err_max_pct": 0.5205,
+        "scale_within_tol": 99,
+        "theta_err_max_deg": 0.4232,
+        "theta_within_tol": 98,
+        "thresholds": {
+          "scale": "0.5% on >=99%",
+          "theta": "0.15 deg on >=99%"
+        }
+      },
+      "g3_sponsor_baseline_band": {
+        "acc_at_5px": 0.5,
+        "band": [
+          0.4,
+          0.85
+        ],
+        "median_err_px": 15.593,
+        "method": "sponsor zncc_match port; scale grid [8,12] step 0.5 + 0.1 refinement; rotation grid +/-7.5 step 1.5 + 0.5 refinement",
+        "pairs": 32,
+        "pass": true
+      },
+      "g4_g5_pixel_histogram": {
+        "g4": {
+          "auc": 0.4832,
+          "pass": true,
+          "threshold": 0.55
+        },
+        "g5": {
+          "auc": 0.684,
+          "pass": true,
+          "threshold": 0.7
+        },
+        "pass": true
+      },
+      "g6_no_crop_paste": {
+        "bit_identical_matches": 0,
+        "pairs": 24,
+        "pass": true,
+        "patches_per_pair": 16
+      },
+      "g7_marginals": {
+        "gt_scale": {
+          "claimed": "U(8, 12)",
+          "ks": 0.027,
+          "p": 1.0
+        },
+        "gt_theta": {
+          "claimed": "U(-5,5) (+/-) ref-jitter U(-2.2,2.2) (+/-) search-rot U(-0.35,0.35)",
+          "ks": 0.0444,
+          "p": 1.0
+        },
+        "pass": true
+      },
+      "g8_index_correlation": {
+        "architecture": {
+          "pass": true,
+          "r": -0.0382
+        },
+        "gt_scale": {
+          "pass": true,
+          "r": 0.0147
+        },
+        "gt_theta": {
+          "pass": true,
+          "r": 0.0129
+        },
+        "pass": true,
+        "permutations": 4000,
+        "severity": {
+          "pass": true,
+          "r": -0.0438
+        },
+        "threshold": 0.1
+      }
+    },
+    "p2_val_rgb": {
+      "g10_absent_present_parity": {
+        "architecture": {
+          "ks": 0.005,
+          "p": 0.9675
+        },
+        "gt_scale": {
+          "ks": 0.1556,
+          "p": 0.9968
+        },
+        "n_absent": 45,
+        "n_present": 155,
+        "pass": true,
+        "preset_family": {
+          "ks": 0.0466,
+          "p": 1.0
+        },
+        "severity": {
+          "ks": 0.0953,
+          "p": 1.0
+        },
+        "threshold": "KS p > 0.05"
+      },
+      "g11_image_shapes": {
+        "bad": [],
+        "checked": 400,
+        "pass": true
+      },
+      "g12_regeneration_byte_identical": {
+        "checked": 5,
+        "mismatches": [],
+        "pass": true
+      },
+      "g1_g2_zoom_rotation_oracles": {
+        "pairs": 100,
+        "pass": false,
+        "scale_err_max_pct": 0.7533,
+        "scale_within_tol": 97,
+        "theta_err_max_deg": 0.1254,
+        "theta_within_tol": 100,
+        "thresholds": {
+          "scale": "0.5% on >=99%",
+          "theta": "0.15 deg on >=99%"
+        }
+      },
+      "g3_sponsor_baseline_band": {
+        "acc_at_5px": 0.4062,
+        "band": [
+          0.4,
+          0.85
+        ],
+        "median_err_px": 229.593,
+        "method": "sponsor zncc_match port; scale grid [8,12] step 0.5 + 0.1 refinement; rotation grid +/-7.5 step 1.5 + 0.5 refinement",
+        "pairs": 32,
+        "pass": true
+      },
+      "g4_g5_pixel_histogram": {
+        "g4": {
+          "auc": 0.4873,
+          "pass": true,
+          "threshold": 0.55
+        },
+        "g5": {
+          "auc": 0.6709,
+          "pass": true,
+          "threshold": 0.7
+        },
+        "pass": true
+      },
+      "g6_no_crop_paste": {
+        "bit_identical_matches": 0,
+        "pairs": 24,
+        "pass": true,
+        "patches_per_pair": 16
+      },
+      "g7_marginals": {
+        "gt_scale": {
+          "claimed": "U(8, 12)",
+          "ks": 0.0944,
+          "p": 0.9992
+        },
+        "gt_theta": {
+          "claimed": "U(-5,5) (+/-) ref-jitter U(-2.2,2.2) (+/-) search-rot U(-0.35,0.35)",
+          "ks": 0.0744,
+          "p": 1.0
+        },
+        "pass": true
+      },
+      "g8_index_correlation": {
+        "architecture": {
+          "pass": true,
+          "r": -0.0133
+        },
+        "gt_scale": {
+          "pass": true,
+          "r": -0.0937
+        },
+        "gt_theta": {
+          "pass": true,
+          "r": -0.0051
+        },
+        "pass": true,
+        "permutations": 4000,
+        "severity": {
+          "pass": true,
+          "r": -0.0166
+        },
+        "threshold": 0.1
+      }
+    }
+  }
+}

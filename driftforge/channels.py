@@ -67,14 +67,62 @@ class ChannelMaps:
         return float("nan")
 
 
-def response_maps(reference: np.ndarray, search: np.ndarray,
-                  scale: float = 1.0, rotation: float = 0.0) -> ChannelMaps:
-    """All three channels for one transform hypothesis. 6 NCC calls."""
-    sf = _robust_contrast(search)
-    sm = midband(sf)
-    sdx, sdy = directionality(sf)
+@dataclass(frozen=True)
+class SearchChannels:
+    """The search-side representations, which do not depend on the pose.
 
-    t = _template_from_reference(reference, scale, rotation)
+    ``robust_contrast``, ``midband`` and ``directionality`` of the *search*
+    image are identical for every ``(scale, rotation)`` hypothesis, but
+    :func:`response_maps` recomputes them on each call. Measured, that waste is
+    about **217 ms per hypothesis** -- and Phase 2 evaluates a grid of
+    hypotheses per pair, so it is the difference between a scale sweep that
+    fits the 5 s median budget and one that does not.
+
+    Build once per pair with :func:`prepare_search` and pass it in.
+    """
+
+    raw: np.ndarray
+    midband: np.ndarray
+    dx: np.ndarray
+    dy: np.ndarray
+
+
+def prepare_search(search: np.ndarray) -> SearchChannels:
+    """Compute the pose-independent search representations once per pair."""
+    sf = _robust_contrast(search)
+    sdx, sdy = directionality(sf)
+    return SearchChannels(raw=sf, midband=midband(sf), dx=sdx, dy=sdy)
+
+
+def response_maps(reference: np.ndarray, search: np.ndarray,
+                  scale: float = 1.0, rotation: float = 0.0,
+                  *, prepared: SearchChannels | None = None,
+                  template: np.ndarray | None = None) -> ChannelMaps:
+    """All three channels for one transform hypothesis. 6 NCC calls.
+
+    ``prepared`` supplies the pose-independent search side from
+    :func:`prepare_search`. Omitting it reproduces the original behaviour
+    exactly -- the maps are byte-identical either way, only the redundant
+    recomputation differs -- so existing callers are unaffected.
+
+    ``template`` supplies a prebuilt template instead of calling
+    ``_template_from_reference``. Phase 2 needs this because that builder
+    hard-codes ``sigma=4.0`` for its anti-alias, which is correct only at the
+    Phase 1 fixed 10x; across the disclosed ``[8, 12]`` band the decimation
+    factor changes and the blur must change with it (see
+    :func:`driftforge.pose.build_template`). ``scale`` and ``rotation`` are
+    then recorded on the result but not used to build anything, so callers
+    must pass the pose the template actually represents.
+    """
+    if prepared is None:
+        prepared = prepare_search(search)
+    sf, sm, sdx, sdy = prepared.raw, prepared.midband, prepared.dx, prepared.dy
+
+    t = (
+        _template_from_reference(reference, scale, rotation)
+        if template is None
+        else np.ascontiguousarray(template, dtype=np.float32)
+    )
     tm = midband(t)
     tdx, tdy = directionality(t)
 

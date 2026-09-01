@@ -1,0 +1,464 @@
+{
+ "experiment": "uncontended_runtime",
+ "date": "2026-08-31",
+ "method": "60 pairs stratified 15 per severity, timed through register.process -- the real scored code path including model load, presence and correctness. Threads pinned to 4 to match the reference machine. Nothing else running.",
+ "budget_s": 5.0,
+ "hard_timeout_s": 20.0,
+ "measured": {
+  "n": 60,
+  "median_s": 4.333664399993722,
+  "mean_s": 4.356687293331197,
+  "p90_s": 4.496831919986289,
+  "p95_s": 4.514253985001415,
+  "max_s": 4.624621200026013,
+  "over_5s": 0,
+  "over_20s": 0,
+  "verdict": "PASS"
+ },
+ "degradation_ladder": {
+  "method": "BUDGET_S forced down to simulate a slower machine, 8 pairs each",
+  "12.0": {
+   "median_s": 4.45,
+   "found": "7/8",
+   "contract": "held"
+  },
+  "4.0": {
+   "median_s": 3.17,
+   "found": "8/8",
+   "contract": "held"
+  },
+  "2.0": {
+   "median_s": 1.67,
+   "found": "3/8",
+   "contract": "held"
+  },
+  "0.5": {
+   "median_s": 0.52,
+   "found": "1/8",
+   "contract": "held"
+  }
+ },
+ "conclusion": "Median 4.33 s against a 5 s budget and 4.62 s worst case against a 20 s hard timeout (4.3x headroom). The distribution is unusually flat because the dense sweep is fixed-cost, so there is no tail risk. On a slower machine the Deadline path sheds refinement and presence rather than overrunning, and the output contract holds at every budget tested down to 0.5 s.",
+ "rows": [
+  {
+   "id": "p2_val-000004",
+   "severity": 0,
+   "seconds": 4.233150400017621,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000005",
+   "severity": 0,
+   "seconds": 4.2320440000039525,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000016",
+   "severity": 0,
+   "seconds": 4.322204900003271,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000018",
+   "severity": 0,
+   "seconds": 4.242926199978683,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000025",
+   "severity": 0,
+   "seconds": 4.245858000009321,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000031",
+   "severity": 0,
+   "seconds": 4.223351099994034,
+   "found": 0,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000032",
+   "severity": 0,
+   "seconds": 4.320194900006754,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000034",
+   "severity": 0,
+   "seconds": 4.324294299993198,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000036",
+   "severity": 0,
+   "seconds": 4.314882500009844,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000037",
+   "severity": 0,
+   "seconds": 4.346914599998854,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000045",
+   "severity": 0,
+   "seconds": 4.5130950000020675,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000048",
+   "severity": 0,
+   "seconds": 4.4214165000012144,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000052",
+   "severity": 0,
+   "seconds": 4.422221799992258,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000057",
+   "severity": 0,
+   "seconds": 4.27803230000427,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000060",
+   "severity": 0,
+   "seconds": 4.325587699975586,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000007",
+   "severity": 1,
+   "seconds": 4.32481610000832,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000010",
+   "severity": 1,
+   "seconds": 4.393381899979431,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000012",
+   "severity": 1,
+   "seconds": 4.536274699989008,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000013",
+   "severity": 1,
+   "seconds": 4.39291160000721,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000017",
+   "severity": 1,
+   "seconds": 4.341944299987517,
+   "found": 0,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000020",
+   "severity": 1,
+   "seconds": 4.353035400010413,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000022",
+   "severity": 1,
+   "seconds": 4.312541999999667,
+   "found": 0,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000023",
+   "severity": 1,
+   "seconds": 4.324293599987868,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000024",
+   "severity": 1,
+   "seconds": 4.392159899987746,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000027",
+   "severity": 1,
+   "seconds": 4.3164553999959026,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000028",
+   "severity": 1,
+   "seconds": 4.312996799999382,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000033",
+   "severity": 1,
+   "seconds": 4.293265599990264,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000038",
+   "severity": 1,
+   "seconds": 4.2750837999919895,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000039",
+   "severity": 1,
+   "seconds": 4.341481899988139,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000041",
+   "severity": 1,
+   "seconds": 4.373481799993897,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000006",
+   "severity": 2,
+   "seconds": 4.394374399998924,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000009",
+   "severity": 2,
+   "seconds": 4.321802499995101,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000014",
+   "severity": 2,
+   "seconds": 4.385565800010227,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000021",
+   "severity": 2,
+   "seconds": 4.419847200013464,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000026",
+   "severity": 2,
+   "seconds": 4.300944299990078,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000029",
+   "severity": 2,
+   "seconds": 4.375178199989023,
+   "found": 0,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000030",
+   "severity": 2,
+   "seconds": 4.291495900019072,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000040",
+   "severity": 2,
+   "seconds": 4.373338200006401,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000042",
+   "severity": 2,
+   "seconds": 4.263773199985735,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000043",
+   "severity": 2,
+   "seconds": 4.286895400000503,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000049",
+   "severity": 2,
+   "seconds": 4.342029699997511,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000054",
+   "severity": 2,
+   "seconds": 4.300926800002344,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000076",
+   "severity": 2,
+   "seconds": 4.296189599990612,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000078",
+   "severity": 2,
+   "seconds": 4.291111600003205,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000082",
+   "severity": 2,
+   "seconds": 4.341219799971441,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000000",
+   "severity": 3,
+   "seconds": 4.34831950001535,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000001",
+   "severity": 3,
+   "seconds": 4.319466199987801,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000002",
+   "severity": 3,
+   "seconds": 4.305244999995921,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000003",
+   "severity": 3,
+   "seconds": 4.288183500000741,
+   "found": 0,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000008",
+   "severity": 3,
+   "seconds": 4.326109000016004,
+   "found": 0,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000011",
+   "severity": 3,
+   "seconds": 4.375543899979675,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000015",
+   "severity": 3,
+   "seconds": 4.502944000007119,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000019",
+   "severity": 3,
+   "seconds": 4.4902523000200745,
+   "found": 0,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000035",
+   "severity": 3,
+   "seconds": 4.624621200026013,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000044",
+   "severity": 3,
+   "seconds": 4.389298599999165,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000051",
+   "severity": 3,
+   "seconds": 4.383651099982671,
+   "found": 0,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000053",
+   "severity": 3,
+   "seconds": 4.4961527999839745,
+   "found": 1,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000058",
+   "severity": 3,
+   "seconds": 4.610817799984943,
+   "found": 0,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000059",
+   "severity": 3,
+   "seconds": 4.399823899992043,
+   "found": 0,
+   "failed": false
+  },
+  {
+   "id": "p2_val-000070",
+   "severity": 3,
+   "seconds": 4.505817199999001,
+   "found": 0,
+   "failed": false
+  }
+ ]
+}

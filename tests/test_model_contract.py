@@ -61,7 +61,7 @@ def test_wheel_configuration_includes_the_shipped_ranker() -> None:
     package_data = configuration["tool"]["setuptools"]["package-data"]
     assert "models/*.joblib" in package_data["driftforge"]
     assert "models/*.json" in package_data["driftforge"]
-    assert configuration["project"]["requires-python"] == ">=3.12"
+    assert configuration["project"]["requires-python"] == ">=3.11"
     assert MODEL_PATH.is_file()
 
 

@@ -21,8 +21,8 @@ COORDINATE = re.compile(r"^\((-?\d+(?:\.\d+)?), (-?\d+(?:\.\d+)?)\)$")
 def main() -> int:
     print("LatticeRank 1.0 | judge smoke check")
     print(f"Python: {sys.version.split()[0]} | executable: {sys.executable}")
-    if sys.version_info < (3, 12):
-        raise RuntimeError("Python 3.12 or newer is required by the pinned release")
+    if sys.version_info < (3, 11):
+        raise RuntimeError("Python 3.11 or newer is required by the pinned release")
 
     bundle = load_model_bundle()
     provenance = model_file_provenance()

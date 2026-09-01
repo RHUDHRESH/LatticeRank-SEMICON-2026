@@ -1,0 +1,581 @@
+{
+ "experiment": "two_stage_residual_reranking",
+ "date": "2026-08-31",
+ "hypothesis": "E6 showed registration and disambiguation want opposite filters: suppressing the lattice collapses accuracy to 0% because the lattice is what locks position, yet the lattice is identical at every candidate and cannot say which period is right. That argues for splitting the two stages. The shipped Phase 2 path does not: register.py -> dense_pose_search -> refine_candidate takes a bare global argmax. dense.py's own docstring says 'selection among near-ties is deliberately not done here -- that is the periodic-residual and structural ranking stage's job', but that stage is never called. Phase 1 had it; the Phase 2 dense path dropped it.",
+ "design": "n=60 present pairs. Stage 1 registers exactly as shipped (band-passed ZNCC over 45 poses) and takes the top-25 NMS'd candidates. Stage 2 re-ranks that identical shortlist using the periodic-residual weighted ZNCC read at each candidate. Paired against ranking by ZNCC peak, so the arms differ only in the ranking signal. Distinct from dense_residual_ceiling.json, which used the residual as a dense PRIMARY matcher.",
+ "results": {
+  "n": 60,
+  "oracle": 0.5833333333333334,
+  "rules": {
+   "ZNCC peak (shipped)": {
+    "correct": 21,
+    "rate": 0.35
+   },
+   "residual only": {
+    "correct": 19,
+    "rate": 0.31666666666666665,
+    "mcnemar_p": 0.6875
+   },
+   "z(residual) + z(ZNCC)": {
+    "correct": 21,
+    "rate": 0.35,
+    "mcnemar_p": 1.0
+   },
+   "0.5*z(residual) + z(ZNCC)": {
+    "correct": 20,
+    "rate": 0.3333333333333333,
+    "mcnemar_p": 1.0
+   }
+  }
+ },
+ "conclusion": "The missing stage adds nothing. Combining z(residual)+z(ZNCC) reproduces the shipped 35.0% exactly (+1/-1, p=1.00); residual alone is worse at 31.7%; down-weighting it is worse at 33.3%. The periodic residual carries no usable disambiguation signal at the candidate sites, which is consistent with dense_residual_ceiling.json finding no difference when it was used as the primary matcher, and with the trimming ladder in localization_targeted_attacks.json showing the mismatch is spread uniformly rather than concentrated. Restoring the Phase 1 ranking stage is therefore not a missed opportunity.",
+ "caveats": [
+  "n=60; the design is paired so the discriminating quantity is the McNemar count, which is 1 v 1 for the best arm -- far too small to be a real effect at any sample size.",
+  "Residual quality depends on estimate_lattice; low-confidence lattices were not excluded, so this is an end-to-end figure rather than a best case.",
+  "p2_val only; no organizer data used."
+ ],
+ "organizer_data_used": false,
+ "p2_test_touched": false,
+ "rows": [
+  {
+   "id": "p2_val-000000",
+   "severity": 3,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": false,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000001",
+   "severity": 3,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000002",
+   "severity": 3,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000004",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000005",
+   "severity": 0,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000006",
+   "severity": 2,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000007",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000009",
+   "severity": 2,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000010",
+   "severity": 1,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000011",
+   "severity": 3,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000012",
+   "severity": 1,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000014",
+   "severity": 2,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000015",
+   "severity": 3,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000016",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000018",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000020",
+   "severity": 1,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000021",
+   "severity": 2,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000023",
+   "severity": 1,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000024",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000025",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000026",
+   "severity": 2,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000028",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000030",
+   "severity": 2,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000032",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000033",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000035",
+   "severity": 3,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000036",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000037",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000038",
+   "severity": 1,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000039",
+   "severity": 1,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000040",
+   "severity": 2,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000042",
+   "severity": 2,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000043",
+   "severity": 2,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000044",
+   "severity": 3,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000045",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000046",
+   "severity": 1,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000047",
+   "severity": 1,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000049",
+   "severity": 2,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000050",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000052",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000053",
+   "severity": 3,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000054",
+   "severity": 2,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000056",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000057",
+   "severity": 0,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000059",
+   "severity": 3,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000060",
+   "severity": 0,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000061",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000062",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000063",
+   "severity": 1,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000064",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": true,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000065",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000066",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000067",
+   "severity": 0,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000068",
+   "severity": 0,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000069",
+   "severity": 1,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000070",
+   "severity": 3,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000072",
+   "severity": 1,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": false,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  },
+  {
+   "id": "p2_val-000073",
+   "severity": 0,
+   "truth_in_shortlist": false,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": false,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000074",
+   "severity": 0,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": false,
+   "pick_residual_correct": true,
+   "pick_sum_correct": false,
+   "pick_zncc_weighted_correct": false
+  },
+  {
+   "id": "p2_val-000075",
+   "severity": 3,
+   "truth_in_shortlist": true,
+   "pick_zncc_correct": true,
+   "pick_residual_correct": false,
+   "pick_sum_correct": true,
+   "pick_zncc_weighted_correct": true
+  }
+ ]
+}

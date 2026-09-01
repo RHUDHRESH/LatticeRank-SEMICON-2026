@@ -1,0 +1,492 @@
+{
+ "experiment": "same_canvas_bound",
+ "date": "2026-08-31",
+ "question": "How much of the localization failure is caused by the reference and search being INDEPENDENT acquisitions of the latent scene, rather than the reference being cropped from the rendered search pixels as many generators do?",
+ "design": "Paired, n=60 present pairs from p2_val. Both arms use the SHIPPED pipeline unchanged (dense_pose_search + refine_candidate) and the same 60 pairs; they differ only in how the reference was produced. Arm S builds the reference by rotating the search image about the ground-truth centre, cropping a 1000/scale box and resampling to 1000x1000 -- so the acquisition noise realization is shared with the search.",
+ "arms": {
+  "independent_acquisition": {
+   "n": 60,
+   "hit1": 18,
+   "rate": 0.3,
+   "credit": 0.32333333333333336,
+   "median_err": 203.6222529107858
+  },
+  "same_canvas": {
+   "n": 60,
+   "hit1": 39,
+   "rate": 0.65,
+   "credit": 0.8366666666666667,
+   "median_err": 0.8710611308162588
+  }
+ },
+ "by_severity": {
+  "0": {
+   "n": 17,
+   "indep_rate": 0.35294117647058826,
+   "same_rate": 0.47058823529411764
+  },
+  "1": {
+   "n": 21,
+   "indep_rate": 0.2857142857142857,
+   "same_rate": 0.6190476190476191
+  },
+  "2": {
+   "n": 11,
+   "indep_rate": 0.45454545454545453,
+   "same_rate": 0.6363636363636364
+  },
+  "3": {
+   "n": 11,
+   "indep_rate": 0.09090909090909091,
+   "same_rate": 1.0
+  }
+ },
+ "by_decoy": {
+  "no_decoys": {
+   "n": 37,
+   "indep_rate": 0.32432432432432434,
+   "same_rate": 0.6756756756756757
+  },
+  "with_decoys": {
+   "n": 23,
+   "indep_rate": 0.2608695652173913,
+   "same_rate": 0.6086956521739131
+  }
+ },
+ "significance": {
+  "test": "exact McNemar on the <=1px outcome, paired by pair_id",
+  "b01": 26,
+  "b10": 5,
+  "p": 0.00019219517707824707
+ },
+ "conclusion": "Acquisition-noise independence is the dominant driver of localization failure: +35.0 pp in the <=1px rate (p=1.9e-4), against ~0 pp for planted decoys and ~0 pp for the severity ladder. Arm S is an UPPER bound, not a prediction: a real same-canvas generator would still apply its own reference-side PSF and noise, so a generator of unknown design lands somewhere inside [12.9, 33.5] of 40.",
+ "caveats": [
+  "n=60; per-severity strata are 11-21 pairs and individually noisy.",
+  "Arm S resamples the search image, so it also inherits the search-side PSF; it measures shared-noise benefit, not a like-for-like organizer generator.",
+  "p2_val only; no organizer data was used."
+ ],
+ "organizer_data_used": false,
+ "p2_test_touched": false,
+ "raw_rows": [
+  {
+   "id": "p2_val-000000",
+   "severity": 3,
+   "n_decoys": 4,
+   "err_indep": 0.33247587415809526,
+   "err_same": 0.7615616044264577
+  },
+  {
+   "id": "p2_val-000001",
+   "severity": 3,
+   "n_decoys": 0,
+   "err_indep": 320.4317207248511,
+   "err_same": 0.8200120994821315
+  },
+  {
+   "id": "p2_val-000002",
+   "severity": 3,
+   "n_decoys": 4,
+   "err_indep": 93.65213562103621,
+   "err_same": 0.42648707734843166
+  },
+  {
+   "id": "p2_val-000004",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 25.954069586318564,
+   "err_same": 0.6902987391157144
+  },
+  {
+   "id": "p2_val-000005",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 2.3087454342944307,
+   "err_same": 1.6350425632650387
+  },
+  {
+   "id": "p2_val-000006",
+   "severity": 2,
+   "n_decoys": 0,
+   "err_indep": 0.6167224257526078,
+   "err_same": 0.7198799007311055
+  },
+  {
+   "id": "p2_val-000007",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 182.7273632783968,
+   "err_same": 0.9318040502553259
+  },
+  {
+   "id": "p2_val-000009",
+   "severity": 2,
+   "n_decoys": 0,
+   "err_indep": 0.5808547732483607,
+   "err_same": 1.0463900485131987
+  },
+  {
+   "id": "p2_val-000010",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 221.48437103588935,
+   "err_same": 1.0307135483085363
+  },
+  {
+   "id": "p2_val-000011",
+   "severity": 3,
+   "n_decoys": 0,
+   "err_indep": 450.02643892577095,
+   "err_same": 0.6890775637566628
+  },
+  {
+   "id": "p2_val-000012",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 165.36902956324786,
+   "err_same": 0.7880235383730788
+  },
+  {
+   "id": "p2_val-000014",
+   "severity": 2,
+   "n_decoys": 0,
+   "err_indep": 0.696242782660089,
+   "err_same": 0.8112644613549995
+  },
+  {
+   "id": "p2_val-000015",
+   "severity": 3,
+   "n_decoys": 4,
+   "err_indep": 478.17093934785316,
+   "err_same": 0.9591165549332841
+  },
+  {
+   "id": "p2_val-000016",
+   "severity": 0,
+   "n_decoys": 1,
+   "err_indep": 442.3719894580804,
+   "err_same": 0.6360289604702877
+  },
+  {
+   "id": "p2_val-000018",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 0.5967133678129054,
+   "err_same": 186.3134172278933
+  },
+  {
+   "id": "p2_val-000020",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 437.17238731929604,
+   "err_same": 368.963043336581
+  },
+  {
+   "id": "p2_val-000021",
+   "severity": 2,
+   "n_decoys": 3,
+   "err_indep": 296.2125975415953,
+   "err_same": 1.1193086460299628
+  },
+  {
+   "id": "p2_val-000023",
+   "severity": 1,
+   "n_decoys": 2,
+   "err_indep": 523.0019619813311,
+   "err_same": 1.1152799972792242
+  },
+  {
+   "id": "p2_val-000024",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 0.7963361096592816,
+   "err_same": 0.6856726733633574
+  },
+  {
+   "id": "p2_val-000025",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 0.20750281328004025,
+   "err_same": 0.9065608521745868
+  },
+  {
+   "id": "p2_val-000026",
+   "severity": 2,
+   "n_decoys": 0,
+   "err_indep": 0.2916612759508334,
+   "err_same": 0.7377989564062499
+  },
+  {
+   "id": "p2_val-000028",
+   "severity": 1,
+   "n_decoys": 2,
+   "err_indep": 0.46607390893607276,
+   "err_same": 0.803257790008097
+  },
+  {
+   "id": "p2_val-000030",
+   "severity": 2,
+   "n_decoys": 3,
+   "err_indep": 161.6145621279436,
+   "err_same": 1.1932542632488212
+  },
+  {
+   "id": "p2_val-000032",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 184.58226497405016,
+   "err_same": 1.0216131980111054
+  },
+  {
+   "id": "p2_val-000033",
+   "severity": 1,
+   "n_decoys": 2,
+   "err_indep": 0.7334541965622765,
+   "err_same": 0.8388091413752857
+  },
+  {
+   "id": "p2_val-000035",
+   "severity": 3,
+   "n_decoys": 0,
+   "err_indep": 369.7841064117081,
+   "err_same": 0.3833143924172518
+  },
+  {
+   "id": "p2_val-000036",
+   "severity": 0,
+   "n_decoys": 1,
+   "err_indep": 0.14881008837449416,
+   "err_same": 1.1894878114205967
+  },
+  {
+   "id": "p2_val-000037",
+   "severity": 0,
+   "n_decoys": 1,
+   "err_indep": 215.80069787698224,
+   "err_same": 0.39844444295756465
+  },
+  {
+   "id": "p2_val-000038",
+   "severity": 1,
+   "n_decoys": 2,
+   "err_indep": 187.93110865300062,
+   "err_same": 0.81895711140613
+  },
+  {
+   "id": "p2_val-000039",
+   "severity": 1,
+   "n_decoys": 2,
+   "err_indep": 444.2408885147532,
+   "err_same": 0.9444406709288573
+  },
+  {
+   "id": "p2_val-000040",
+   "severity": 2,
+   "n_decoys": 0,
+   "err_indep": 0.7240312320837893,
+   "err_same": 0.9706118875015568
+  },
+  {
+   "id": "p2_val-000042",
+   "severity": 2,
+   "n_decoys": 0,
+   "err_indep": 369.9099982941922,
+   "err_same": 0.721683493192534
+  },
+  {
+   "id": "p2_val-000043",
+   "severity": 2,
+   "n_decoys": 0,
+   "err_indep": 506.1227600023509,
+   "err_same": 1.0446513131562092
+  },
+  {
+   "id": "p2_val-000044",
+   "severity": 3,
+   "n_decoys": 0,
+   "err_indep": 490.8358865885023,
+   "err_same": 0.9824402262292413
+  },
+  {
+   "id": "p2_val-000045",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 0.5026428834083356,
+   "err_same": 0.13999235751302505
+  },
+  {
+   "id": "p2_val-000046",
+   "severity": 1,
+   "n_decoys": 2,
+   "err_indep": 588.6910027846418,
+   "err_same": 595.1472501337018
+  },
+  {
+   "id": "p2_val-000047",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 303.15267640223374,
+   "err_same": 0.4807443901135528
+  },
+  {
+   "id": "p2_val-000049",
+   "severity": 2,
+   "n_decoys": 3,
+   "err_indep": 215.18214577179455,
+   "err_same": 0.5013253622201382
+  },
+  {
+   "id": "p2_val-000050",
+   "severity": 1,
+   "n_decoys": 2,
+   "err_indep": 0.3907844609327802,
+   "err_same": 1.3878327939073414
+  },
+  {
+   "id": "p2_val-000052",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 0.8232760526307924,
+   "err_same": 1.3036977401046592
+  },
+  {
+   "id": "p2_val-000053",
+   "severity": 3,
+   "n_decoys": 4,
+   "err_indep": 465.61960409029496,
+   "err_same": 0.6925948087435411
+  },
+  {
+   "id": "p2_val-000054",
+   "severity": 2,
+   "n_decoys": 0,
+   "err_indep": 720.2768132292621,
+   "err_same": 0.7413857878799938
+  },
+  {
+   "id": "p2_val-000056",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 0.14868861509675513,
+   "err_same": 0.8760360435449323
+  },
+  {
+   "id": "p2_val-000057",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 972.7856982174843,
+   "err_same": 417.7307775835878
+  },
+  {
+   "id": "p2_val-000059",
+   "severity": 3,
+   "n_decoys": 0,
+   "err_indep": 423.80453674042946,
+   "err_same": 0.8660862180875855
+  },
+  {
+   "id": "p2_val-000060",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 229.3818002095335,
+   "err_same": 1.1306004259951254
+  },
+  {
+   "id": "p2_val-000061",
+   "severity": 0,
+   "n_decoys": 1,
+   "err_indep": 0.5187222591453337,
+   "err_same": 0.45789754609507927
+  },
+  {
+   "id": "p2_val-000062",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 445.9595551336444,
+   "err_same": 0.9568907826915174
+  },
+  {
+   "id": "p2_val-000063",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 225.13875150767484,
+   "err_same": 1.0935204987707408
+  },
+  {
+   "id": "p2_val-000064",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 0.4748211678795655,
+   "err_same": 0.7314065228648878
+  },
+  {
+   "id": "p2_val-000065",
+   "severity": 1,
+   "n_decoys": 0,
+   "err_indep": 685.0867936337474,
+   "err_same": 0.842355290286084
+  },
+  {
+   "id": "p2_val-000066",
+   "severity": 1,
+   "n_decoys": 2,
+   "err_indep": 447.53226521814435,
+   "err_same": 0.8219428257293085
+  },
+  {
+   "id": "p2_val-000067",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 515.782796265495,
+   "err_same": 0.6464813736904138
+  },
+  {
+   "id": "p2_val-000068",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 192.062360049777,
+   "err_same": 449.50540774088273
+  },
+  {
+   "id": "p2_val-000069",
+   "severity": 1,
+   "n_decoys": 2,
+   "err_indep": 471.97865489607324,
+   "err_same": 232.34050703771334
+  },
+  {
+   "id": "p2_val-000070",
+   "severity": 3,
+   "n_decoys": 4,
+   "err_indep": 81.82311450592675,
+   "err_same": 0.3498367646389345
+  },
+  {
+   "id": "p2_val-000072",
+   "severity": 1,
+   "n_decoys": 2,
+   "err_indep": 18.962293400856698,
+   "err_same": 1.2323257365054208
+  },
+  {
+   "id": "p2_val-000073",
+   "severity": 0,
+   "n_decoys": 1,
+   "err_indep": 1019.0934394104489,
+   "err_same": 419.4962766933343
+  },
+  {
+   "id": "p2_val-000074",
+   "severity": 0,
+   "n_decoys": 0,
+   "err_indep": 694.1346417681618,
+   "err_same": 0.6966157389845922
+  },
+  {
+   "id": "p2_val-000075",
+   "severity": 3,
+   "n_decoys": 0,
+   "err_indep": 1.1040114836341632,
+   "err_same": 0.9032046966851368
+  }
+ ]
+}
