@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>LatticeRank Phase 2 — videos</title>
+  <style>
+    body { margin: 0; background: #0d1117; color: #c9d1d9; font-family: Segoe UI, sans-serif; }
+    main { max-width: 960px; margin: 40px auto; padding: 0 24px 64px; }
+    h1 { font-size: 22px; font-weight: 600; }
+    h2 { font-size: 18px; font-weight: 600; margin-top: 48px; }
+    p { color: #8b949e; }
+    video { width: 100%; border-radius: 12px; background: #161b22; }
+    code { color: #58a6ff; }
+    ol { color: #8b949e; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>LatticeRank Phase 2</h1>
+    <p>Two videos. Neither is needed to run the solver.</p>
+
+    <h2>Explainer — 3:56</h2>
+    <ol>
+      <li>The problem: one reference, one search image, hundreds of convincing copies</li>
+      <li>V1 to V2: what Phase 2 removed and what it now demands</li>
+      <li>How it works: seven stages, a 45-hypothesis pose grid, <code>found</code> vs <code>score</code></li>
+      <li>Data and contract: the generator, and exactly one row per pair</li>
+      <li>How to run it, then the recorded run</li>
+      <li>Results on the official sample</li>
+    </ol>
+    <video controls muted playsinline poster="explainer_poster.png"
+           src="latticerank_explainer.mp4"></video>
+
+    <h2>Terminal demo — 0:26</h2>
+    <p>Live smoke of <code>python register.py --input examples/pairs.csv --output predictions.csv</code></p>
+    <video controls muted playsinline src="latticerank_demo.mp4"></video>
+  </main>
+</body>
+</html>

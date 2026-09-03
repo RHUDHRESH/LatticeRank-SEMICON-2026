@@ -43,12 +43,18 @@ INCLUDE = (
     "driftforge/models/*",
     "scripts/*.py",
     "tests/*.py",
+    "docs/README.md",
     "docs/HOW_TO_RUN.md",
     "docs/V1_VS_V2.md",
     "docs/REFERENCES.md",
     "docs/failure_analysis.md",
     "docs/failure_analysis.pdf",
     "docs/images/*",
+    # The README links the terminal demo, so it travels with the zip. The
+    # explainer MP4 does not: 9.5 MB of optional walkthrough against a 13 MB
+    # deliverable, and it is regenerable from the tracked slides.
+    "docs/demo/latticerank_demo.mp4",
+    "docs/demo/predictions.csv",
     "examples/**/*",
     "manifests/*",
     "results/*.json",
@@ -67,10 +73,12 @@ INCLUDE = (
 #: the 4 the addendum actually asks about. The repository keeps them; the
 #: deliverable does not.
 EXCLUDE_SCRIPTS = frozenset({
-    "aggregate_external_benchmark.py", "bench_module.py", "delta_sweep.py",
+    "aggregate_external_benchmark.py", "bench_module.py",
+    "check_voiceover_timing.py", "delta_sweep.py",
     "evaluate_visibility.py", "exp01_weighted_zncc.py", "gt_pose_ceiling.py",
     "phys_eval.py", "prerank_eval.py", "prerank_features.py",
-    "rcc_v0_experiment.py", "response_cancel.py", "validate_exp15.py",
+    "rcc_v0_experiment.py", "render_demo_video.py", "render_explainer_video.py",
+    "response_cancel.py", "validate_exp15.py",
     "verify_and_allocate.py", "verify_exp10.py",
 })
 
@@ -99,6 +107,7 @@ REQUIRED = (
     "generate_dataset.py",
     "requirements.txt",
     "scripts/generate_dataset.py",
+    "docs/README.md",
     "docs/HOW_TO_RUN.md",
     "docs/failure_analysis.pdf",
     "driftforge/models/presence_hgb.pkl",

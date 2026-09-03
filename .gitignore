@@ -33,6 +33,17 @@ results/phase2_failures/
 results/phase2_report/
 results/sponsor_baseline/
 
+# Regenerable explainer screenshot cache (rebuild with render_explainer_video.py)
+docs/demo/slides/
+
+# Rendered explainer media. 42 MB of MP4 and WAV that render_explainer_video.py
+# and build_narrated_video.py rebuild from the tracked slides and script, so the
+# blobs do not belong in history. The 0.6 MB terminal demo stays: the submission
+# zip ships it.
+docs/demo/latticerank_explainer.mp4
+docs/demo/latticerank_explainer_narrated.mp4
+docs/demo/explainer_narration_timed.wav
+
 # Local editor state
 .idea/
 .vscode/

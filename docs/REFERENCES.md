@@ -1,9 +1,25 @@
 # References and augmentation-choice mapping
 
-These sources justify the mechanisms represented by the generator; they do not
-validate the numerical parameter ranges against a proprietary microscope,
-process node, or fabrication line. The generator is a synthetic SEM-like
-acquisition model.
+This is the citation trail for the 10-point generator / citations block.
+Every implemented mechanism is tied to a public source. Numerical endpoints
+are **domain-randomization hypotheses**, not instrument calibrations. Where no
+public paper validates an endpoint for this tool, the tables say so.
+
+How to read this file:
+
+1. The coverage table maps each implemented effect to numbered sources.
+2. The parameter table gives the actual code range, the physical reason, the
+   sources, and whether the number is measured or hypothesized.
+3. The numbered bibliography at the end is the source list. Each entry states
+   the **choice used here**, so a citation is never implied for a method we
+   did not ship.
+
+The generator is a synthetic SEM-like acquisition model. It is not a claim
+about a proprietary microscope, process node, or fabrication line.
+
+Related: [HOW_TO_RUN.md](HOW_TO_RUN.md) for the generator CLI;
+[failure_analysis.md](failure_analysis.md) for why our pairs are harder than
+the organizer sample.
 
 ## Coverage of implemented choices
 

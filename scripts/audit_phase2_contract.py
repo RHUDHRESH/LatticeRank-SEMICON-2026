@@ -38,6 +38,7 @@ REQUIRED = {
     "requirements.txt",
     "pyproject.toml",
     "scripts/generate_dataset.py",
+    "docs/README.md",
     "docs/HOW_TO_RUN.md",
     "docs/failure_analysis.pdf",
     "driftforge/dense.py",

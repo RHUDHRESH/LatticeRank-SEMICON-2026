@@ -19,6 +19,10 @@ localization credit is zeroed when `found=0`. **Zero failures, zero missing
 rows, relative paths in `pairs.csv` resolved correctly from an unrelated working
 directory.**
 
+![Official-sample fill](images/v2_official_scorecard.svg)
+
+*Organizer 20-pair sample, frozen solver. 79.14 / 85 before bonuses.*
+
 | Block | Result | Score | Detail |
 |---|---|---:|---|
 | Localization | A 0.975 · B 0.967 · D 1.000 | **38.8 / 40** | every present pair localized; misses are 1–2 px tier slips, never a wrong site |
@@ -32,6 +36,10 @@ For calibration, the organizers' README reports their own naive ZNCC baseline at
 **0.800** mean credit on the same present pairs, with Set A "too easy" and
 severity 3–4 defeating it outright (p011, p012, p014 → 0). LatticeRank scores
 1.00 on each of those three.
+
+![Versus the organizer naive baseline](images/v2_vs_baseline.svg)
+
+*Naive ZNCC mean present credit 0.800. LatticeRank is 1.00 on the three Set B pairs the baseline scores 0.*
 
 ## 2. Where the remaining points are
 
@@ -55,7 +63,12 @@ full-resolution correlations); presence features 12.4%, refinement 9.4%. The
 ## 3. Why our own corpus reads 30%, and why that is the right stress test
 
 Our generator (`data/phase2/p2_val` + `p2_stress`) scores **29.6%** ≤1 px at
-n=280, and we measured *why* rather than assuming. Decoys and the severity ladder
+n=280, and we measured *why* rather than assuming. (A fresh 199-pair stratified
+re-run of `p2_val` alone with the shipped solver reads **35.7%** ≤5 px, 56/157
+present, `results/phase2_experiments/inference_gallery.json`; `p2_stress` is the
+harder half of the combined figure. Of the 139 present pairs that got a pose, the
+counts within 1 px and within 10 px are the same 56 — the error is binary, so
+≤1 px and ≤5 px measure nearly the same thing.) Decoys and the severity ladder
 — the two things it was built to stress — have **no effect** (30.0 / 31.8 /
 30.0% across severity 0–1 without decoys, with decoys, and the full mix;
 `results/phase2_experiments/set_a_calibration.json`). What does have an effect is
@@ -143,20 +156,13 @@ while being 1 on the first.
 - **n = 20 on the official sample.** Set B is six pairs; one miss moves the
   block by ±3.7 points. The 38.8 is a strong point estimate, not a guarantee on
   200 pairs.
-- **Runtime is inside budget**: median 2.98 s, max 3.24 s on the official set
-  and 2.92 s on 60 pairs of our own, 0 pairs over 5 s and none near the 20 s
-  cap. Three memoizations got it there, each verified to leave predictions
-  byte-identical: the anti-alias and decimation depend only on scale, not
-  rotation; `scene_features` was re-refining the candidate the entry point had
-  already refined; and the ZNCC denominator's windowed-variance term depends on
-  template *shape* only, so the 45-pose sweep needs 63 FFT convolutions rather
-  than 135. The 40% margin absorbs a materially slower reference machine. It was 5.71 s until two
-  redundancies were removed: the anti-alias and decimation in `build_template`
-  depend only on scale, not rotation, so they are now built once per scale
-  rather than once per pose (12.2 ms against 0.3 ms for the rotation itself);
-  and `scene_features` no longer re-refines the candidate the entry point has
-  already refined. Both are memoization — predictions are **byte-identical**
-  before and after, verified on all 20 official pairs.
+- **Runtime is inside budget.** Official sample: median 4.61 s, max 4.79 s.
+  Uncontended internal (n=60, 4 threads): median 2.92 s. Zero pairs over 5 s,
+  none near the 20 s cap. Three memoizations, each leaving predictions
+  byte-identical: anti-alias/decimation once per scale not per pose; presence
+  features reuse the already-refined candidate; the ZNCC windowed-variance
+  term depends on template shape only, so the sweep uses 63 FFT convolutions
+  rather than 135.
 - **Two false positives on absent pairs** cost 0.9 rejection points. The fix
   is visible in our own score column and was deliberately not taken, per the
   tuning rule.
