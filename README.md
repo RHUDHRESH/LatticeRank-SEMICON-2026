@@ -7,9 +7,13 @@ inside a 1,000 × 1,000 **Search** image that covers ten times the physical
 area. It returns exactly one Search coordinate: `(x, y)`.
 
 The hard part is not finding a similar patch. DRAM and FinFET structures repeat,
-so hundreds of locations can look correct. LatticeRank generates those
-hypotheses, removes the repeating lattice, and ranks the non-periodic evidence
-that remains.
+so hundreds of locations can look correct. V1 resolves those aliases with
+periodic residual evidence; V2 expands the same registration lineage with pose
+search, local refinement, presence detection, and calibrated coordinate trust.
+
+**New:** [open the visual V1 → V2 architecture and migration guide](docs/V1_VS_V2.md)
+for the complete pose-search, presence, confidence, runtime, and output-contract
+story—with evidence-linked diagrams and charts.
 
 ![Reference-to-Search localization task](docs/images/01_localization_task.png)
 
@@ -46,6 +50,39 @@ python scripts/inference.py examples/dram/reference.png examples/dram/search.png
 Add `--json` for diagnostics.
 
 ## Results
+
+### Phase 2 — official Applied Materials sample set
+
+The only evaluation in this repository on **organizer-generated data**: the
+20-pair Phase 2 sample (8 Set A nominal, 6 Set B degraded, 4 Set C absent,
+2 Set D RGB, 9 architecture presets, zoom 8.00–12.00 at both endpoints).
+Run once, blind, with the shipped `register.py`, scored with the organizers'
+own rubric. Nothing was tuned on it.
+
+| Block | Result | Score |
+|---|---|---:|
+| Localization | Set A 0.975 · Set B 0.967 · Set D 1.000 | **38.82 / 40** |
+| Pose (gated on localization) | mean credit 0.8656 | **17.31 / 20** |
+| Rejection | F1 0.9412 (TP 16, FP 2, FN 0) — clears the ≥ 0.90 bonus gate | **14.12 / 15** |
+| Confidence | AUC 0.8889 of `score` against correctness | **8.89 / 10** |
+| RGB bonus | Set D 1.000 with A–C 0.9704 — unlocked | **+6** |
+
+Scored subtotal: **79.14 / 85**, before the six-point RGB bonus.
+
+![Phase 2 official sample scorecard](docs/images/v2_official_scorecard.svg)
+
+Evidence: [official sample evaluation](results/phase2_experiments/official_sample_evaluation.json).
+The organizers' own naive ZNCC baseline scores 0.800 mean credit on the same
+present pairs.
+
+**Every number below this line is measured on our own generator**, which is
+deliberately harder than the scored task — it renders reference and search as
+independent acquisitions, where the organizers cut the reference from the search
+canvas. Those figures are a robustness stress-test (they read ~30% where the
+official sample reads ~98%) and are documented in
+[docs/failure_analysis.md](docs/failure_analysis.md) §3.
+
+### Phase 1 benchmarks
 
 | Benchmark | Protocol | Within 5 px | Over 25 px | Median error |
 |---|---|---:|---:|---:|
@@ -223,14 +260,13 @@ python scripts/make_figures.py
 python scripts/build_submission.py
 ```
 
-`build_submission.py` packages from an explicit allow-list rather than from git
-state — `register.py`, the Phase 2 solver and both Phase 2 weight files are
-untracked, so a `git archive` would quietly ship a Phase 1 submission. The build
-fails if any required file is missing, if `failure_analysis.pdf` exceeds two
-pages, or if that document cites an evidence file the zip does not contain; then
-it extracts the finished archive to a scratch directory and runs the documented
-entry point inside it, so a weight loaded by an accidental repo-relative path is
-caught here rather than during the scored run.
+`build_submission.py` packages from an explicit allow-list rather than from the
+ambient working tree. The build fails if any required file is missing, if
+`failure_analysis.pdf` exceeds two pages, or if that document cites an evidence
+file the zip does not contain; then it extracts the finished archive to a scratch
+directory and runs the documented entry point inside it, so a weight loaded by
+an accidental repo-relative path is caught here rather than during the scored
+run.
 
 Runtime: **2.86 s median**, **6.15 s mean**, **30.32 s P95**.
 [Evidence](results/runtime.json)
@@ -341,7 +377,9 @@ should not be read as predictions for Set A.
 - Earlier Phase 1 claims that FinFET is distinctly weaker than DRAM **do not
   reproduce** under Phase 2 conditions (25.0% vs 34.6% after the band-pass,
   with overlapping intervals on smaller samples).
-- All scored evidence is synthetic; no sponsor SEM test pairs were available.
+- Detailed diagnostic evidence is synthetic. The organizer-generated 20-pair
+  sample is reported separately and only as aggregate metrics; its imagery and
+  coordinates are not stored here.
 - DRAM and FinFET still share one orthogonal-line rendering primitive; a more
   device-specific generator needs a generator-family holdout and retraining.
 

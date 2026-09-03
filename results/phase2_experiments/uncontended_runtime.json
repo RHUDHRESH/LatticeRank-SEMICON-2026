@@ -1,18 +1,19 @@
 {
  "experiment": "uncontended_runtime",
- "date": "2026-08-31",
- "method": "60 pairs stratified 15 per severity, timed through register.process -- the real scored code path including model load, presence and correctness. Threads pinned to 4 to match the reference machine. Nothing else running.",
+ "date": "2026-09-03",
+ "method": "60 pairs stratified 15 per severity from our own p2_val, timed through register.process -- the real scored code path. Threads pinned to 4. Nothing else running. Measured after three memoizations, each verified to leave predictions byte-identical: the anti-alias/decimation in build_template is built once per scale rather than per pose; scene_features reuses the refinement the entry point already computed; and the ZNCC denominator's windowed-variance term, which depends on template SHAPE only, is computed once per scale instead of per pose -- 63 FFT convolutions across the sweep where 135 were run.",
  "budget_s": 5.0,
  "hard_timeout_s": 20.0,
  "measured": {
   "n": 60,
-  "median_s": 4.333664399993722,
-  "mean_s": 4.356687293331197,
-  "p90_s": 4.496831919986289,
-  "p95_s": 4.514253985001415,
-  "max_s": 4.624621200026013,
+  "median_s": 2.921637699999792,
+  "mean_s": 2.932725728333283,
+  "p90_s": 3.087150929999825,
+  "p95_s": 3.205723594999972,
+  "max_s": 3.5491266999997606,
   "over_5s": 0,
   "over_20s": 0,
+  "threads": 4,
   "verdict": "PASS"
  },
  "degradation_ladder": {
@@ -43,422 +44,429 @@
   {
    "id": "p2_val-000004",
    "severity": 0,
-   "seconds": 4.233150400017621,
+   "seconds": 2.8807999000000564,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000005",
    "severity": 0,
-   "seconds": 4.2320440000039525,
+   "seconds": 2.9601748999994015,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000016",
    "severity": 0,
-   "seconds": 4.322204900003271,
+   "seconds": 2.9317849999997634,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000018",
    "severity": 0,
-   "seconds": 4.242926199978683,
+   "seconds": 3.199845699999969,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000025",
    "severity": 0,
-   "seconds": 4.245858000009321,
+   "seconds": 2.8920872000007876,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000031",
    "severity": 0,
-   "seconds": 4.223351099994034,
+   "seconds": 2.8628169000003254,
    "found": 0,
    "failed": false
   },
   {
    "id": "p2_val-000032",
    "severity": 0,
-   "seconds": 4.320194900006754,
+   "seconds": 2.856849899999361,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000034",
    "severity": 0,
-   "seconds": 4.324294299993198,
+   "seconds": 2.8410714000001462,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000036",
    "severity": 0,
-   "seconds": 4.314882500009844,
+   "seconds": 2.933958100000382,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000037",
    "severity": 0,
-   "seconds": 4.346914599998854,
+   "seconds": 2.9332303999999567,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000045",
    "severity": 0,
-   "seconds": 4.5130950000020675,
+   "seconds": 2.7356712999999218,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000048",
    "severity": 0,
-   "seconds": 4.4214165000012144,
+   "seconds": 3.069840000000113,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000052",
    "severity": 0,
-   "seconds": 4.422221799992258,
+   "seconds": 2.9539454000005207,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000057",
    "severity": 0,
-   "seconds": 4.27803230000427,
+   "seconds": 2.9810625000000073,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000060",
    "severity": 0,
-   "seconds": 4.325587699975586,
+   "seconds": 2.843684000000394,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000007",
    "severity": 1,
-   "seconds": 4.32481610000832,
+   "seconds": 2.9160845999995217,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000010",
    "severity": 1,
-   "seconds": 4.393381899979431,
+   "seconds": 2.739207699999497,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000012",
    "severity": 1,
-   "seconds": 4.536274699989008,
+   "seconds": 2.991114700000253,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000013",
    "severity": 1,
-   "seconds": 4.39291160000721,
+   "seconds": 2.925973899999917,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000017",
    "severity": 1,
-   "seconds": 4.341944299987517,
+   "seconds": 3.0616396000004897,
    "found": 0,
    "failed": false
   },
   {
    "id": "p2_val-000020",
    "severity": 1,
-   "seconds": 4.353035400010413,
+   "seconds": 2.889595499999814,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000022",
    "severity": 1,
-   "seconds": 4.312541999999667,
+   "seconds": 2.8758546999997634,
    "found": 0,
    "failed": false
   },
   {
    "id": "p2_val-000023",
    "severity": 1,
-   "seconds": 4.324293599987868,
+   "seconds": 2.74921329999961,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000024",
    "severity": 1,
-   "seconds": 4.392159899987746,
+   "seconds": 2.990023000000292,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000027",
    "severity": 1,
-   "seconds": 4.3164553999959026,
+   "seconds": 2.7106322999998156,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000028",
    "severity": 1,
-   "seconds": 4.312996799999382,
+   "seconds": 3.1316037999995388,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000033",
    "severity": 1,
-   "seconds": 4.293265599990264,
+   "seconds": 2.9843713000000207,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000038",
    "severity": 1,
-   "seconds": 4.2750837999919895,
+   "seconds": 2.905624699999862,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000039",
    "severity": 1,
-   "seconds": 4.341481899988139,
+   "seconds": 3.0998789999994187,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000041",
    "severity": 1,
-   "seconds": 4.373481799993897,
+   "seconds": 2.632258300000103,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000006",
    "severity": 2,
-   "seconds": 4.394374399998924,
+   "seconds": 2.9491650999998456,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000009",
    "severity": 2,
-   "seconds": 4.321802499995101,
+   "seconds": 2.8530816000002233,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000014",
    "severity": 2,
-   "seconds": 4.385565800010227,
+   "seconds": 2.9173014999996667,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000021",
    "severity": 2,
-   "seconds": 4.419847200013464,
+   "seconds": 2.880193099999815,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000026",
    "severity": 2,
-   "seconds": 4.300944299990078,
+   "seconds": 2.8670068999999785,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000029",
    "severity": 2,
-   "seconds": 4.375178199989023,
+   "seconds": 2.928558300000077,
    "found": 0,
    "failed": false
   },
   {
    "id": "p2_val-000030",
    "severity": 2,
-   "seconds": 4.291495900019072,
+   "seconds": 2.8635738000002675,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000040",
    "severity": 2,
-   "seconds": 4.373338200006401,
+   "seconds": 2.9629785999995875,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000042",
    "severity": 2,
-   "seconds": 4.263773199985735,
+   "seconds": 2.8219044999996186,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000043",
    "severity": 2,
-   "seconds": 4.286895400000503,
+   "seconds": 2.643008899999586,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000049",
    "severity": 2,
-   "seconds": 4.342029699997511,
+   "seconds": 2.9638757000002443,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000054",
    "severity": 2,
-   "seconds": 4.300926800002344,
+   "seconds": 2.702973899999961,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000076",
    "severity": 2,
-   "seconds": 4.296189599990612,
+   "seconds": 2.965390300000763,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000078",
    "severity": 2,
-   "seconds": 4.291111600003205,
+   "seconds": 2.8505925999998,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000082",
    "severity": 2,
-   "seconds": 4.341219799971441,
+   "seconds": 2.957812399999966,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000000",
    "severity": 3,
-   "seconds": 4.34831950001535,
+   "seconds": 2.9436761999995724,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000001",
    "severity": 3,
-   "seconds": 4.319466199987801,
+   "seconds": 3.5491266999997606,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000002",
    "severity": 3,
-   "seconds": 4.305244999995921,
+   "seconds": 2.9571694000005664,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000003",
    "severity": 3,
-   "seconds": 4.288183500000741,
+   "seconds": 2.89674339999965,
    "found": 0,
    "failed": false
   },
   {
    "id": "p2_val-000008",
    "severity": 3,
-   "seconds": 4.326109000016004,
-   "found": 0,
+   "seconds": 2.986831799999891,
+   "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000011",
    "severity": 3,
-   "seconds": 4.375543899979675,
+   "seconds": 3.0857366999998703,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000015",
    "severity": 3,
-   "seconds": 4.502944000007119,
+   "seconds": 2.8030869000003804,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000019",
    "severity": 3,
-   "seconds": 4.4902523000200745,
+   "seconds": 2.985289699999157,
    "found": 0,
    "failed": false
   },
   {
    "id": "p2_val-000035",
    "severity": 3,
-   "seconds": 4.624621200026013,
+   "seconds": 3.463638200000787,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000044",
    "severity": 3,
-   "seconds": 4.389298599999165,
+   "seconds": 3.01236069999959,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000051",
    "severity": 3,
-   "seconds": 4.383651099982671,
+   "seconds": 3.317403600000034,
    "found": 0,
    "failed": false
   },
   {
    "id": "p2_val-000053",
    "severity": 3,
-   "seconds": 4.4961527999839745,
+   "seconds": 2.8856871999996656,
    "found": 1,
    "failed": false
   },
   {
    "id": "p2_val-000058",
    "severity": 3,
-   "seconds": 4.610817799984943,
+   "seconds": 2.889688799999931,
    "found": 0,
    "failed": false
   },
   {
    "id": "p2_val-000059",
    "severity": 3,
-   "seconds": 4.399823899992043,
+   "seconds": 2.8153292999995756,
    "found": 0,
    "failed": false
   },
   {
    "id": "p2_val-000070",
    "severity": 3,
-   "seconds": 4.505817199999001,
+   "seconds": 2.764458900000136,
    "found": 0,
    "failed": false
   }
- ]
+ ],
+ "official_sample_runtime": {
+  "median_s": 3.04,
+  "mean_s": 3.1,
+  "max_s": 3.58,
+  "n": 20,
+  "over_5s": 0
+ }
 }

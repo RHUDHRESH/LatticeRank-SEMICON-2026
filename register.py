@@ -83,6 +83,11 @@ FALLBACK_FOUND_THRESHOLD = 0.45
 #: the column is judged for monotonicity against correctness, so a value outside
 #: [0, 1] would sort correctly but would not be the quantity the column claims
 #: to carry.
+#: Pose bounds disclosed in the addendum. Hard-coding these is explicitly
+#: allowed; they constrain what is REPORTED, never what is searched.
+DISCLOSED_SCALE = (8.0, 12.0)
+DISCLOSED_ROTATION_DEG = 5.0
+
 FAILURE_SCORE = NO_EVIDENCE_SCORE
 
 COLOR_MODES = {"1", "L", "LA", "P", "RGB", "RGBA", "CMYK", "YCbCr"}
@@ -250,7 +255,7 @@ def solve(reference: np.ndarray, search: np.ndarray, deadline: Deadline,
     y = float(np.clip(y, 0.0, height - 1))
 
     if presence is not None and deadline.affords("presence", estimate_s=1.0):
-        features, _ = scene_features(reference, search, rows=pose_rows)
+        features, _ = scene_features(reference, search, rows=pose_rows, refined=refined)
         found, presence_p = presence.decide(features)
     else:
         if presence is not None:
@@ -270,6 +275,16 @@ def solve(reference: np.ndarray, search: np.ndarray, deadline: Deadline,
         # the found flag.
         return {"x": 0.0, "y": 0.0, "theta": 0.0, "scale": 0.0,
                 "found": 0, "score": float(score) if np.isfinite(score) else 0.0}
+    # Clamp the reported pose to the disclosed bounds. The addendum names
+    # scale as "nominally in [8, 12]" and rotation as +/-5 deg, and explicitly
+    # permits "hard-coding the disclosed bounds [8,12] and +/-5". The refinement
+    # search deliberately runs wider (SCALE_LIMITS 7.5-12.5, ROTATION_LIMIT_DEG
+    # 8.5) so a true pose near an endpoint is not clipped during optimisation --
+    # but an estimate outside the disclosed range is certainly wrong, and moving
+    # it to the nearest legal value can only reduce the pose error the scorer
+    # measures. Reporting is where the bound belongs, not searching.
+    scale = float(np.clip(scale, DISCLOSED_SCALE[0], DISCLOSED_SCALE[1]))
+    rotation = float(np.clip(rotation, -DISCLOSED_ROTATION_DEG, DISCLOSED_ROTATION_DEG))
     return {"x": x, "y": y, "theta": float(rotation), "scale": float(scale),
             "found": 1, "score": float(score)}
 

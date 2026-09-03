@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+<title id="title">V2 uncontended runtime distribution</title>
+<desc id="desc">Histogram of measured per-pair runtime on sixty internal validation pairs.</desc>
+<rect x="0.0" y="0.0" width="1200.0" height="650.0" rx="0.0" fill="#ffffff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="58.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" fill="#172033" text-anchor="start">V2 uncontended runtime distribution</text>
+<text x="60.0" y="96.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#657089" text-anchor="start">n=60 · median 2.92 s · P95 3.21 s · max 3.55 s</text>
+<line x1="120.0" y1="500.0" x2="1110.0" y2="500.0" stroke="#dce2ec" stroke-width="2.0"/>
+<text x="104.0" y="507.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#657089" text-anchor="end">0</text>
+<line x1="120.0" y1="425.0" x2="1110.0" y2="425.0" stroke="#dce2ec" stroke-width="2.0"/>
+<text x="104.0" y="432.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#657089" text-anchor="end">9</text>
+<line x1="120.0" y1="350.0" x2="1110.0" y2="350.0" stroke="#dce2ec" stroke-width="2.0"/>
+<text x="104.0" y="357.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#657089" text-anchor="end">18</text>
+<line x1="120.0" y1="275.0" x2="1110.0" y2="275.0" stroke="#dce2ec" stroke-width="2.0"/>
+<text x="104.0" y="282.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#657089" text-anchor="end">27</text>
+<line x1="120.0" y1="200.0" x2="1110.0" y2="200.0" stroke="#dce2ec" stroke-width="2.0"/>
+<text x="104.0" y="207.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#657089" text-anchor="end">36</text>
+<rect x="130.0" y="433.3" width="145.0" height="66.7" rx="6.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="202.5" y="424.3" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#172033" text-anchor="middle">8</text>
+<text x="202.5" y="534.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="middle">2.6–2.8</text>
+<rect x="295.0" y="150.0" width="145.0" height="350.0" rx="6.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="367.5" y="141.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#172033" text-anchor="middle">42</text>
+<text x="367.5" y="534.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="middle">2.8–3.0</text>
+<rect x="460.0" y="441.7" width="145.0" height="58.3" rx="6.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="532.5" y="432.7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#172033" text-anchor="middle">7</text>
+<text x="532.5" y="534.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="middle">3.0–3.2</text>
+<rect x="625.0" y="491.7" width="145.0" height="8.3" rx="6.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="697.5" y="482.7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#172033" text-anchor="middle">1</text>
+<text x="697.5" y="534.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="middle">3.2–3.4</text>
+<rect x="790.0" y="483.3" width="145.0" height="16.7" rx="6.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="862.5" y="474.3" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#172033" text-anchor="middle">2</text>
+<text x="862.5" y="534.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="middle">3.4–3.6</text>
+<rect x="955.0" y="500.0" width="145.0" height="0.0" rx="6.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="1027.5" y="491.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#172033" text-anchor="middle">0</text>
+<text x="1027.5" y="534.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="middle">3.6–3.8</text>
+<text x="615.0" y="576.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" fill="#172033" text-anchor="middle">Seconds per pair</text>
+<text x="60.0" y="616.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Source: results/phase2_experiments/uncontended_runtime.json · 5 s median budget</text>
+</svg>

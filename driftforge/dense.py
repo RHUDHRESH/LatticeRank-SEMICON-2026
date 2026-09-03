@@ -24,9 +24,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+from scipy import signal
 
 from .baseline import _ncc_valid, _robust_contrast
-from .pose import band_pass, build_template
+from .pose import band_pass, build_template_base, rotate_template
 
 #: Scale sweep over the disclosed [8, 12]. Step 0.5 matches the sponsors' own
 #: published baseline, whose measured accuracy this module is calibrated
@@ -55,14 +56,54 @@ class DenseMatch:
         return bool(np.isfinite(self.score))
 
 
-def _correlate(search_f: np.ndarray, template: np.ndarray) -> tuple[float, float, float]:
+def _shape_energy(image: np.ndarray, shape: tuple[int, int]) -> np.ndarray:
+    """Windowed-variance term of the ZNCC denominator, for one template SHAPE.
+
+    ``_ncc_valid`` runs three FFT convolutions per call, but two of them -- the
+    local sum and the local sum of squares -- read only the image and a box of
+    the template's shape. They are independent of what the template contains,
+    and rotation here uses ``reshape=False``, so every rotation at a given scale
+    shares this term exactly. Computing it once per scale turns the sweep's 135
+    convolutions into 63.
+
+    This lives in the Phase 2 sweep rather than in :mod:`driftforge.baseline`
+    on purpose: ``baseline.py`` is the frozen Phase 1 locator, SHA-256 pinned by
+    ``LocatorFrozenTests`` so the declared method cannot drift. The arithmetic
+    below is identical to what that module computes -- verified by asserting
+    byte-identical predictions across all 20 organizer sample pairs -- it is
+    only evaluated in a different order.
+    """
+    ones = np.ones(shape, dtype=np.float32)
+    n = float(shape[0] * shape[1])
+    local_sum = signal.fftconvolve(image, ones, mode="valid")
+    local_sumsq = signal.fftconvolve(image * image, ones, mode="valid")
+    return np.maximum(local_sumsq - local_sum * local_sum / n, 1e-9)
+
+
+def _ncc_with_energy(image: np.ndarray, template: np.ndarray,
+                     local_energy: np.ndarray) -> np.ndarray:
+    """ZNCC in valid coordinates, reusing a precomputed denominator term."""
+    template = template.astype(np.float32)
+    template = template - float(template.mean())
+    template_energy = float(np.sum(template * template))
+    if template_energy < 1e-9:
+        raise ValueError("template has no usable contrast")
+    numerator = signal.fftconvolve(image, template[::-1, ::-1], mode="valid")
+    return (numerator / np.sqrt(local_energy * template_energy)).astype(np.float32)
+
+
+def _correlate(search_f: np.ndarray, template: np.ndarray,
+               local_energy: np.ndarray | None = None) -> tuple[float, float, float]:
     """Global maximum of the ZNCC surface, returned as (x, y, score)."""
     if not np.isfinite(template).all() or float(template.std()) < 1e-6:
         return float("nan"), float("nan"), float("-inf")
     th, tw = template.shape[:2]
     if th >= search_f.shape[0] or tw >= search_f.shape[1] or th < 3 or tw < 3:
         return float("nan"), float("nan"), float("-inf")
-    surface = _ncc_valid(search_f, template.astype(np.float32))
+    if local_energy is not None:
+        surface = _ncc_with_energy(search_f, template.astype(np.float32), local_energy)
+    else:
+        surface = _ncc_valid(search_f, template.astype(np.float32))
     if not np.isfinite(surface).any():
         return float("nan"), float("nan"), float("-inf")
     row, col = np.unravel_index(int(np.nanargmax(surface)), surface.shape)
@@ -137,6 +178,23 @@ def dense_pose_search(
     )
     evaluated = 0
     for scale in scales:
+        # The anti-alias and decimation depend only on `scale`, so they are
+        # hoisted out of the rotation loop: 12.2 ms each on a 1000x1000
+        # reference against 0.3 ms for the rotation of the ~100 px template.
+        # Rebuilding per pose cost 45 x 12.2 ms where 9 x 12.2 ms is enough.
+        try:
+            base_template = build_template_base(reference, float(scale))
+        except ValueError:
+            continue
+        # The ZNCC denominator's windowed-variance term depends on the template
+        # SHAPE only, and rotation preserves shape, so all rotations at this
+        # scale share it. Computing it here saves two FFT convolutions per pose.
+        shape_energy = None
+        if base_template.shape[0] < search_f.shape[0] and base_template.shape[1] < search_f.shape[1]:
+            try:
+                shape_energy = _shape_energy(search_f, base_template.shape)
+            except ValueError:
+                shape_energy = None
         for rotation in rotations:
             if deadline is not None and not deadline.affords(
                 "dense_hypothesis", estimate_s=0.15
@@ -148,12 +206,12 @@ def dense_pose_search(
                 best.evaluated = evaluated
                 return best
             try:
-                template = build_template(reference, float(scale), float(rotation))
+                template = rotate_template(base_template, float(rotation))
             except ValueError:
                 continue
             if band_pass_input:
                 template = band_pass(template)
-            x, y, score = _correlate(search_f, template)
+            x, y, score = _correlate(search_f, template, local_energy=shape_energy)
             if collect_rows is not None:
                 collect_rows.append({"x": x, "y": y, "raw": score,
                                      "scale": float(scale), "rotation": float(rotation)})

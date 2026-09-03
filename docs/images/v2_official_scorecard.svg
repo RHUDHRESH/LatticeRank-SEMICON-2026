@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+<title id="title">V2 official sample scorecard</title>
+<desc id="desc">79.1 / 85 scored points, plus RGB bonus; 0 pairs over budget</desc>
+<rect x="0.0" y="0.0" width="1200.0" height="650.0" rx="0.0" fill="#ffffff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="62.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" fill="#172033" text-anchor="start">V2 official sample scorecard</text>
+<text x="60.0" y="100.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#657089" text-anchor="start">79.1 / 85 scored points, plus RGB bonus; 0 pairs over budget</text>
+<text x="286.0" y="175.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#172033" text-anchor="end">Localization</text>
+<rect x="310.0" y="150.0" width="790.0" height="34.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<rect x="310.0" y="150.0" width="766.6" height="34.0" rx="9.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="1100.0" y="176.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">38.8 pt / 40 pt</text>
+<text x="286.0" y="267.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#172033" text-anchor="end">Pose</text>
+<rect x="310.0" y="242.0" width="790.0" height="34.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<rect x="310.0" y="242.0" width="683.8" height="34.0" rx="9.0" fill="#10a4b5" stroke="none" stroke-width="0.0"/>
+<text x="1100.0" y="268.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">17.3 pt / 20 pt</text>
+<text x="286.0" y="359.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#172033" text-anchor="end">Rejection</text>
+<rect x="310.0" y="334.0" width="790.0" height="34.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<rect x="310.0" y="334.0" width="743.5" height="34.0" rx="9.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="1100.0" y="360.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">14.1 pt / 15 pt</text>
+<text x="286.0" y="451.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#172033" text-anchor="end">Confidence</text>
+<rect x="310.0" y="426.0" width="790.0" height="34.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<rect x="310.0" y="426.0" width="702.2" height="34.0" rx="9.0" fill="#d88b17" stroke="none" stroke-width="0.0"/>
+<text x="1100.0" y="452.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">8.9 pt / 10 pt</text>
+<text x="286.0" y="543.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#172033" text-anchor="end">RGB bonus</text>
+<rect x="310.0" y="518.0" width="790.0" height="34.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<rect x="310.0" y="518.0" width="790.0" height="34.0" rx="9.0" fill="#7c5ce0" stroke="none" stroke-width="0.0"/>
+<text x="1100.0" y="544.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">6.0 pt / 6 pt</text>
+<text x="60.0" y="616.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Source: results/phase2_experiments/official_sample_evaluation.json</text>
+</svg>

@@ -1,0 +1,65 @@
+{
+ "experiment": "official_sample_evaluation",
+ "date": "2026-09-03",
+ "data": "Applied Materials Phase 2 organizer sample set: 20 pairs (8 Set A nominal, 6 Set B degraded, 4 Set C absent, 2 Set D optical RGB).",
+ "important": "This is the ONLY evaluation in this repository on organizer-generated data. It is a measurement of the frozen solver, run after freezing. No threshold, weight or parameter was fitted to it; the refinement-pass change shipped this session was validated on our own p2_val corpus and only confirmed here. The file records aggregate metrics only -- no organizer coordinates or imagery are reproduced.",
+ "blocks": {
+  "localization": {
+   "setA_mean": 0.975,
+   "setB_mean": 0.9666666666666667,
+   "setD_mean": 1.0,
+   "weighted": 0.9704166666666667,
+   "pts40": 38.81666666666667
+  },
+  "pose": {
+   "mean_gated_credit": 0.865625,
+   "pts20": 17.3125
+  },
+  "rejection": {
+   "tp": 16,
+   "fp": 2,
+   "fn": 0,
+   "precision": 0.8888888888888888,
+   "recall": 1.0,
+   "f1": 0.9411764705882353,
+   "pts15": 14.117647058823529,
+   "bonus_f1_ge_0.90": true
+  },
+  "confidence": {
+   "auc_vs_correctness": 0.8888888888888888,
+   "pts10": 8.88888888888889
+  },
+  "rgb_bonus_unlocked": {
+   "setD_credit": 1.0,
+   "setsAC_credit": 0.9704166666666667,
+   "requires": "setD>=0.40 and A-C>=0.50",
+   "unlocked": true
+  }
+ },
+ "runtime": {
+  "median_s": 4.61,
+  "mean_s": 4.6,
+  "max_s": 4.79,
+  "budget_s": 5.0,
+  "hard_cap_s": 20.0,
+  "over_budget_pairs": 0,
+  "note": "inside the 5 s median budget with an 8% margin; 4x clear of the 20 s hard cap"
+ },
+ "false_positives": {
+  "pairs": [
+   {
+    "pair_id": "p016",
+    "our_score": 0.0637
+   },
+   {
+    "pair_id": "p018",
+    "our_score": 0.0754
+   }
+  ],
+  "min_present_score": 0.127808465629477,
+  "note": "The presence model reports found=1 on these absent pairs while the correctness score column ranks them below every present pair. Choosing a threshold from that observation would be tuning on organizer data, which the addendum lists as a no-appeal disqualification, so it was deliberately not done."
+ },
+ "scored_subtotal_pts85": 79.13570261437908,
+ "organizer_data_used_for_tuning": false,
+ "p2_test_touched": false
+}

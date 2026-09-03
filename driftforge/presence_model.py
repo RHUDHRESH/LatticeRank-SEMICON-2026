@@ -132,7 +132,8 @@ def _peak_hessian_det(search_f: np.ndarray, template: np.ndarray) -> float:
 
 
 def scene_features(reference: np.ndarray, search: np.ndarray,
-                   rows: list[dict] | None = None) -> tuple[dict, dict | None]:
+                   rows: list[dict] | None = None,
+                   refined=None) -> tuple[dict, dict | None]:
     """Compute the presence feature vector and the best pose hypothesis.
 
     Returns ``(features, best)``. ``best`` is ``None`` when no pose produced a
@@ -177,9 +178,14 @@ def scene_features(reference: np.ndarray, search: np.ndarray,
     features["cross_rotation_agreement"] = cr
 
     try:
-        refined = refine_candidate(
-            reference, search, best["x"], best["y"], best["scale"], best["rotation"]
-        )
+        # ``refined`` is accepted from the caller because the entry point has
+        # already refined this exact candidate -- ``best`` is the sweep's global
+        # argmax, the same point ``solve()`` refines. Recomputing it cost a
+        # second full refinement (~0.5 s per pair) for a bit-identical result.
+        if refined is None:
+            refined = refine_candidate(
+                reference, search, best["x"], best["y"], best["scale"], best["rotation"]
+            )
         if np.isfinite(refined.score):
             features["refinement_gain"] = float(refined.score - best["raw"])
             features["refinement_displacement"] = float(

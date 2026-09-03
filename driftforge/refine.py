@@ -54,9 +54,22 @@ SCALE_HALF_WINDOW = 1.0
 #: grid steps by 2.5 deg.
 ROTATION_HALF_WINDOW_DEG = 3.0
 
-#: Alternating passes. Two is enough in practice -- the second pass moves the
-#: answer by well under a tier width -- and each costs real time.
-DEFAULT_PASSES = 2
+#: Alternating passes. Two was chosen when the pose sweep and the evaluation
+#: data shared a grid, where the coarse hit already sits close to the optimum.
+#: Off-grid poses start further away: the disclosed zoom is continuous but our
+#: sweep steps by 0.5, so a true z of 9.37 is up to 0.25 from any pose we
+#: evaluate and the whole residual falls to refinement. Measured end-to-end on
+#: two independent sets -- 70 present pairs of our own p2_val and 40 pairs drawn
+#: off-grid from the organizers' published generator -- a third pass fixes 8
+#: pairs and breaks 1 (exact McNemar p = 0.039 pooled), worth about +0.7 points
+#: on our corpus and +2.1 on the off-grid one, for +0.2 s per pair.
+#:
+#: Held to three rather than more on purpose: four measured *worse* than three
+#: on both sets and five landed between them, so the profile is not monotone and
+#: the apparent gain past three is noise. Refinement runs at the site already
+#: chosen by the sweep, so this can only move sub-pixel pose -- it cannot change
+#: which site is reported.
+DEFAULT_PASSES = 3
 
 #: Reportable pose bounds, which are deliberately **wider than the disclosed
 #: ranges**. The addendum discloses a stage rotation of +/-5 deg and a zoom in
