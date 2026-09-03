@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+<title id="title">V2 scored inference pipeline</title>
+<desc id="desc">Entry-point stages from CSV in to CSV out.</desc>
+<rect x="0.0" y="0.0" width="1200.0" height="420.0" rx="0.0" fill="#ffffff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="58.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" fill="#172033" text-anchor="start">Scored path: one process, one row</text>
+<text x="60.0" y="96.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="400" fill="#657089" text-anchor="start">python register.py --input pairs.csv --output predictions.csv</text>
+<rect x="50.0" y="180.0" width="140.0" height="64.0" rx="10.0" fill="#657089" stroke="none" stroke-width="0.0"/>
+<text x="120.0" y="217.6" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">pairs.csv</text>
+<text x="198.0" y="220.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#657089" text-anchor="middle">&gt;</text>
+<rect x="212.0" y="180.0" width="140.0" height="64.0" rx="10.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="282.0" y="217.6" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">Decode</text>
+<text x="360.0" y="220.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#657089" text-anchor="middle">&gt;</text>
+<rect x="374.0" y="180.0" width="140.0" height="64.0" rx="10.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="444.0" y="217.6" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">45-pose sweep</text>
+<text x="522.0" y="220.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#657089" text-anchor="middle">&gt;</text>
+<rect x="536.0" y="180.0" width="140.0" height="64.0" rx="10.0" fill="#10a4b5" stroke="none" stroke-width="0.0"/>
+<text x="606.0" y="217.6" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">Refine</text>
+<text x="684.0" y="220.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#657089" text-anchor="middle">&gt;</text>
+<rect x="698.0" y="180.0" width="140.0" height="64.0" rx="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="768.0" y="217.6" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">found</text>
+<text x="846.0" y="220.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#657089" text-anchor="middle">&gt;</text>
+<rect x="860.0" y="180.0" width="140.0" height="64.0" rx="10.0" fill="#d88b17" stroke="none" stroke-width="0.0"/>
+<text x="930.0" y="217.6" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">score</text>
+<text x="1008.0" y="220.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#657089" text-anchor="middle">&gt;</text>
+<rect x="1022.0" y="180.0" width="140.0" height="64.0" rx="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="1092.0" y="217.6" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">predictions.csv</text>
+<text x="60.0" y="300.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#172033" text-anchor="start">Deadline can skip refine or presence features. The row is still written.</text>
+<text x="60.0" y="392.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Source: register.py solve() control flow.</text>
+</svg>

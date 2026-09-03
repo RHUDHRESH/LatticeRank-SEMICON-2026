@@ -14,6 +14,12 @@ inside a time budget, and guarantees one valid output row for every input row.
 
 ![V2 official sample scorecard](images/v2_official_scorecard.svg)
 
+![What Phase 2 changes](images/v2_phase_change.svg)
+
+![Published 200-pair composition](images/v2_dataset_composition.svg)
+
+![Scoring allocation](images/v2_scoring_allocation.svg)
+
 ## 1. One-screen comparison
 
 | Dimension | V1 | V2 |
@@ -36,7 +42,7 @@ inside a time budget, and guarantees one valid output row for every input row.
 ```mermaid
 flowchart LR
     V1["V1: locate"] --> T["Translation<br/>x, y"]
-    V1 --> K["Known pose<br/>10× scale"]
+    V1 --> K["Known pose<br/>10x scale"]
 
     V2["V2: register + decide"] --> T2["Translation<br/>x, y"]
     V2 --> P2["Pose<br/>theta, scale"]
@@ -93,7 +99,7 @@ then searches the dimensions that are no longer supplied by the task.
 ```mermaid
 flowchart LR
     A["Fixed scale"] -- "expanded" --> B["9 scale hypotheses<br/>8.0 to 12.0"]
-    C["Rotation ignored"] -- "expanded" --> D["5 coarse angles<br/>−6° to +6°"]
+    C["Rotation ignored"] -- "expanded" --> D["5 coarse angles<br/>-6 deg to +6 deg"]
     E["Always present"] -- "added" --> F["Presence classifier<br/>found = 0 or 1"]
     G["Coordinate only"] -- "added" --> H["Pose + confidence"]
     I["Best effort"] -- "hardened" --> J["One row per pair<br/>even on failure"]
@@ -188,12 +194,16 @@ For every pose, V2 computes a full valid ZNCC surface and retains the global
 best finite response. That dense search avoids a proposal cap silently dropping
 the correct site.
 
+![Coarse 9 by 5 pose grid](images/v2_pose_grid.svg)
+
 ```mermaid
 flowchart TB
-    S["Scale 8.0"] --> R1["−6°"] & R2["−3°"] & R3["0°"] & R4["+3°"] & R5["+6°"]
-    S2["Scale 8.5"] --> Q1["−6°"] & Q2["−3°"] & Q3["0°"] & Q4["+3°"] & Q5["+6°"]
-    DOT["⋮"] --> SN["Scale 12.0 × five angles"]
-    R1 & R2 & R3 & R4 & R5 & Q1 & Q2 & Q3 & Q4 & Q5 & SN --> MAX["Best finite peak across all surfaces"]
+    SCALE["Choose scale from 8.0 to 12.0"] --> ROT["Choose rotation from -6 to +6 deg"]
+    ROT --> TPL["Anti-alias and downscale the reference once per scale"]
+    TPL --> BP["Band-pass the rotated template and the search image"]
+    BP --> Z["Full-image ZNCC"]
+    Z --> KEEP["Keep the best finite peak"]
+    KEEP --> WIN["After 45 poses: coarse x, y, scale, theta"]
 ```
 
 ### 4.3 Band-passed matching
@@ -239,15 +249,22 @@ V2 deliberately does not collapse `found` and `score` into one value:
 A reference can be present while the selected lattice copy is wrong. In that
 case `found = 1` and a low `score` is coherent and useful.
 
+![Presence versus coordinate trust](images/v2_presence_vs_score.svg)
+
 ```mermaid
-quadrantChart
-    title Presence and coordinate trust
-    x-axis Low presence evidence --> High presence evidence
-    y-axis Low coordinate trust --> High coordinate trust
-    quadrant-1 Present and localized
-    quadrant-2 Unusual: verify decision
-    quadrant-3 Absent or unusable
-    quadrant-4 Present but likely mislocalized
+flowchart TB
+    TITLE["Presence and coordinate trust are separate axes"]
+    TITLE --> A["Low presence evidence<br/>Low coordinate trust<br/>Absent or unusable"]
+    TITLE --> B["High presence evidence<br/>Low coordinate trust<br/>Present but likely mislocalized"]
+    TITLE --> C["Low presence evidence<br/>High coordinate trust<br/>Unusual - review the decision"]
+    TITLE --> D["High presence evidence<br/>High coordinate trust<br/>Present and localized"]
+
+    classDef low fill:#fff1f1,stroke:#d05252,color:#172033
+    classDef caution fill:#fff7e8,stroke:#d88b17,color:#172033
+    classDef good fill:#e9faf3,stroke:#1c9b67,color:#172033
+    class A low
+    class B,C caution
+    class D good
 ```
 
 ### 4.6 Output contract
@@ -315,6 +332,14 @@ organizer imagery or coordinates.
 | RGB | Set D `1.000`, A–C `0.9704` | **+6 bonus** |
 
 Scored subtotal: **79.14 / 85**, before the six-point RGB bonus.
+
+![Rejection matrix](images/v2_rejection_matrix.svg)
+
+![LatticeRank versus organizer naive ZNCC](images/v2_vs_baseline.svg)
+
+![Credit tiers](images/v2_credit_tiers.svg)
+
+![Runtime versus budgets](images/v2_runtime_budget.svg)
 
 Source: [`results/phase2_experiments/official_sample_evaluation.json`](../results/phase2_experiments/official_sample_evaluation.json)
 
@@ -414,6 +439,14 @@ The expected output header is:
 pair_id,x,y,theta,scale,found,score
 ```
 
+Jury run sheet: [HOW_TO_RUN.md](HOW_TO_RUN.md).
+
+![How to read one row](images/v2_how_to_read.svg)
+
+![Output contract](images/v2_output_contract.svg)
+
+![Scored pipeline](images/v2_pipeline.svg)
+
 Full repository verification:
 
 ```bash
@@ -439,23 +472,34 @@ Generated files:
 - `docs/images/v2_filter_ablation.svg`
 - `docs/images/v2_acquisition_gap.svg`
 - `docs/images/v2_runtime.svg`
+- `docs/images/v2_scoring_allocation.svg`
+- `docs/images/v2_dataset_composition.svg`
+- `docs/images/v2_credit_tiers.svg`
+- `docs/images/v2_rejection_matrix.svg`
+- `docs/images/v2_presence_vs_score.svg`
+- `docs/images/v2_pose_grid.svg`
+- `docs/images/v2_output_contract.svg`
+- `docs/images/v2_vs_baseline.svg`
+- `docs/images/v2_runtime_budget.svg`
+- `docs/images/v2_phase_change.svg`
+- `docs/images/v2_how_to_read.svg`
+- `docs/images/v2_pipeline.svg`
 
 ## 10. Documentation map
 
 ```mermaid
 flowchart TB
-    README["README.md<br/>quick start + headline results"]
+    README["README.md<br/>jury run + headline results"]
+    HOWTO["HOW_TO_RUN.md<br/>exact CLI and output contract"]
     GUIDE["V1_VS_V2.md<br/>architecture + migration + visuals"]
-    FAIL["failure_analysis.md<br/>measured V2 limits and negative results"]
-    FIND["PHASE2_FINDINGS.md<br/>experiment ledger"]
+    FAIL["failure_analysis.md / .pdf<br/>measured V2 limits"]
     REF["REFERENCES.md<br/>parameter provenance"]
-    DATA["BULK_DATASET.md<br/>large corpus workflow"]
 
+    README --> HOWTO
     README --> GUIDE
     GUIDE --> FAIL
-    GUIDE --> FIND
     GUIDE --> REF
-    GUIDE --> DATA
+    HOWTO --> FAIL
 ```
 
 ## 11. File-level implementation map
@@ -463,6 +507,9 @@ flowchart TB
 | Area | Main files |
 |---|---|
 | V2 command-line and contract | `register.py` |
+| Documented generator (zip root) | `generate_dataset.py` |
+| Generator implementation | `scripts/generate_dataset.py` |
+| Jury run sheet | `docs/HOW_TO_RUN.md` |
 | Deadline and degradation | `driftforge/budget.py` |
 | Dense pose sweep | `driftforge/dense.py` |
 | Pose conventions and template construction | `driftforge/pose.py` |

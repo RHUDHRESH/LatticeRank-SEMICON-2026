@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+<title id="title">V1 versus V2 output contract</title>
+<desc id="desc">Required prediction columns and the one-row-per-pair rule.</desc>
+<rect x="0.0" y="0.0" width="1200.0" height="620.0" rx="0.0" fill="#ffffff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="58.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" fill="#172033" text-anchor="start">Output contract: V1 coordinate vs V2 registration row</text>
+<text x="60.0" y="96.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#657089" text-anchor="start">A missing row scores zero. Every failure mode still emits one valid row.</text>
+<text x="60.0" y="160.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#2f6fed" text-anchor="start">V1</text>
+<text x="60.0" y="320.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#1c9b67" text-anchor="start">V2</text>
+<rect x="140.0" y="140.0" width="136.0" height="56.0" rx="10.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="208.0" y="174.3" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#ffffff" text-anchor="middle">pair_id</text>
+<rect x="290.0" y="140.0" width="136.0" height="56.0" rx="10.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="358.0" y="174.3" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#ffffff" text-anchor="middle">x</text>
+<rect x="440.0" y="140.0" width="136.0" height="56.0" rx="10.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="508.0" y="174.3" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#ffffff" text-anchor="middle">y</text>
+<rect x="140.0" y="300.0" width="136.0" height="56.0" rx="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="208.0" y="333.9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">pair_id</text>
+<text x="208.0" y="380.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="400" fill="#657089" text-anchor="middle">Exactly once</text>
+<rect x="286.0" y="300.0" width="136.0" height="56.0" rx="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="354.0" y="333.9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">x</text>
+<text x="354.0" y="380.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="400" fill="#657089" text-anchor="middle">Search px, top-left origin</text>
+<rect x="432.0" y="300.0" width="136.0" height="56.0" rx="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="500.0" y="333.9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">y</text>
+<text x="500.0" y="380.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="400" fill="#657089" text-anchor="middle">Subpixel allowed</text>
+<rect x="578.0" y="300.0" width="136.0" height="56.0" rx="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="646.0" y="333.9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">theta</text>
+<text x="646.0" y="380.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="400" fill="#657089" text-anchor="middle">deg, CCW about centre</text>
+<rect x="724.0" y="300.0" width="136.0" height="56.0" rx="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="792.0" y="333.9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">scale</text>
+<text x="792.0" y="380.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="400" fill="#657089" text-anchor="middle">Down-scale factor in [8, 12]</text>
+<rect x="870.0" y="300.0" width="136.0" height="56.0" rx="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="938.0" y="333.9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">found</text>
+<text x="938.0" y="380.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="400" fill="#657089" text-anchor="middle">1 or 0; zero pose if 0</text>
+<rect x="1016.0" y="300.0" width="136.0" height="56.0" rx="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="1084.0" y="333.9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">score</text>
+<text x="1084.0" y="380.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="400" fill="#657089" text-anchor="middle">Any monotone scale; ours is P(correct)</text>
+<rect x="60.0" y="430.0" width="1080.0" height="120.0" rx="16.0" fill="#f7f9fc" stroke="none" stroke-width="0.0"/>
+<text x="84.0" y="472.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#172033" text-anchor="start">Present row: pair_id, x, y, theta, scale, 1, score</text>
+<text x="84.0" y="508.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#172033" text-anchor="start">Absent row: pair_id, 0, 0, 0, 0, 0, score   (score still carries evidence)</text>
+<text x="84.0" y="536.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Organizer coordinates are not reproduced here. See HOW_TO_RUN.md for the header.</text>
+<text x="60.0" y="596.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Source: Phase 2 addendum output contract; register.py COLUMNS.</text>
+</svg>

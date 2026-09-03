@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+<title id="title">Coarse scale and rotation search grid</title>
+<desc id="desc">Forty-five discrete pose hypotheses evaluated by dense normalized correlation.</desc>
+<rect x="0.0" y="0.0" width="1200.0" height="640.0" rx="0.0" fill="#ffffff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="58.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="32" font-weight="700" fill="#172033" text-anchor="start">V2 coarse pose search: 9 scales x 5 rotations = 45 hypotheses</text>
+<text x="60.0" y="96.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#657089" text-anchor="start">Hard-coding the disclosed [8, 12] and +/-5 deg bounds is allowed. The grid is slightly wider in rotation.</text>
+<text x="60.0" y="148.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="600" fill="#657089" text-anchor="start">Rotation (deg)</text>
+<text x="228.0" y="148.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">-6</text>
+<text x="324.0" y="148.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">-3</text>
+<text x="420.0" y="148.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">+0</text>
+<text x="516.0" y="148.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">+3</text>
+<text x="612.0" y="148.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">+6</text>
+<text x="164.0" y="198.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="end">8.0x</text>
+<rect x="186.0" y="168.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="282.0" y="168.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="378.0" y="168.0" width="84.0" height="48.0" rx="8.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<rect x="474.0" y="168.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="570.0" y="168.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<text x="164.0" y="262.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="end">8.5x</text>
+<rect x="186.0" y="232.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="282.0" y="232.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="378.0" y="232.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="474.0" y="232.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="570.0" y="232.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<text x="164.0" y="326.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="end">9.0x</text>
+<rect x="186.0" y="296.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="282.0" y="296.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="378.0" y="296.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="474.0" y="296.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="570.0" y="296.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<text x="164.0" y="390.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="end">9.5x</text>
+<rect x="186.0" y="360.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="282.0" y="360.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="378.0" y="360.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="474.0" y="360.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="570.0" y="360.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<text x="164.0" y="454.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="end">10.0x</text>
+<rect x="186.0" y="424.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="282.0" y="424.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="378.0" y="424.0" width="84.0" height="48.0" rx="8.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<rect x="474.0" y="424.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="570.0" y="424.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<text x="164.0" y="518.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="end">10.5x</text>
+<rect x="186.0" y="488.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="282.0" y="488.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="378.0" y="488.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="474.0" y="488.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="570.0" y="488.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<text x="164.0" y="582.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="end">11.0x</text>
+<rect x="186.0" y="552.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="282.0" y="552.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="378.0" y="552.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="474.0" y="552.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="570.0" y="552.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<text x="164.0" y="646.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="end">11.5x</text>
+<rect x="186.0" y="616.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="282.0" y="616.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="378.0" y="616.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="474.0" y="616.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="570.0" y="616.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<text x="164.0" y="710.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="end">12.0x</text>
+<rect x="186.0" y="680.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="282.0" y="680.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="378.0" y="680.0" width="84.0" height="48.0" rx="8.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<rect x="474.0" y="680.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<rect x="570.0" y="680.0" width="84.0" height="48.0" rx="8.0" fill="#d7e4ff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="568.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#172033" text-anchor="start">Each cell is one full-image ZNCC surface. The global finite peak wins.</text>
+<text x="60.0" y="612.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Source: driftforge/dense.py pose grid. Refinement then searches locally around the winner.</text>
+</svg>

@@ -25,8 +25,8 @@ directory.**
 | Pose (gated) | mean credit 0.866 | **17.3 / 20** | third refinement pass lifted this 1.7 points; residual misses are near-ties on 1% / 0.25° |
 | Rejection | TP 16, FP 2, FN 0 → F1 0.9412 | **14.1 / 15** | clears the F1 ≥ 0.90 gate: **+4 bonus** |
 | Confidence | AUC 0.8889 vs correctness | 8.9 / 10 | score column, not the found flag |
-| RGB bonus | Set D 0.900, A–C 0.982 | **+6 unlocked** | requires D ≥ 0.40 and A–C ≥ 0.50 |
-| Runtime | median **2.98 s**, max 3.24 s | **inside budget** | budget 5 s median; hard cap 20 s never approached |
+| RGB bonus | Set D 1.000 · A–C 0.9704 | **+6 unlocked** | requires D ≥ 0.40 and A–C ≥ 0.50 |
+| Runtime | median **4.61 s**, max 4.79 s | **inside budget** | budget 5 s median; hard cap 20 s never approached |
 
 For calibration, the organizers' README reports their own naive ZNCC baseline at
 **0.800** mean credit on the same present pairs, with Set A "too easy" and
@@ -42,12 +42,11 @@ README states plainly that "a finer search or peak interpolation is required to
 earn top marks — which is the intended incentive." A local fine search at the
 already-chosen site cannot move the coordinate, so it cannot cost localization.
 
-**Rejection (1.3 pts).** The presence model reports `found=1` on three absent
-pairs (p015, p016, p018). The `score` column separates present from absent
-perfectly on this set — every absent score (max 0.0769) is below every present
-score (min 0.1064). This is recorded, not acted on: choosing a threshold from it
-would be tuning on organizer data, which the addendum lists as a no-appeal
-disqualification.
+**Rejection (0.88 pts).** The presence model reports `found=1` on two absent
+pairs (p016, p018). The `score` column still ranks both below every present
+pair (false-positive scores 0.0637 and 0.0754; minimum present score 0.1278).
+This is recorded, not acted on: choosing a threshold from it would be tuning
+on organizer data, which the addendum lists as a no-appeal disqualification.
 
 **Runtime.** `dense_pose_search` is 75.6% of the 5.66 s mean (45
 full-resolution correlations); presence features 12.4%, refinement 9.4%. The

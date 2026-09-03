@@ -34,6 +34,7 @@ ROOT = Path(__file__).resolve().parents[1]
 #: Every file matching these globs is packaged, if it exists.
 INCLUDE = (
     "register.py",
+    "generate_dataset.py",
     "requirements.txt",
     "README.md",
     "LICENSE",
@@ -42,7 +43,10 @@ INCLUDE = (
     "driftforge/models/*",
     "scripts/*.py",
     "tests/*.py",
-    "docs/*.md",
+    "docs/HOW_TO_RUN.md",
+    "docs/V1_VS_V2.md",
+    "docs/REFERENCES.md",
+    "docs/failure_analysis.md",
     "docs/failure_analysis.pdf",
     "docs/images/*",
     "examples/**/*",
@@ -92,8 +96,10 @@ EXCLUDE_RESULTS = frozenset({
 #: explicitly; the rest are what makes the run score above a degraded fallback.
 REQUIRED = (
     "register.py",
+    "generate_dataset.py",
     "requirements.txt",
     "scripts/generate_dataset.py",
+    "docs/HOW_TO_RUN.md",
     "docs/failure_analysis.pdf",
     "driftforge/models/presence_hgb.pkl",
     "driftforge/models/correctness_lr.pkl",

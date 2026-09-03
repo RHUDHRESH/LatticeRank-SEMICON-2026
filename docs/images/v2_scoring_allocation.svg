@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="780" viewBox="0 0 1200 780" role="img" aria-labelledby="title desc">
+<title id="title">Phase 2 scoring allocation</title>
+<desc id="desc">Official sample fill against the published 100-point plus 10-bonus rubric.</desc>
+<rect x="0.0" y="0.0" width="1200.0" height="780.0" rx="0.0" fill="#ffffff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="58.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" fill="#172033" text-anchor="start">Phase 2 scoring: 100 points plus 10 bonus</text>
+<text x="60.0" y="96.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#657089" text-anchor="start">Filled bars are official-sample measurements; open bars are jury-judged</text>
+<text x="406.0" y="172.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">Localization</text>
+<text x="406.0" y="196.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#657089" text-anchor="end">Sets A and B, 0.45 A + 0.55 B</text>
+<rect x="430.0" y="150.0" width="690.0" height="36.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<rect x="430.0" y="150.0" width="669.6" height="36.0" rx="9.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="1120.0" y="176.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#172033" text-anchor="end">38.8 / 40 pt</text>
+<text x="406.0" y="260.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">Pose recovery</text>
+<text x="406.0" y="284.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#657089" text-anchor="end">Scored only where localization credit &gt; 0</text>
+<rect x="430.0" y="238.0" width="690.0" height="36.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<rect x="430.0" y="238.0" width="597.3" height="36.0" rx="9.0" fill="#10a4b5" stroke="none" stroke-width="0.0"/>
+<text x="1120.0" y="264.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#172033" text-anchor="end">17.3 / 20 pt</text>
+<text x="406.0" y="348.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">Rejection</text>
+<text x="406.0" y="372.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#657089" text-anchor="end">F1 on found across grayscale pairs</text>
+<rect x="430.0" y="326.0" width="690.0" height="36.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<rect x="430.0" y="326.0" width="649.4" height="36.0" rx="9.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="1120.0" y="352.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#172033" text-anchor="end">14.1 / 15 pt</text>
+<text x="406.0" y="436.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">Confidence</text>
+<text x="406.0" y="460.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#657089" text-anchor="end">AUC of score against correctness</text>
+<rect x="430.0" y="414.0" width="690.0" height="36.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<rect x="430.0" y="414.0" width="613.3" height="36.0" rx="9.0" fill="#d88b17" stroke="none" stroke-width="0.0"/>
+<text x="1120.0" y="440.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#172033" text-anchor="end">8.9 / 10 pt</text>
+<text x="406.0" y="524.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">Efficiency</text>
+<text x="406.0" y="548.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#657089" text-anchor="end">Relative quartile of median runtime</text>
+<rect x="430.0" y="502.0" width="690.0" height="36.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<text x="1120.0" y="528.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" fill="#657089" text-anchor="end">up to 5 pt  (jury)</text>
+<text x="406.0" y="612.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="end">Generator / citations / failure analysis</text>
+<text x="406.0" y="636.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#657089" text-anchor="end">Carried forward from Phase 1, re-judged</text>
+<rect x="430.0" y="590.0" width="690.0" height="36.0" rx="9.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<text x="1120.0" y="616.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" fill="#657089" text-anchor="end">up to 10 pt  (jury)</text>
+<text x="60.0" y="670.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="start">Bonus, not added to the 100-point ranking cap</text>
+<rect x="60.0" y="686.0" width="430.0" height="48.0" rx="10.0" fill="#7c5ce0" stroke="none" stroke-width="0.0"/>
+<text x="275.0" y="716.3" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#ffffff" text-anchor="middle">RGB +6  unlocked  (Set D = 1.00)</text>
+<rect x="510.0" y="686.0" width="430.0" height="48.0" rx="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="725.0" y="716.3" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#ffffff" text-anchor="middle">Rejection F1 +4  unlocked  (F1 = 0.94)</text>
+<text x="60.0" y="752.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Sources: Phase 2 addendum scoring table; results/phase2_experiments/official_sample_evaluation.json</text>
+</svg>

@@ -1,0 +1,3 @@
+pair_id,search_path,reference_path
+dram,examples/dram/search.png,examples/dram/reference.png
+finfet,examples/finfet/search.png,examples/finfet/reference.png

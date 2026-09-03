@@ -1,386 +1,267 @@
 # LatticeRank
 
-### Periodic-aware localization for semiconductor wafer inspection
+Periodic-aware registration for semiconductor wafer inspection.
 
-LatticeRank locates a 1,000 × 1,000 high-magnification **Reference** field
-inside a 1,000 × 1,000 **Search** image that covers ten times the physical
-area. It returns exactly one Search coordinate: `(x, y)`.
+**Phase 2 (this submission)** locates a 1000×1000 reference field inside a
+1000×1000 search image when zoom, rotation, and presence are all unknown. It
+writes one CSV row per pair: `(x, y, theta, scale, found, score)`.
 
-The hard part is not finding a similar patch. DRAM and FinFET structures repeat,
-so hundreds of locations can look correct. V1 resolves those aliases with
-periodic residual evidence; V2 expands the same registration lineage with pose
-search, local refinement, presence detection, and calibrated coordinate trust.
+**Phase 1** was the same matcher with a known 10× scale, translation only, and
+the reference always present. [V1 versus V2, with charts](docs/V1_VS_V2.md).
 
-**New:** [open the visual V1 → V2 architecture and migration guide](docs/V1_VS_V2.md)
-for the complete pose-search, presence, confidence, runtime, and output-contract
-story—with evidence-linked diagrams and charts.
+![What Phase 2 changes](docs/images/v2_phase_change.svg)
 
-![Reference-to-Search localization task](docs/images/01_localization_task.png)
+---
 
-## Run
-
-Requires Python 3.11+ (the Phase 2 reference machine runs 3.11). The model is
-included.
-
-```bash
-git clone https://github.com/RHUDHRESH/LatticeRank-SEMICON-2026.git
-cd LatticeRank-SEMICON-2026
-python -m venv .venv
-```
-
-Activate with `source .venv/bin/activate` on POSIX or
-`.\.venv\Scripts\Activate.ps1` in PowerShell, then run:
+## Jury run (exact addendum signature)
 
 ```bash
 python -m pip install --disable-pip-version-check -r requirements.txt
-python scripts/judge_check.py
-python scripts/verify_evidence.py
+python register.py --input pairs.csv --output predictions.csv
 ```
 
-Inference:
+Python 3.11, CPU only, no network, no GPU. Weights are already in
+`driftforge/models/`. Nothing is downloaded at run time.
+
+Full run sheet: [docs/HOW_TO_RUN.md](docs/HOW_TO_RUN.md).
+
+![Scored inference path](docs/images/v2_pipeline.svg)
+
+### Input
+
+Organizer `pairs.csv`:
+
+```csv
+pair_id,search_path,reference_path
+p001,search/p001.png,reference/p001.png
+```
+
+Image paths may be relative to the CSV, relative to `register.py`, or
+absolute. RGB Set D frames are decoded to grayscale automatically.
+
+Smoke on the two shipped examples:
 
 ```bash
-python scripts/inference.py examples/dram/reference.png examples/dram/search.png
+python register.py --input examples/pairs.csv --output predictions.csv
 ```
 
-```text
-(644.50, 283.50)
+### Output
+
+```csv
+pair_id,x,y,theta,scale,found,score
 ```
 
-Add `--json` for diagnostics.
+| Column | Contract |
+|---|---|
+| `x`, `y` | match centre in search pixels, origin top-left, subpixel allowed |
+| `theta` | degrees, **CCW positive**, about the match centre |
+| `scale` | down-scaling factor, reported in `[8, 12]` — not `1/s` |
+| `found` | `1` or `0`; when `0`, the four pose columns are `0` |
+| `score` | P(reported coordinate is correct), monotone in `[0, 1]` |
 
-## Results
+Every input `pair_id` appears **exactly once**. A missing row scores zero, so
+failures still emit a row. An internal error is never written as a confident
+rejection.
 
-### Phase 2 — official Applied Materials sample set
+![Output columns](docs/images/v2_output_contract.svg)
+
+![How to read found vs score](docs/images/v2_how_to_read.svg)
+
+`found` and `score` are different questions. A reference can be present while
+the selected lattice copy is wrong: `found = 1` and a low `score` is then the
+correct report.
+
+![Presence versus coordinate trust](docs/images/v2_presence_vs_score.svg)
+
+---
+
+## What is in the zip
+
+The addendum names four deliverables. They are all at zip root or one obvious
+path away.
+
+| Required | Where |
+|---|---|
+| `python register.py --input pairs.csv --output predictions.csv` | `register.py` |
+| `requirements.txt` from `pip freeze` | `requirements.txt` |
+| documented generator | `generate_dataset.py` (wrapper) and `scripts/generate_dataset.py` |
+| `failure_analysis.pdf`, max 2 pages | `docs/failure_analysis.pdf` |
+| weights inside the zip | `driftforge/models/*.pkl`, `*.joblib` |
+
+Also included: this README, [HOW_TO_RUN](docs/HOW_TO_RUN.md),
+[V1 vs V2](docs/V1_VS_V2.md), [citations](docs/REFERENCES.md), the
+[failure analysis](docs/failure_analysis.md), tests, and the two example
+pairs.
+
+---
+
+## Official sample result
 
 The only evaluation in this repository on **organizer-generated data**: the
-20-pair Phase 2 sample (8 Set A nominal, 6 Set B degraded, 4 Set C absent,
-2 Set D RGB, 9 architecture presets, zoom 8.00–12.00 at both endpoints).
-Run once, blind, with the shipped `register.py`, scored with the organizers'
-own rubric. Nothing was tuned on it.
+20-pair Phase 2 sample (8 Set A, 6 Set B, 4 Set C absent, 2 Set D RGB). Run
+once, after the solver was frozen, with the shipped `register.py`, scored with
+the published rubric. Nothing was tuned on it.
 
 | Block | Result | Score |
 |---|---|---:|
 | Localization | Set A 0.975 · Set B 0.967 · Set D 1.000 | **38.82 / 40** |
 | Pose (gated on localization) | mean credit 0.8656 | **17.31 / 20** |
-| Rejection | F1 0.9412 (TP 16, FP 2, FN 0) — clears the ≥ 0.90 bonus gate | **14.12 / 15** |
-| Confidence | AUC 0.8889 of `score` against correctness | **8.89 / 10** |
-| RGB bonus | Set D 1.000 with A–C 0.9704 — unlocked | **+6** |
+| Rejection | F1 0.9412 (TP 16, FP 2, FN 0) | **14.12 / 15** |
+| Confidence | AUC 0.8889 of `score` vs correctness | **8.89 / 10** |
+| RGB bonus | Set D 1.000 with A–C 0.9704 | **+6** |
+| Rejection-F1 bonus | F1 ≥ 0.90 | **+4** |
 
-Scored subtotal: **79.14 / 85**, before the six-point RGB bonus.
+Scored subtotal: **79.14 / 85**, before bonuses.
 
-![Phase 2 official sample scorecard](docs/images/v2_official_scorecard.svg)
+Evidence:
+[official sample evaluation](results/phase2_experiments/official_sample_evaluation.json).
 
-Evidence: [official sample evaluation](results/phase2_experiments/official_sample_evaluation.json).
-The organizers' own naive ZNCC baseline scores 0.800 mean credit on the same
-present pairs.
+![Official sample scorecard](docs/images/v2_official_scorecard.svg)
 
-**Every number below this line is measured on our own generator**, which is
-deliberately harder than the scored task — it renders reference and search as
-independent acquisitions, where the organizers cut the reference from the search
-canvas. Those figures are a robustness stress-test (they read ~30% where the
-official sample reads ~98%) and are documented in
-[docs/failure_analysis.md](docs/failure_analysis.md) §3.
+![Scoring allocation versus the published rubric](docs/images/v2_scoring_allocation.svg)
 
-### Phase 1 benchmarks
+![Localization credit by set](docs/images/v2_official_sets.svg)
 
-| Benchmark | Protocol | Within 5 px | Over 25 px | Median error |
-|---|---|---:|---:|---:|
-| External development | 4 seeds × 30 pairs | **93.33% (112/120)** | 6.67% | 1.44 px |
-| External untouched confirmation | held-back seed × 30 pairs | **100.00% (30/30)** | 0.00% | 1.46 px |
-| Internal fixed stress | 80 scene-disjoint pairs | 48.75% (39/80) | 51.25% | 62.57 px |
-| Internal randomized compliance | seed 2026 × 40 pairs | 55.00% (22/40) | 45.00% | 4.36 px |
+![Rejection confusion matrix](docs/images/v2_rejection_matrix.svg)
 
-![Accuracy and catastrophic errors across named benchmarks](docs/images/06_pipeline_ablation.png)
+![LatticeRank versus the organizer naive ZNCC baseline](docs/images/v2_vs_baseline.svg)
 
-Evidence: [external summary](results/external_starter_benchmark.json) ·
-[150 external predictions](results/external_starter_predictions.csv) ·
-[internal metrics](results/validation_metrics.json) ·
-[80 internal predictions](results/validation_predictions.csv) ·
-[claim provenance](results/claim_provenance.json)
+The organizers' own naive ZNCC baseline scores **0.800** mean credit on the
+same present pairs, and scores 0 on the three hardest Set B pairs. LatticeRank
+scores 1.00 on each of those three.
 
-The correct site is a raw local maximum in **100%** of fixed scenes and enters
-the candidate pool in **90.0%**, but final selection reaches **48.75%**.
+![Published 200-pair blind set](docs/images/v2_dataset_composition.svg)
 
-![Candidate recall as the adaptive pool widens](docs/images/03_candidate_recall.png)
+![Credit tiers](docs/images/v2_credit_tiers.svg)
 
-## How it works
+![Runtime versus the 5 s / 20 s budgets](docs/images/v2_runtime_budget.svg)
 
-```text
-Reference + Search
-        │
-        ▼
-10:1 anti-aliased scale normalization
-        │
-        ▼
-raw + mid-band + directionality correlation maps
-        │
-        ▼
-adaptive local-maximum candidate pool
-        │
-        ▼
-periodic cancellation + structural ranking
-        │
-        ▼
-evidence-equivalent tie rule
-        │
-        ▼
-      (x, y)
-```
+Official-sample wall clock: **median 4.61 s, max 4.79 s**, 0 pairs over
+budget. Uncontended internal timing (n=60, 4 threads): **median 2.92 s,
+P95 3.21 s**. Hard timeout is 20 s.
 
-### 1. Normalize the physical scale
+**Numbers below this line are not the scored task.** They come from our own
+generator, which renders reference and search as independent acquisitions.
+The organizer sample cuts the reference from the search canvas. Those
+internal figures read ~30% where the official sample reads ~98%, and they
+are a robustness stress-test. Details:
+[docs/failure_analysis.md](docs/failure_analysis.md).
 
-Anti-alias and reduce the complete Reference by the known 10:1 pixel ratio.
+---
 
-### 2. Preserve multiple plausible sites
+## V1 versus V2
 
-Evaluate zero-mean normalized cross-correlation for each channel:
+| | V1 | V2 |
+|---|---|---|
+| Job | Where is this known-scale reference? | Is it present, where is it, what is its pose, and how trustworthy is that answer? |
+| Output | `x, y` | `x, y, theta, scale, found, score` |
+| Scale | Fixed 10× | Search 9 scales in `[8, 12]` |
+| Rotation | Treated as noise | Search 5 angles, then refine |
+| Presence | Always present | Independent `found` decision |
+| Entry point | `scripts/inference.py` | `register.py` |
+
+![Coarse pose grid](docs/images/v2_pose_grid.svg)
+
+The method is the Phase 1 periodic-aware ZNCC pipeline **extended**, not
+replaced: dense pose search over the disclosed ranges, band-passed matching,
+local refinement, then two shipped models for presence and coordinate trust.
+That is the extension the addendum lists as allowed.
+
+Full architecture, sequence diagrams, and every chart:
+**[docs/V1_VS_V2.md](docs/V1_VS_V2.md)**.
+
+---
+
+## How V2 works (short)
 
 ```text
-ρc(x,y) = <Sxy − μxy, Tc − μT> / (||Sxy − μxy|| ||Tc − μT||)
+pairs.csv
+    → decode reference + search (grayscale or RGB)
+    → 9 scales × 5 rotations = 45 dense ZNCC surfaces
+    → keep the best finite peak
+    → refine translation, scale, rotation (three passes)
+    → presence model → found
+    → correctness model → score
+    → clamp pose / zero absent pose
+    → one row in predictions.csv
 ```
 
-Preserve an adaptive union of local maxima:
+![Reference-to-search localization task](docs/images/01_localization_task.png)
 
-```text
-C = ⋃c localmax(ρc ≥ max(ρc) − 0.10)
+Low-frequency charging is suppressed with a Difference-of-Gaussians band-pass
+before ZNCC. On the internal stress corpus that moved localization from 18.6%
+to **29.6%** within 1 px (McNemar p = 0.0002), with the gain concentrated at
+severity 3.
+
+![Band-pass ablation](docs/images/v2_filter_ablation.svg)
+
+V1 still matters for the periodic core: residual ranking, candidate harvest,
+and the centre tie-rule. Those pieces remain; V2 searches the dimensions
+Phase 1 was given for free.
+
+![Measured periodic residual](docs/images/13_periodic_residual_explainer.png)
+
+---
+
+## Generator
+
+```bash
+python generate_dataset.py --phase 2 --split p2_val --count 20 \
+    --output-dir generated/phase2 --modality gray --seed-base 20260827
 ```
 
-### 3. Cancel what repeats
+Phase 1 pairs (fixed 10×, always present):
 
-Estimate the lattice and subtract the median of eight neighboring lattice
-translations, leaving site-specific structure.
-
-```text
-periodic(I) = median of neighboring lattice translations
-residual(I) = I − periodic(I)
+```bash
+python generate_dataset.py --architecture DRAM --count 30 --output-dir generated/dram
+python generate_dataset.py --architecture FinFET --count 30 --output-dir generated/finfet
 ```
-
-![Measured periodic background, residual, and uniqueness mask](docs/images/13_periodic_residual_explainer.png)
-
-### 4. Rank independent evidence
-
-Inside the validated device-pitch envelope:
-
-```text
-score = z(periodic residual) + 0.05 z(raw ZNCC) + 0.05 z(mid-band ZNCC)
-```
-
-Broader geometry uses the packaged 77-feature HGB ranker plus residual evidence.
-
-![Five real candidates and every term in the frozen score](docs/images/14_candidate_evidence.png)
-
-### 5. Handle exact wallpaper
-
-Low-context wallpaper uses the challenge’s centre convention. The seven fixed
-exact-wallpaper cases improve from 0/7 to **7/7** within 5 px.
-
-![Step-by-step measured inference on validation-000240](docs/images/12_inference_walkthrough.png)
-
-## Examples
-
-DRAM success: **0.06 px** error.
-
-![Successful localization](docs/images/07_success_example.png)
-
-FinFET alias failure: **256.75 px** error.
-
-![Periodic-alias failure](docs/images/08_periodic_alias_failure.png)
-
-## Synthetic data
-
-DriftForge generates labeled DRAM and FinFET pairs with independent
-Reference/Search acquisition effects.
 
 ![Generated DRAM and FinFET examples](docs/images/02_generated_pairs.png)
 
-```bash
-python scripts/generate_dataset.py --architecture DRAM --count 30 --output-dir generated/dram
-python scripts/generate_dataset.py --architecture FinFET --count 30 --output-dir generated/finfet
-python scripts/validate_dataset.py generated/dram
-```
+The generator is deterministic, cited, and harder than the scored task
+(independent acquisitions, same-architecture decoys, a four-level severity
+ladder, RGB optical mode). Parameter-to-source table:
+[docs/REFERENCES.md](docs/REFERENCES.md).
 
-[Parameter ranges and citations](docs/REFERENCES.md)
+---
 
-### Phase 2: unknown zoom, unknown rotation, absent pairs
+## Phase 1 benchmarks (known pose, always present)
 
-DriftForge v2 extends the generator for the Phase 2 task: the reference is
-drawn at an **unknown zoom** `s ∈ [8, 12]` — produced by the reference field
-of view, never by resizing a 10x render — and an **unknown stage rotation**
-of up to ±5° on top of the acquisition jitter. 20% of pairs in every split
-contain **no true instance** (the reference comes from a different structural
-realization of the same architecture and preset family), 40% of present
-pairs carry same-architecture near-duplicate **decoys**, and a four-level
-**severity ladder** widens dose, noise, PSF, charging, scan-geometry,
-photometry, roughness, CD-bias and damage ranges well past the organizers'
-disclosed degradation families. An **RGB optical mode** adds per-channel
-reflectance, gain, colour cast and 0.3–1.2 px chromatic misregistration,
-with ≥15% effectively-grayscale pairs. Because both images are independent
-acquisitions of the latent world (separate RNG streams and acquisition
-specs), the pairs are strictly harder than generators that crop the
-reference from the same fine canvas as the search — which is why internal
-accuracies here should not be compared against numbers produced on
-single-canvas data.
+These protocols do not apply to Phase 2 scoring. They document the V1 locator
+that V2 extends.
 
-Ground truth is **measured, not derived**: position from the target mask
-tracked through the identical search warp; rotation and zoom from
-brute-force ZNCC readouts at that known location, with the rotation-label
-sign convention verified empirically by
-`scripts/verify_conventions.py` (the naive `search − reference` formula has
-the wrong sign under our template conventions). Twelve validation gates
-(`scripts/validate_phase2.py`) cover oracle recovery of the pose, the
-sponsor-baseline difficulty band, histogram-leak classifiers, crop-paste and
-metadata-leak probes, marginal KS tests, and byte-identical regeneration.
+| Benchmark | Protocol | Within 5 px | Median error |
+|---|---|---:|---:|
+| External development | 4 seeds × 30 pairs | **93.33% (112/120)** | 1.44 px |
+| External untouched confirmation | held-back seed × 30 pairs | **100.00% (30/30)** | 1.46 px |
+| Internal fixed stress | 80 scene-disjoint pairs | 48.75% (39/80) | 62.57 px |
+| Internal randomized compliance | seed 2026 × 40 pairs | 55.00% (22/40) | 4.36 px |
+
+![V1 localization benchmarks](docs/images/v1_benchmarks.svg)
+
+Evidence: [external summary](results/external_starter_benchmark.json) ·
+[internal metrics](results/validation_metrics.json) ·
+[claim provenance](results/claim_provenance.json).
+
+![Successful localization](docs/images/07_success_example.png)
+
+![Periodic-alias failure](docs/images/08_periodic_alias_failure.png)
+
+---
+
+## Reproduce and package
 
 ```bash
-python scripts/generate_dataset.py --phase 2 --split p2_val --count 400 \
-    --output-dir data/phase2/p2_val --modality gray --seed-base 1300000
-python scripts/validate_phase2.py --data-root data/phase2 \
-    --splits p2_val --quick
-python scripts/phase2_report.py --split-dir data/phase2/p2_val \
-    --predictions preds.csv --output-dir results/phase2_report
-```
-
-## Reproduce
-
-```bash
-# Full release gates
 python -m pytest -q
 python scripts/verify_evidence.py
-
-# Fixed and randomized evaluations
-python scripts/evaluate.py validation --output-dir reproduced-validation
-python scripts/evaluate.py randomized --count 40 --seed 2026 --output-dir reproduced-randomized
-
-# Candidate-recall diagnostic and figures
-python scripts/evaluate_candidate_recall.py --output reproduced-candidate-recall.json
-python scripts/make_figures.py
-
-# Phase 2 submission package, self-verifying
+python scripts/build_v2_visuals.py
 python scripts/build_submission.py
+python scripts/audit_phase2_contract.py dist/LatticeRank_Phase2.zip
 ```
 
-`build_submission.py` packages from an explicit allow-list rather than from the
-ambient working tree. The build fails if any required file is missing, if
-`failure_analysis.pdf` exceeds two pages, or if that document cites an evidence
-file the zip does not contain; then it extracts the finished archive to a scratch
-directory and runs the documented entry point inside it, so a weight loaded by
-an accidental repo-relative path is caught here rather than during the scored
-run.
-
-Runtime: **2.86 s median**, **6.15 s mean**, **30.32 s P95**.
-[Evidence](results/runtime.json)
-
-## Phase 2 entry point
-
-```bash
-python register.py --input pairs.csv --output predictions.csv
-```
-
-One row per `pair_id`, columns `pair_id, x, y, theta, scale, found, score`.
-
-| column | convention |
-|---|---|
-| `x`, `y` | match centre in wide-search pixels, origin top-left, subpixel |
-| `theta` | degrees, **CCW positive**, about the match centre |
-| `scale` | the **down-scaling factor** `s`, nominally in [8, 12] — not `1/s` |
-| `found` | `1` or `0`; when `0`, all four pose columns are `0` |
-| `score` | see below |
-
-Three behaviours are structural rather than conventional. Every input pair
-produces exactly one row, because a missing row scores zero — decode failures,
-solver exceptions and watchdog expiry all still emit a row. When `found = 0`
-the pose columns are zeroed but `score` still carries real evidence, because
-the score column is judged separately for monotonicity against per-pair
-correctness. And **an internal error is never written as a confident
-rejection**: a caught exception emits the sentinel score `-1.0` and is reported
-on stderr, so a crash is distinguishable from "I looked and it is not there".
-Conflating the two would corrupt the rejection F1 and the confidence AUC at
-once, and make a scored run impossible to debug afterwards.
-
-### What `score` means
-
-`score` is a **calibrated probability that the reported coordinate is correct**,
-produced by a logistic model over 20 scene-level diagnostics — the peak
-correlation and its margins, the refinement gain and displacement, the local
-curvature of the correlation peak, and cheap image statistics standing in for
-blur, charging and noise. It runs on 0 to 1, higher meaning more trustworthy.
-
-It is deliberately **not** the raw correlation value. Measured on a held-out
-lockbox of 74 pairs, the model separates correct from incorrect localizations at
-**AUC 0.892** against **0.760** for the raw correlation peak on the same pairs.
-By severity the figures are 0.950 / 0.975 / 0.857 / 0.830 at levels 0–3.
-
-`found` answers a **different** question — does the reference exist in this
-search image at all — and uses its own model, reaching F1 0.90–0.92 on its
-lockbox with an operating threshold of 0.48. That threshold sits on a plateau:
-every value in [0.40, 0.52] produces identical decisions, so the choice is not a
-fragile bet on the blind set's severity mix.
-
-The two columns can legitimately disagree, and that is the point. A pair may be
-**present** (`found = 1`) yet **mislocalized** (`score` low): the reference is in
-the image, but the coordinate reported for it is probably wrong. Collapsing both
-into one number would hide exactly the case a process engineer needs to see.
-
-Read operationally: above ~0.5 the coordinate is worth acting on; between ~0.1
-and ~0.5 it warrants a confirming measurement; below that the tool is saying it
-found something but does not trust where. A pair that could not be processed at
-all scores `1e-6` — on scale, so the ranking stays monotone, rather than an
-out-of-range sentinel.
-
-Both models ship inside the repository as small pickles with provenance and
-checksums in `driftforge/models/*.metadata.json`, and neither was trained on
-organizer-supplied data.
-
-## Phase 1 to Phase 2: what changed
-
-Phase 2 removes three Phase 1 assumptions and adds nothing else. The method is
-the Phase 1 periodic-aware approach extended to search the now-unknown pose,
-which the addendum lists explicitly under what is allowed.
-
-| stage | Phase 1 | Phase 2 | changed? |
-|---|---|---|---|
-| Scale normalization | fixed 10x, given | swept over the disclosed [8, 12] | **extended** |
-| Rotation | treated as noise | swept over ±6°, reported | **extended** |
-| Similarity | multi-channel ZNCC | same ZNCC, band-passed input | **extended** |
-| Template construction | anti-aliased decimation | identical, scale-dependent sigma | unchanged |
-| Periodic reasoning | lattice cancellation, residual ranking | unchanged | unchanged |
-| Pose recovery | not required | brute-force oracles at the chosen site | **added** |
-| Presence decision | always answered | threshold on the same score | **added** |
-
-The band-pass is the one substantive change to the matching signal, and it is
-measured: on 280 present pairs across `p2_val` and `p2_stress` it moved
-localization from 18.6% to **29.6%** within 1 px (mean tiered credit 0.189 ->
-0.334), paired McNemar `p = 0.0002`, for 0.05 s per pair. The gain concentrates
-in the degraded regime — severity 3 rises from 7.3% to 29.3% — which is the
-signature of suppressing the low-frequency charging drift that dominates Set B.
-
-## Limitations
-
-Measured on Phase 2 validation data, which is deliberately harder than the
-disclosed blind-set specification: it plants same-architecture decoys on 40% of
-present pairs and runs a severity ladder past the disclosed families. The
-matched-pose ZNCC ceiling on this data is measured at ~0.40, so these numbers
-should not be read as predictions for Set A.
-
-- **Site selection is the dominant failure.** Localization error is effectively
-  binary: when the correct site is chosen the answer is already subpixel, and
-  when it is not the error is a lattice-scale jump. Half of the misses are
-  near-integer lattice translations of the truth.
-- **Candidate recall is a ceiling**, measured at ~74.3%; a quarter of pairs
-  never have the true site in the pool at all.
-- **Severity 3 is the hard regime** (29.3% after the band-pass, against 35.8%
-  at severity 0).
-- Pose recovery is conditional on localization and is not itself a limitation:
-  scale lands within 1% and rotation within 0.25° on essentially every pair
-  that localizes.
-- Earlier Phase 1 claims that FinFET is distinctly weaker than DRAM **do not
-  reproduce** under Phase 2 conditions (25.0% vs 34.6% after the band-pass,
-  with overlapping intervals on smaller samples).
-- Detailed diagnostic evidence is synthetic. The organizer-generated 20-pair
-  sample is reported separately and only as aggregate metrics; its imagery and
-  coordinates are not stored here.
-- DRAM and FinFET still share one orthogonal-line rendering primitive; a more
-  device-specific generator needs a generator-family holdout and retraining.
+`build_submission.py` packages from an explicit allow-list, refuses a
+missing weight or a `failure_analysis.pdf` over two pages, then extracts the
+zip to a scratch directory and runs `register.py` inside it.
 
 License: [MIT](LICENSE).

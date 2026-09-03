@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+<title id="title">Measured runtime versus published budgets</title>
+<desc id="desc">Official-sample and uncontended internal timings against the 5 s and 20 s limits.</desc>
+<rect x="0.0" y="0.0" width="1200.0" height="620.0" rx="0.0" fill="#ffffff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="58.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" fill="#172033" text-anchor="start">Runtime against the published budgets</text>
+<text x="60.0" y="96.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#657089" text-anchor="start">Median budget 5 s per pair. Hard timeout 20 s scores that pair zero.</text>
+<rect x="220.0" y="180.0" width="880.0" height="250.0" rx="18.0" fill="#f7f9fc" stroke="none" stroke-width="0.0"/>
+<line x1="260.0" y1="210.0" x2="260.0" y2="360.0" stroke="#dce2ec" stroke-width="2.0" stroke-dasharray="6 6"/>
+<text x="260.0" y="390.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">0 s</text>
+<line x1="460.0" y1="210.0" x2="460.0" y2="360.0" stroke="#d05252" stroke-width="2.0"/>
+<text x="460.0" y="390.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">5 s</text>
+<line x1="660.0" y1="210.0" x2="660.0" y2="360.0" stroke="#dce2ec" stroke-width="2.0" stroke-dasharray="6 6"/>
+<text x="660.0" y="390.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">10 s</text>
+<line x1="860.0" y1="210.0" x2="860.0" y2="360.0" stroke="#dce2ec" stroke-width="2.0" stroke-dasharray="6 6"/>
+<text x="860.0" y="390.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">15 s</text>
+<line x1="1060.0" y1="210.0" x2="1060.0" y2="360.0" stroke="#d05252" stroke-width="2.0"/>
+<text x="1060.0" y="390.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">20 s</text>
+<text x="460.0" y="204.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#d05252" text-anchor="middle">median budget</text>
+<text x="1060.0" y="204.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#d05252" text-anchor="middle">hard timeout</text>
+<circle cx="444.4" cy="250.0" r="10.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="462.4" y="256.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" fill="#172033" text-anchor="start">Official sample median  4.61 s</text>
+<circle cx="451.6" cy="298.0" r="10.0" fill="#10a4b5" stroke="none" stroke-width="0.0"/>
+<text x="469.6" y="304.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" fill="#172033" text-anchor="start">Official sample max  4.79 s</text>
+<circle cx="376.9" cy="346.0" r="10.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="394.9" y="352.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" fill="#172033" text-anchor="start">Internal uncontended median  2.92 s</text>
+<circle cx="388.2" cy="394.0" r="10.0" fill="#d88b17" stroke="none" stroke-width="0.0"/>
+<text x="406.2" y="400.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" fill="#172033" text-anchor="start">Internal P95  3.21 s</text>
+<text x="60.0" y="592.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Sources: official_sample_evaluation.json runtime; uncontended_runtime.json n=60.</text>
+</svg>

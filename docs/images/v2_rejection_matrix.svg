@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+<title id="title">Official-sample rejection matrix</title>
+<desc id="desc">Confusion matrix for the found flag on the 20-pair organizer sample.</desc>
+<rect x="0.0" y="0.0" width="1200.0" height="680.0" rx="0.0" fill="#ffffff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="58.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" fill="#172033" text-anchor="start">Rejection on the official sample</text>
+<text x="60.0" y="96.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#657089" text-anchor="start">F1 = 0.941  ·  precision 0.889  ·  recall 1.000  ·  14.1 / 15 points</text>
+<text x="300.0" y="168.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#172033" text-anchor="middle">Reference present</text>
+<text x="740.0" y="168.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#172033" text-anchor="middle">Reference absent</text>
+<text x="70.0" y="318.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="600" fill="#172033" text-anchor="start">Report found = 1</text>
+<text x="70.0" y="508.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="600" fill="#172033" text-anchor="start">Report found = 0</text>
+<rect x="180.0" y="210.0" width="400.0" height="150.0" rx="18.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="204.0" y="258.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="start">Correct grab</text>
+<text x="204.0" y="294.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#ffffff" text-anchor="start">TP = 16</text>
+<text x="204.0" y="328.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#ffffff" text-anchor="start">Present, found = 1</text>
+<rect x="620.0" y="210.0" width="400.0" height="150.0" rx="18.0" fill="#d05252" stroke="none" stroke-width="0.0"/>
+<text x="644.0" y="258.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="start">False positive</text>
+<text x="644.0" y="294.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#ffffff" text-anchor="start">FP = 2</text>
+<text x="644.0" y="328.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#ffffff" text-anchor="start">Absent, found = 1  (p016, p018)</text>
+<rect x="180.0" y="400.0" width="400.0" height="150.0" rx="18.0" fill="#d88b17" stroke="none" stroke-width="0.0"/>
+<text x="204.0" y="448.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="start">False negative</text>
+<text x="204.0" y="484.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#ffffff" text-anchor="start">FN = 0</text>
+<text x="204.0" y="518.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#ffffff" text-anchor="start">Present, found = 0  (costs a re-scan)</text>
+<rect x="620.0" y="400.0" width="400.0" height="150.0" rx="18.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="644.0" y="448.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="start">Correct reject</text>
+<text x="644.0" y="484.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#ffffff" text-anchor="start">TN = 2</text>
+<text x="644.0" y="518.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#ffffff" text-anchor="start">Absent, found = 0</text>
+<text x="60.0" y="652.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Source: results/phase2_experiments/official_sample_evaluation.json. The two false positives were not used to retune the threshold.</text>
+</svg>

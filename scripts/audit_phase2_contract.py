@@ -34,9 +34,11 @@ EXPECTED_HEADER = ["pair_id", "x", "y", "theta", "scale", "found", "score"]
 EXPECTED_IDS = ["dram", "finfet", "missing"]
 REQUIRED = {
     "register.py",
+    "generate_dataset.py",
     "requirements.txt",
     "pyproject.toml",
     "scripts/generate_dataset.py",
+    "docs/HOW_TO_RUN.md",
     "docs/failure_analysis.pdf",
     "driftforge/dense.py",
     "driftforge/refine.py",

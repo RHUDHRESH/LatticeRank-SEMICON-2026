@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+<title id="title">Phase 2 blind dataset composition</title>
+<desc id="desc">200 organizer pairs split across nominal, degraded, absent, and RGB bonus sets.</desc>
+<rect x="0.0" y="0.0" width="1200.0" height="560.0" rx="0.0" fill="#ffffff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="58.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" fill="#172033" text-anchor="start">Blind scored set: 200 organizer-generated pairs</text>
+<text x="60.0" y="96.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#657089" text-anchor="start">Teams never see these images. Geometry is 1000x1000 px, origin top-left.</text>
+<rect x="60.0" y="220.0" width="1080.0" height="84.0" rx="16.0" fill="#dce2ec" stroke="none" stroke-width="0.0"/>
+<rect x="60.0" y="220.0" width="378.0" height="84.0" rx="0.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="249.0" y="258.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">Set A</text>
+<text x="249.0" y="284.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#ffffff" text-anchor="middle">70 pairs</text>
+<rect x="438.0" y="220.0" width="378.0" height="84.0" rx="0.0" fill="#d88b17" stroke="none" stroke-width="0.0"/>
+<text x="627.0" y="258.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">Set B</text>
+<text x="627.0" y="284.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#ffffff" text-anchor="middle">70 pairs</text>
+<rect x="816.0" y="220.0" width="216.0" height="84.0" rx="0.0" fill="#d05252" stroke="none" stroke-width="0.0"/>
+<text x="924.0" y="258.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">Set C</text>
+<text x="924.0" y="284.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#ffffff" text-anchor="middle">40 pairs</text>
+<rect x="1032.0" y="220.0" width="108.0" height="84.0" rx="0.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="1086.0" y="258.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">Set D</text>
+<text x="1086.0" y="284.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#ffffff" text-anchor="middle">20 pairs</text>
+<rect x="60.0" y="344.0" width="22.0" height="22.0" rx="5.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="96.0" y="360.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="500" fill="#172033" text-anchor="start">Set A  70/200  —  Nominal pose, reference present</text>
+<rect x="60.0" y="380.0" width="22.0" height="22.0" rx="5.0" fill="#d88b17" stroke="none" stroke-width="0.0"/>
+<text x="96.0" y="396.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="500" fill="#172033" text-anchor="start">Set B  70/200  —  Degraded, four undisclosed severities</text>
+<rect x="60.0" y="416.0" width="22.0" height="22.0" rx="5.0" fill="#d05252" stroke="none" stroke-width="0.0"/>
+<text x="96.0" y="432.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="500" fill="#172033" text-anchor="start">Set C  40/200  —  Absent; correct answer is found = 0</text>
+<rect x="60.0" y="452.0" width="22.0" height="22.0" rx="5.0" fill="#1c9b67" stroke="none" stroke-width="0.0"/>
+<text x="96.0" y="468.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="500" fill="#172033" text-anchor="start">Set D  20/200  —  RGB optical analogue, bonus only</text>
+<text x="60.0" y="532.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Source: Phase 2 addendum, dataset composition slide. Sample pairs are a 20-pair I/O subset.</text>
+</svg>

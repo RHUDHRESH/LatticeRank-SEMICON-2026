@@ -1,12 +1,18 @@
 # Phase 2 findings and game plan
 
-Everything measured on 30 August 2026, with the evidence behind each claim and
-what it implies for the remaining days. Submission closes **3 September 2026,
-23:59**, code frozen, no resubmission.
+> **Dated internal notebook (30 August 2026), not the scored result.**
+> Localization figures in this file are from an early internal stress corpus.
+> The jury-facing numbers are in [README.md](../README.md) and
+> [V1_VS_V2.md](V1_VS_V2.md): **79.14 / 85** on the official 20-pair sample.
+> Do not quote this notebook as the current submission score.
 
-Numbers here supersede any earlier figure quoted in this session. Several early
-estimates came from 25-pair samples with a 95% interval of roughly +/-18
-percentage points and were, in hindsight, inside their own noise.
+Everything measured on 30 August 2026, with the evidence behind each claim and
+what it implied for the remaining days at that date. Submission closed
+**3 September 2026, 23:59**.
+
+Several early estimates in this notebook came from 25-pair samples with a 95%
+interval of roughly +/-18 percentage points and were, in hindsight, inside
+their own noise.
 
 ---
 

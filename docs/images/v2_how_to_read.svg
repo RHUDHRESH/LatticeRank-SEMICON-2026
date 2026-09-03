@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+<title id="title">How to read V2 predictions</title>
+<desc id="desc">Operational reading of found, score, and failure sentinels.</desc>
+<rect x="0.0" y="0.0" width="1200.0" height="640.0" rx="0.0" fill="#ffffff" stroke="none" stroke-width="0.0"/>
+<text x="60.0" y="58.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="32" font-weight="700" fill="#172033" text-anchor="start">How a process engineer should read predictions.csv</text>
+<text x="60.0" y="96.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#657089" text-anchor="start">Do not collapse found and score. They are calibrated for different decisions.</text>
+<rect x="60.0" y="140.0" width="540.0" height="120.0" rx="16.0" fill="#f7f9fc" stroke="none" stroke-width="0.0"/>
+<circle cx="96.0" cy="180.0" r="22.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="96.0" y="187.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+<text x="132.0" y="188.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#172033" text-anchor="start">Read found</text>
+<text x="88.0" y="232.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">0 means do not use x, y, theta, scale. They are zero by contract.</text>
+<rect x="630.0" y="140.0" width="540.0" height="120.0" rx="16.0" fill="#f7f9fc" stroke="none" stroke-width="0.0"/>
+<circle cx="666.0" cy="180.0" r="22.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="666.0" y="187.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<text x="702.0" y="188.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#172033" text-anchor="start">Read score</text>
+<text x="658.0" y="232.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Probability the reported coordinate is the correct site, not raw correlation.</text>
+<rect x="60.0" y="280.0" width="540.0" height="120.0" rx="16.0" fill="#f7f9fc" stroke="none" stroke-width="0.0"/>
+<circle cx="96.0" cy="320.0" r="22.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="96.0" y="327.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+<text x="132.0" y="328.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#172033" text-anchor="start">High found, high score</text>
+<text x="88.0" y="372.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Safe to treat as a localization. Typical present-and-locked row.</text>
+<rect x="630.0" y="280.0" width="540.0" height="120.0" rx="16.0" fill="#f7f9fc" stroke="none" stroke-width="0.0"/>
+<circle cx="666.0" cy="320.0" r="22.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="666.0" y="327.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+<text x="702.0" y="328.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#172033" text-anchor="start">High found, low score</text>
+<text x="658.0" y="372.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Something is in the image, but the selected copy is probably wrong.</text>
+<rect x="60.0" y="420.0" width="540.0" height="120.0" rx="16.0" fill="#f7f9fc" stroke="none" stroke-width="0.0"/>
+<circle cx="96.0" cy="460.0" r="22.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="96.0" y="467.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle">5</text>
+<text x="132.0" y="468.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#172033" text-anchor="start">found = 0, very low score</text>
+<text x="88.0" y="512.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Consistent absence or an unusable pair. Tool should re-scan.</text>
+<rect x="630.0" y="420.0" width="540.0" height="120.0" rx="16.0" fill="#f7f9fc" stroke="none" stroke-width="0.0"/>
+<circle cx="666.0" cy="460.0" r="22.0" fill="#2f6fed" stroke="none" stroke-width="0.0"/>
+<text x="666.0" y="467.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle">6</text>
+<text x="702.0" y="468.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#172033" text-anchor="start">score = 1e-6</text>
+<text x="658.0" y="512.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">The pair could not be processed. Distinct from a confident rejection.</text>
+<text x="60.0" y="612.0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#657089" text-anchor="start">Source: register.py score/found contract; docs/HOW_TO_RUN.md.</text>
+</svg>

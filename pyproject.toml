@@ -42,7 +42,7 @@ where = ["."]
 include = ["driftforge*"]
 
 [tool.setuptools.package-data]
-driftforge = ["models/*.joblib", "models/*.json"]
+driftforge = ["models/*.joblib", "models/*.pkl", "models/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

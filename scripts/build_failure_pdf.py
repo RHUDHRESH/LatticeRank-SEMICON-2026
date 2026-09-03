@@ -111,9 +111,9 @@ t0 = make_table(
         ["Rejection", "TP 16, FP 2, FN 0 &rarr; F1 0.9412", "<b>14.1 / 15</b>",
          "clears the F1 &ge; 0.90 gate: <b>+4 bonus</b>"],
         ["Confidence", "AUC 0.8889 vs correctness", "8.9 / 10", "score column, not the found flag"],
-        ["RGB bonus", "Set D 0.900, A&ndash;C 0.982", "<b>+6 unlocked</b>",
+        ["RGB bonus", "Set D 1.000 &middot; A&ndash;C 0.9704", "<b>+6 unlocked</b>",
          "requires D &ge; 0.40 and A&ndash;C &ge; 0.50"],
-        ["Runtime", "median 2.98 s, max 3.24 s", "<b>inside budget</b>",
+        ["Runtime", "median 4.61 s, max 4.79 s", "<b>inside budget</b>",
          "budget 5 s median; hard cap 20 s never approached"],
     ],
     [0.95 * inch, 2.15 * inch, 0.95 * inch, 3.45 * inch], bold_cols=(2,))
@@ -133,9 +133,9 @@ story.append(P(
     "README states plainly that &ldquo;a finer search or peak interpolation is required to earn "
     "top marks &mdash; which is the intended incentive.&rdquo; A local fine search at the "
     "already-chosen site cannot move the coordinate, so it cannot cost localization. "
-    "<b>Rejection (1.3 pts).</b> The presence model reports <i>found</i>=1 on three absent pairs "
-    "(p015, p016, p018). The <i>score</i> column separates present from absent perfectly on this "
-    "set &mdash; every absent score (max 0.0769) is below every present score (min 0.1064). "
+    "<b>Rejection (0.88 pts).</b> The presence model reports <i>found</i>=1 on two absent pairs "
+    "(p016, p018). The <i>score</i> column still ranks both below every present pair "
+    "(false-positive scores 0.0637 and 0.0754; minimum present score 0.1278). "
     "This is recorded, not acted on: choosing a threshold from it would be tuning on organizer "
     "data, which the addendum lists as a no-appeal disqualification. <b>Runtime.</b> "
     "dense_pose_search is 75.6% of the 5.66 s mean (45 full-resolution correlations); presence "
@@ -196,7 +196,7 @@ story.append(P("6. Honest limitations", "h2"))
 lim_items = [
     "<b>n = 20 on the official sample.</b> Set B is six pairs; one miss moves the block by "
     "&plusmn;3.7 points. The 38.8 is a strong point estimate, not a guarantee on 200 pairs.",
-    "<b>Runtime is inside budget</b>: median 2.98 s, max 3.24 s on the official set and 2.92 s on "
+    "<b>Runtime is inside budget</b>: median 4.61 s, max 4.79 s on the official set and 2.92 s on "
     "60 of our own, 0 pairs over 5 s. Three memoizations got it there, each verified byte-identical: "
     "the anti-alias depends on scale not rotation; scene_features was re-refining what the entry "
     "point had already refined; and the ZNCC denominator's windowed-variance term depends on "
