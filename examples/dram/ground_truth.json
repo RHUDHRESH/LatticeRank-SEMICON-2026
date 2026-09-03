@@ -1,0 +1,15 @@
+{
+  "architecture": "dram",
+  "coordinate_convention": "x=column, y=row, origin=top-left, units=search pixels",
+  "generated_by": "python scripts/make_figures.py",
+  "label_derivation": "Centroid of the reference-footprint mask after the exact Search geometric warp.",
+  "profile": "hard",
+  "reference": "reference.png",
+  "sample_id": "validation-000240",
+  "schema_version": 1,
+  "search": "search.png",
+  "search_supersample": 2,
+  "seed": 900240,
+  "x": 644.4524878117575,
+  "y": 283.46511900465663
+}

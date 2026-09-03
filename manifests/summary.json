@@ -1,0 +1,59 @@
+{
+  "stress": {
+    "architectures": {
+      "dram": 250,
+      "finfet": 250
+    },
+    "count": 500,
+    "profiles": {
+      "ambiguous": 125,
+      "boundary": 100,
+      "hard": 125,
+      "ood": 150
+    },
+    "unique_scenes": 500
+  },
+  "test": {
+    "architectures": {
+      "dram": 500,
+      "finfet": 500
+    },
+    "count": 1000,
+    "profiles": {
+      "ambiguous": 100,
+      "boundary": 150,
+      "hard": 300,
+      "ood": 100,
+      "standard": 350
+    },
+    "unique_scenes": 1000
+  },
+  "train": {
+    "architectures": {
+      "dram": 1500,
+      "finfet": 1500
+    },
+    "count": 3000,
+    "profiles": {
+      "ambiguous": 240,
+      "boundary": 360,
+      "hard": 750,
+      "standard": 1650
+    },
+    "unique_scenes": 3000
+  },
+  "validation": {
+    "architectures": {
+      "dram": 300,
+      "finfet": 300
+    },
+    "count": 600,
+    "profiles": {
+      "ambiguous": 60,
+      "boundary": 90,
+      "hard": 150,
+      "standard": 300
+    },
+    "unique_scenes": 600
+  }
+}
